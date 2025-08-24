@@ -1,5 +1,6 @@
 import { HEADER } from"../constants.js";
 import { transformUser} from "../Dtos.js";
+import { logingBodySchema as loginBodySchema } from "../schemas.js";
 //define nuestra api, como queremos que se vea
 
 class UserController {
@@ -11,8 +12,12 @@ class UserController {
     
     login = async (req, res) => {
 
-        try {
-            const { email, password } = req.body;
+        console.log(req.body)
+       try {
+
+            
+            const { email, password } = await loginBodySchema.validate(req.body);
+            
             const user = this.system.login(email, password);  
             const token = this.tokenController.generateToken(user.id);
 
