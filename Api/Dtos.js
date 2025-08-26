@@ -1,4 +1,4 @@
-export const transformUser = ({
+ const transformUser = ({
     id,
     email,
     password,
@@ -17,3 +17,26 @@ export const transformUser = ({
         }))
     };
 }
+
+ const transformPost = ({
+    image,
+    description,
+    id,
+    user,
+    comments,
+    likes,
+    date
+})=> {
+    return {
+        image,
+        description,
+        id,
+        user: transformUser(user), // para no generar un loop infinito
+        comments,
+        likes,
+        date
+       
+    };
+}
+
+export {transformUser, transformPost};
