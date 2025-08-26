@@ -1,0 +1,41 @@
+import { transformUser, transformPost} from "../Dtos.js";
+import { logingBodySchemaPost } from "../schemas.js";
+
+
+class PostController {
+    constructor(system) {
+        this.system = system;
+        
+    }
+
+    create = async (req, res) => {
+
+        
+       try {
+
+            const { image, description } = await logingBodySchemaPost.validate(req.body); // para que no me venga algo raro en el body
+            const user = transformUser(req.user); //consigo el usuario del req que me puso el tokenController
+            
+             const draftPost = {
+                image: image,
+                description: description
+            };
+
+          
+            const postCreado = await this.system.addPost(user.id, draftPost);
+          
+            res.json(transformPost(postCreado));// modifico el post para que los followers del usuario que lo hizo no generen un loop infinito
+            
+        }
+        catch(error){
+            res.status(400).send('No se pudo crear el post');;
+        }
+       
+    };  
+    
+    
+
+  
+}
+
+export default PostController;
