@@ -1,5 +1,6 @@
 export const transformUser = ({
     id,
+    name,
     email,
     password,
     image,
@@ -7,6 +8,7 @@ export const transformUser = ({
 })=> {
     return {
         id,
+        name,
         email,
         password,
         image,

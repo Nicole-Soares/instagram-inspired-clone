@@ -4,8 +4,11 @@ import express from 'express';
 const createUserRouter = (userController, tokenController) => {
     const userRouter = express.Router();
     
-    //userRouter.post("/login", userController.login);
-    userRouter.get("/:userId",tokenController.checkRole("user"), userController.getUser);
+    //GET /user
+    userRouter.get("/", tokenController.checkRole("user"), userController.getTimeline);
+
+    //GET /user/{userId}
+    userRouter.get("/:userId", tokenController.checkRole("user"), userController.getUser);
     
     return userRouter;
 }
