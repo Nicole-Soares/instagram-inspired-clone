@@ -1,6 +1,6 @@
 import { HEADER } from"../constants.js";
 import { transformUser} from "../Dtos.js";
-import { logingBodySchema as loginBodySchema } from "../schemas.js";
+import { registerBodySchema, logingBodySchema as loginBodySchema} from "../schemas.js";
 //define nuestra api, como queremos que se vea
 
 class UserController {
@@ -14,8 +14,6 @@ class UserController {
 
         console.log(req.body)
        try {
-
-            
             const { email, password } = await loginBodySchema.validate(req.body);
             
             const user = this.system.login(email, password);  
@@ -39,6 +37,34 @@ class UserController {
        
     };
 
+    register = async (req, res) => {
+        try {
+        
+        const { name, email, password, image } = await registerBodySchema.validate(req.body);
+       
+        // Verificar si el usuario ya existe en el sistema
+        const existingUser = this.system.validateNewUser(email);
+        if (existingUser) {
+            return res.status(400).json({ error: "User already exists" });
+        }
+
+        // Registrar el usuario 
+        const user = this.system.register(name, email, password, image);
+        const token = this.tokenController.generateToken(user.id);
+
+        // Respuesta exitosa
+        res.header(HEADER, token).json({user: transformUser(user)});
+        }     
+        catch (error) {
+        // Si el error es de validación
+        if (error.name === "ValidationError") {
+            return res.status(400).json({ error: "Invalid data" });
+        }
+        // Otros errores
+        res.status(400).json({ error: error.message });
+    }
+};
+
     //va a necesitar hacer el login antes para obtener el token mediante el header
 
     getUser = (req, res) => {
@@ -52,7 +78,7 @@ class UserController {
           res.status(404).send('User not found');
         }
     };
-  
+
 }
 
 export default UserController;
