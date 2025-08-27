@@ -23,6 +23,7 @@ app.use("/", createAuthRouter(userController, tokenController));
 app.use("/user", createUserRouter(userController, tokenController));
 app.use("/posts", createPostsRouter(postController, tokenController));
 
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`); 
 });
