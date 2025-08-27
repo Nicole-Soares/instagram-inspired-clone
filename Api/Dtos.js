@@ -18,6 +18,20 @@
     };
 }
 
+const transformComments = (comments) => {
+    return comments.map(comment => ({
+        id: comment.id,
+        body: comment.body,
+        user: transformUser(comment.user),
+        
+    }));
+}
+
+const transformLikes = (likes) => {
+    return likes.map(like => ({
+        name: like.name }));
+}
+
  const transformPost = ({
     image,
     description,
@@ -32,11 +46,11 @@
         description,
         id,
         user: transformUser(user), // para no generar un loop infinito
-        comments,
-        likes,
+        comments: transformComments(comments),
+        likes: transformLikes(likes),
         date
        
     };
 }
 
-export {transformUser, transformPost};
+export {transformUser, transformPost, transformComments};

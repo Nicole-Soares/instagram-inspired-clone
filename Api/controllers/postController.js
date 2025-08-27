@@ -33,8 +33,36 @@ class PostController {
        
     };  
     
+    getPost = (req, res) => {
     
+        try{
+            const postId = req.params.postId;
+            const post = this.system.getPost(postId);
 
+            res.json(transformPost(post));
+        }
+        catch(error){
+            res.status(400).send('No se pudo traer el post');;
+        }
+    };
+
+    updatePost = async (req, res) => {
+
+        try{
+            const postId = req.params.postId;
+            const {image, description} = await logingBodySchemaPost.validate(req.body);
+            const draftPost = {
+            image: image,
+            description: description
+            };
+            const updatePost = this.system.editPost(postId, draftPost);
+            res.json(transformPost(updatePost));
+        }
+        catch(error){
+            res.status(400).send('No se pudo actualizar el post');;
+        }
+       
+    }
   
 }
 
