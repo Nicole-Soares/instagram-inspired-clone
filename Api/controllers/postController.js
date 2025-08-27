@@ -1,5 +1,5 @@
 import { transformUser, transformPost} from "../Dtos.js";
-import { logingBodySchemaPost } from "../schemas.js";
+import { bodySchemaPost } from "../schemas.js";
 
 
 class PostController {
@@ -13,7 +13,7 @@ class PostController {
         
        try {
 
-            const { image, description } = await logingBodySchemaPost.validate(req.body); // para que no me venga algo raro en el body
+            const { image, description } = await bodySchemaPost.validate(req.body); // para que no me venga algo raro en el body
             const user = transformUser(req.user); //consigo el usuario del req que me puso el tokenController
             
              const draftPost = {
@@ -50,7 +50,7 @@ class PostController {
 
         try{
             const postId = req.params.postId;
-            const {image, description} = await logingBodySchemaPost.validate(req.body);
+            const {image, description} = await bodySchemaPost.validate(req.body);
             const draftPost = {
             image: image,
             description: description

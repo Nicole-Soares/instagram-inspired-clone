@@ -6,10 +6,10 @@ import { object , string} from "yup";
     password: string().required()
 }).noUnknown(true).strict();
 
- const logingBodySchemaPost = object({
+ const bodySchemaPost = object({
     image: string().required(),
     description: string().required()
 }).noUnknown(true).strict();
 
 
-export {logingBodySchema, logingBodySchemaPost};
+export {logingBodySchema, bodySchemaPost};
