@@ -12,7 +12,6 @@ class UserController {
     
     login = async (req, res) => {
 
-        console.log(req.body)
        try {
 
             
