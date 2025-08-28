@@ -11,5 +11,11 @@ import { object , string} from "yup";
     description: string().required()
 }).noUnknown(true).strict();
 
+ const registerBodySchema = object({
+    name: string().required(),
+    email: string().email().required(),
+    password: string().required(),
+    image: string().url().required()
+}).noUnknown(true).strict();
 
-export {logingBodySchema, bodySchemaPost};
+export {logingBodySchema, bodySchemaPost, registerBodySchema};
