@@ -71,7 +71,55 @@ class PostController {
         }
        
     }
-  
+
+   deletePost = async (req, res) => {
+    const postId = req.params.postId;
+    let post;
+
+    try {
+        post = this.system.getPost(postId);
+    } catch (error) {
+        return res.status(404).send("Post not found");
+    }
+
+    if (post.user.id !== req.user.id) {
+        return res.status(403).send("Forbidden (User is not the owner of the post)");
+    }
+   
+    await this.system.deletePost(postId);
+    res.status(204).send("No Content");
+    
+    }
+
+    likePost = (req, res) => {
+        try {
+            let postId = req.params.postId;
+            const userId = req.user.id;
+            const updatedPost = this.system.updateLike(postId, userId);
+            const transformedUpdatedPost = transformPost(updatedPost);
+            res.json(transformedUpdatedPost);   
+            } catch (error) {
+            return res.status(404).send("Post not found");
+        }
+    }
+    commentPost = (req, res) => {
+        try { 
+            const postId = req.params.postId;
+            const userId = req.user.id;
+            const { comment } = req.body;
+            const draftComment = {
+                body: comment   
+            };
+            const commentedPost = this.system.addComment(postId, userId, draftComment);
+            const transformedCommentedPost = transformPost(commentedPost);
+            res.json(transformedCommentedPost);
+            }
+            catch (error) {
+                return res.status(404).send("Post not found");
+            }
+    }
 }
+
+
 
 export default PostController;
