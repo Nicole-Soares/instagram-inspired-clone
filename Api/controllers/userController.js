@@ -1,6 +1,5 @@
 import { HEADER } from"../constants.js";
 import { transformUser, transformSimpleUser, transformTimeline } from "../Dtos.js";
-//define nuestra api, como queremos que se vea
 
 class UserController {
     
@@ -16,7 +15,7 @@ class UserController {
             const user = this.system.login(email, password);  
             const token = this.tokenController.generateToken(user.id);
 
-            res.header(HEADER, token).json({user: transformUser(user), token}); // le devuelve como respuesta el header con el token y un obj json con el usuario transformado para no generar un loop y el token 
+            res.header(HEADER, token).json({user: transformUser(user), token}); 
         }
         catch(error){
             res.status(400).send('Invalid email or password');
@@ -32,7 +31,7 @@ class UserController {
             res.json({
                 ...transformSimpleUser(currentUser),
                 timeline: timelinePosts.map(transformTimeline)
-            })
+            });
         } 
         catch (error) {
             res.status(401).send('Unauthorized');
@@ -41,13 +40,19 @@ class UserController {
 
     //GET /user/{userId}
     getUser = (req, res) => {
-        const userId = req.params.userId;
-        const user = this.system.getUser(userId);
-      
-        if (user) {
-          res.json(transformUser(user));
-        } else {
-          res.status(404).send('User not found');
+        try {
+            const userId = req.params.userId;
+            const user = this.system.getUser(userId);
+
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            res.json(transformUser(user));
+
+        } 
+        catch (error) {
+            res.status(404).send(error.message);
         }
     };
 
@@ -60,21 +65,21 @@ class UserController {
             res.status(400).send('You cannot follow yourself');
             return;
         }
-
-        const userToFollow = this.system.getUser(userId);
-
-        if (!userToFollow) {
-            res.status(404).send('User to follow not found');
-            return;
-        }
-
-        const newCurrentUser = this.system.updateFollower(currentUser.id, userId);
         
-        res.json({
+        try {
+            const userToFollow = this.system.getUser(userId);
+            const newCurrentUser = this.system.updateFollower(currentUser.id, userId);
+        
+            res.json({
             ...transformUser(newCurrentUser),
             posts: this.system.getPostByUserId(newCurrentUser.id).map(transformTimeline)
-        }) 
+            }); 
+        }
+        catch (error) {
+            res.status(404).send('User not found');
+        }   
     };
+
 }
 
 export default UserController;
