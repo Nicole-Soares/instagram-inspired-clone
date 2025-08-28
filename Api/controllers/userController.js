@@ -38,32 +38,23 @@ class UserController {
     };
 
     register = async (req, res) => {
+
         try {
+            const {name, email, password, image} = await registerBodySchema.validate(req.body);
         
-        const { name, email, password, image } = await registerBodySchema.validate(req.body);
-       
-        // Verificar si el usuario ya existe en el sistema
-        const existingUser = this.system.validateNewUser(email);
-        if (existingUser) {
-            return res.status(400).json({ error: "User already exists" });
-        }
+            const newUser = {name, email, password, image};
+            const user = this.system.register(newUser);
+            const token = this.tokenController.generateToken(user.id);
 
-        // Registrar el usuario 
-        const user = this.system.register(name, email, password, image);
-        const token = this.tokenController.generateToken(user.id);
+            res.header(HEADER, token).json({...transformUser(user), posts: []});
+            }  
 
-        // Respuesta exitosa
-        res.header(HEADER, token).json({user: transformUser(user)});
-        }     
         catch (error) {
-        // Si el error es de validación
-        if (error.name === "ValidationError") {
-            return res.status(400).json({ error: "Invalid data" });
-        }
-        // Otros errores
-        res.status(400).json({ error: error.message });
-    }
-};
+            if (error.name === "ValidationError") {
+                return res.status(400).json({ error: "Invalid data" });
+                }
+            }
+    };
 
     //va a necesitar hacer el login antes para obtener el token mediante el header
 
