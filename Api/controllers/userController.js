@@ -1,7 +1,6 @@
 import { HEADER } from"../constants.js";
+import { registerBodySchema, logingBodySchema as loginBodySchema} from "../schemas.js";
 import { transformUser, transformSimpleUser, transformTimeline } from "../Dtos.js";
-import { logingBodySchema as loginBodySchema } from "../schemas.js";
-//define nuestra api, como queremos que se vea
 
 class UserController {
     
@@ -14,8 +13,6 @@ class UserController {
 
         console.log(req.body)
        try {
-
-            
             const { email, password } = await loginBodySchema.validate(req.body);
             
             const user = this.system.login(email, password);  
@@ -26,6 +23,25 @@ class UserController {
         catch(error){
             res.status(400).send('Invalid email or password');
         }
+    };
+
+    register = async (req, res) => {
+
+        try {
+            const {name, email, password, image} = await registerBodySchema.validate(req.body);
+        
+            const newUser = {name, email, password, image};
+            const user = this.system.register(newUser);
+            const token = this.tokenController.generateToken(user.id);
+
+            res.header(HEADER, token).json({...transformUser(user), posts: []});
+            }  
+
+        catch (error) {
+            if (error.name === "ValidationError") {
+                return res.status(400).json({ error: "Invalid data" });
+                }
+            }
     };
 
     //GET /user
