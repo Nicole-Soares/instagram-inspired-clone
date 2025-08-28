@@ -1,4 +1,4 @@
-export const transformUser = ({
+ export const transformUser = ({
     id,
     name,
     email,
@@ -13,6 +13,41 @@ export const transformUser = ({
         password,
         image,
         followers: followers.map(transformSimpleUser)
+    };
+}
+ 
+export const transformComments = (comments) => {
+    return comments.map(comment => ({
+        id: comment.id,
+        body: comment.body,
+        user: transformUser(comment.user),
+        
+    }));
+}
+
+const transformLikes = (likes) => {
+    return likes.map(like => ({
+        name: like.name }));
+}
+
+export const transformPost = ({
+    image,
+    description,
+    id,
+    user,
+    comments,
+    likes,
+    date
+})=> {
+    return {
+        image,
+        description,
+        id,
+        user: transformUser(user), // para no generar un loop infinito
+        comments: transformComments(comments),
+        likes: transformLikes(likes),
+        date
+       
     };
 }
 
@@ -30,7 +65,7 @@ export const transformTimeline = ({
     user,
     date,
     comments,
-    likes,
+    likes
 })=> {
     return {
         id,

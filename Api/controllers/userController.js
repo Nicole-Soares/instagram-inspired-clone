@@ -11,7 +11,6 @@ class UserController {
 
     login = async (req, res) => {
 
-        console.log(req.body)
        try {
             const { email, password } = await loginBodySchema.validate(req.body);
             

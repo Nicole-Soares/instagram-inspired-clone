@@ -26,7 +26,7 @@ class TokenController {
         try {
           const decoded = this.validateToken(authHeader);
           const user = this.service.getUser(decoded.userId);
-          req.user = user;
+          req.user = user; // agrega en el req, el user obtenido del token
           next();
         } catch (error) {
           res.status(401).json({ error: 'Invalid token' });
