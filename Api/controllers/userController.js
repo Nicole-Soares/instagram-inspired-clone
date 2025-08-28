@@ -1,5 +1,5 @@
 import { HEADER } from"../constants.js";
-import { transformUser } from "../Dtos.js";
+import { transformUser, transformSimpleUser, transformTimeline } from "../Dtos.js";
 //define nuestra api, como queremos que se vea
 
 class UserController {
@@ -17,19 +17,9 @@ class UserController {
             const token = this.tokenController.generateToken(user.id);
 
             res.header(HEADER, token).json({user: transformUser(user), token}); // le devuelve como respuesta el header con el token y un obj json con el usuario transformado para no generar un loop y el token 
-          
-            //no es necesario porque ya esta el try catch
-            /*if (user) {
-                const token = this.tokenController.generateToken(user.id);
-
-                res.header(HEADER, token).json({user: transformUser(user), token}); // le devuelve como respuesta el header con el token y un obj json con el usuario transformado para no generar un loop y el token 
-          
-            } else {
-                res.status(401).send('Invalid email or password');
-            }*/
         }
         catch(error){
-            res.status(400).send('Invalid email or password');;
+            res.status(400).send('Invalid email or password');
         }
     };
 
@@ -37,13 +27,16 @@ class UserController {
     getTimeline = (req, res) => {
         const currentUser = req.user;
 
-        if (!currentUser) {
+        try {
+            const timelinePosts = this.system.timeline(currentUser.id);
+            res.json({
+                ...transformSimpleUser(currentUser),
+                timeline: timelinePosts.map(transformTimeline)
+            })
+        } 
+        catch (error) {
             res.status(401).send('Unauthorized');
-            return;
         }
-
-        const timelinePosts = this.system.timeline(currentUser.id);
-        res.json(timelinePosts);
     };
 
     //GET /user/{userId}
@@ -60,8 +53,8 @@ class UserController {
 
     //PUT /users/{userId}/follow
     followUser = (req, res) => {
-        const userId = req.params.userId;
-        const currentUser = req.user;
+        const userId = req.params.userId; //usuario a seguir
+        const currentUser = req.user; //usuario que hizo el request
 
         if (currentUser.id === userId) {
             res.status(400).send('You cannot follow yourself');
@@ -75,23 +68,12 @@ class UserController {
             return;
         }
 
-        const isFollowing = currentUser.following.includes(userId);
-
-        if (isFollowing) {
-            // Dejar de seguir
-            currentUser.following = currentUser.following.filter(id => id !== userId);
-            userToFollow.followers = userToFollow.followers.filter(id => id !== currentUser.id);
-        } else {
-            // Seguir
-            currentUser.following.push(userId);
-            userToFollow.followers.push(currentUser.id);
-        }
-
+        const newCurrentUser = this.system.updateFollower(currentUser.id, userId);
+        
         res.json({
-            message: isFollowing ? 'Unfollowed successfully' : 'Followed successfully',
-            following: currentUser.following,
-            followers: userToFollow.followers
-        });
+            ...transformUser(newCurrentUser),
+            posts: this.system.getPostByUserId(newCurrentUser.id).map(transformTimeline)
+        }) 
     };
 }
 
