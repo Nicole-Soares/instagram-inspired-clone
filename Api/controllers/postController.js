@@ -28,7 +28,7 @@ class PostController {
             
         }
         catch(error){
-            res.status(400).send('No se pudo crear el post');;
+            res.status(401).send('Unauthorized');;
         }
        
     };  
@@ -42,14 +42,22 @@ class PostController {
             res.json(transformPost(post));
         }
         catch(error){
-            res.status(400).send('No se pudo traer el post');;
+            res.status(404).send('Post not found');
         }
     };
 
     updatePost = async (req, res) => {
 
+        //if si el id del usuario que hizo el post es igual al id del usuario que quiere modificar el post (req.user) entonces tiro error
+        const postId = req.params.postId;
+        const post = this.system.getPost(postId);
+
+        if(post.user.id !== req.user.id){
+            return res.status(403).send("Forbidden (User is not the owner of the post)");
+        }
+
         try{
-            const postId = req.params.postId;
+            //const postId = req.params.postId;
             const {image, description} = await bodySchemaPost.validate(req.body);
             const draftPost = {
             image: image,
@@ -59,7 +67,7 @@ class PostController {
             res.json(transformPost(updatePost));
         }
         catch(error){
-            res.status(400).send('No se pudo actualizar el post');;
+            res.status(404).send("Post not found");
         }
        
     }
