@@ -1,3 +1,4 @@
+import { ValidationError } from "yup";
 import { transformUser, transformPost} from "../Dtos.js";
 import { bodySchemaPost } from "../schemas.js";
 
@@ -9,8 +10,6 @@ class PostController {
     }
 
     create = async (req, res) => {
-
-        
        try {
 
             const { image, description } = await bodySchemaPost.validate(req.body); // para que no me venga algo raro en el body
@@ -20,15 +19,19 @@ class PostController {
                 image: image,
                 description: description
             };
-
-          
             const postCreado = await this.system.addPost(user.id, draftPost);
           
             res.json(transformPost(postCreado));// modifico el post para que los followers del usuario que lo hizo no generen un loop infinito
             
         }
         catch(error){
-            res.status(401).send('Unauthorized');;
+            if(error instanceof ValidationError) {
+                res.status(400).send('Invalid post data');
+            }
+            else {
+                res.status(401).send('Unauthorized');
+            }
+            
         }
        
     };  
@@ -67,27 +70,33 @@ class PostController {
             res.json(transformPost(updatePost));
         }
         catch(error){
-            res.status(404).send("Post not found");
+            if(error instanceof ValidationError) {
+                res.status(400).send('Invalid post data');
+            }
+            else {
+                res.status(404).send('Post not found');
+            }
+            
         }
        
     }
 
    deletePost = async (req, res) => {
-    const postId = req.params.postId;
-    let post;
+        const postId = req.params.postId;
+        let post;
 
-    try {
-        post = this.system.getPost(postId);
-    } catch (error) {
-        return res.status(404).send("Post not found");
-    }
+        try {
+            post = this.system.getPost(postId);
+        } catch (error) {
+            return res.status(404).send("Post not found");
+        }
 
-    if (post.user.id !== req.user.id) {
-        return res.status(403).send("Forbidden (User is not the owner of the post)");
-    }
+        if (post.user.id !== req.user.id) {
+            return res.status(403).send("Forbidden (User is not the owner of the post)");
+        }
    
-    await this.system.deletePost(postId);
-    res.status(204).send("No Content");
+        await this.system.deletePost(postId);
+        res.status(204).send("No Content");
     
     }
 
@@ -99,8 +108,8 @@ class PostController {
             const transformedUpdatedPost = transformPost(updatedPost);
             res.json(transformedUpdatedPost);   
             } catch (error) {
-            return res.status(404).send("Post not found");
-        }
+                return res.status(404).send("Post not found");
+            }
     }
     commentPost = (req, res) => {
         try { 
@@ -113,10 +122,10 @@ class PostController {
             const commentedPost = this.system.addComment(postId, userId, draftComment);
             const transformedCommentedPost = transformPost(commentedPost);
             res.json(transformedCommentedPost);
-            }
-            catch (error) {
-                return res.status(404).send("Post not found");
-            }
+        }
+        catch (error) {
+            return res.status(404).send("Post not found");
+        }
     }
 }
 
