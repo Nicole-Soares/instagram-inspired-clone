@@ -3,7 +3,7 @@ import { transformPost, transformSimpleUser} from "../Dtos.js";
 class SearchController {
     constructor(system) {
         this.system = system;
-    }
+    };
 
     search = async (req, res) => { 
     const { query } = req.query;
@@ -20,8 +20,7 @@ class SearchController {
     
     const posts  = [...postByTag, ...postByUserName,...postByUserId]; 
     res.json({users, posts});
-    }
-
+    };
 }
 
 export default SearchController;

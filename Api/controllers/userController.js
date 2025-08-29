@@ -1,31 +1,31 @@
 import { HEADER } from"../constants.js";
 import { registerBodySchema, logingBodySchema as loginBodySchema} from "../schemas.js";
-import { transformUser, transformSimpleUser, transformTimeline } from "../Dtos.js";
+import { transformUser, transformSimpleUser, transformTimeline, transformSimplePost } from "../Dtos.js";
+import { UserException } from "@unq-ui/instagram-model-js";
 
 class UserController {
     
     constructor(system, tokenController) {
         this.system = system;
         this.tokenController = tokenController;
-    }
+    };
 
     login = async (req, res) => {
-
-       try {
+        try {
             const { email, password } = await loginBodySchema.validate(req.body);
             
             const user = this.system.login(email, password);  
             const token = this.tokenController.generateToken(user.id);
+            const posts = this.system.getPostByUserId(user.id).map(transformSimplePost);
 
-            res.header(HEADER, token).json({user: transformUser(user), token}); 
+            res.header(HEADER, token).json({user:transformUser(user), posts}); 
         }
-        catch(error){
+        catch (error) {
             res.status(400).send('Invalid email or password');
         }
     };
 
     register = async (req, res) => {
-
         try {
             const {name, email, password, image} = await registerBodySchema.validate(req.body);
         
@@ -34,13 +34,15 @@ class UserController {
             const token = this.tokenController.generateToken(user.id);
 
             res.header(HEADER, token).json({...transformUser(user), posts: []});
-            }  
-
+        }  
         catch (error) {
-            if (error.name === "ValidationError") {
-                return res.status(400).json({ error: "Invalid data" });
-                }
+            if (error instanceof ValidationError) {
+                res.status(400).send('Invalid data');
             }
+            else {
+                res.status(400).send('User already exists and other errors');
+            }
+        }
     };
 
     //GET /user
@@ -50,7 +52,7 @@ class UserController {
         try {
             const timelinePosts = this.system.timeline(currentUser.id);
             res.json({
-                ...transformSimpleUser(currentUser),
+                ...transformUser(currentUser),
                 timeline: timelinePosts.map(transformTimeline)
             });
         } 
@@ -64,23 +66,24 @@ class UserController {
         try {
             const userId = req.params.userId;
             const user = this.system.getUser(userId);
+            const posts = this.system.getPostByUserId(user.id).map(transformSimplePost);
 
             if (!user) {
-                throw new Error('User not found');
+                throw new UserException('User not found');
             }
 
-            res.json(transformUser(user));
+            res.json({user:transformUser(user), posts})
 
         } 
         catch (error) {
-            res.status(404).send(error.message);
+            res.error(400).send('Something went wrong');
         }
     };
 
     //PUT /users/{userId}/follow
     followUser = (req, res) => {
-        const userId = req.params.userId; //usuario a seguir
-        const currentUser = req.user; //usuario que hizo el request
+        const userId = req.params.userId; 
+        const currentUser = req.user; 
 
         if (currentUser.id === userId) {
             res.status(400).send('You cannot follow yourself');
@@ -97,7 +100,7 @@ class UserController {
             }); 
         }
         catch (error) {
-            res.status(404).send('User not found');
+            throw new UserException('User not found');
         }   
     };
 

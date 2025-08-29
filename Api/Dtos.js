@@ -1,36 +1,42 @@
- export const transformUser = ({
+const transformUser = ({
     id,
     name,
     email,
-    password,
     image,
-    followers
+    followers,
 })=> {
     return {
         id,
         name,
         email,
-        password,
         image,
-        followers: followers.map(transformSimpleUser)
+        followers: followers.map(transformSimpleUser),
     };
 }
  
-export const transformComments = (comments) => {
+const transformComments = (comments) => {
     return comments.map(comment => ({
         id: comment.id,
         body: comment.body,
-        user: transformUser(comment.user),
-        
+        user: transformUser(comment.user) 
+    }));
+}
+
+const transformSimpleComments = (comments) => {
+    return comments.map(comment => ({
+        id: comment.id,
+        body: comment.body,
+        user: transformSimpleUser(comment.user) 
     }));
 }
 
 const transformLikes = (likes) => {
-    return likes.map(like => ({
-        name: like.name }));
+    return likes.map(like => ({ 
+        name: like.name 
+    }));
 }
 
-export const transformPost = ({
+const transformPost = ({
     image,
     description,
     id,
@@ -47,17 +53,36 @@ export const transformPost = ({
         comments: transformComments(comments),
         likes: transformLikes(likes),
         date
-       
     };
 }
 
-export const transformSimpleUser = (user) => ({
-            id: user.id,
-            image: user.image,
-            name: user.name,
-        })
+const transformSimplePost = ({
+    id,
+    image,
+    description,
+    date,
+    comments,
+    user,
+    likes
+}) => {
+    return {
+        id,
+        image,
+        description,
+        date,
+        comments: transformSimpleComments(comments),
+        user: transformSimpleUser(user),
+        likes: transformLikes(likes)
+    };
+}
 
-export const transformTimeline = ({
+const transformSimpleUser = (user) => ({
+        id: user.id,
+        image: user.image,
+        name: user.name,
+});
+
+const transformTimeline = ({
     id,
     email,
     description,
@@ -74,19 +99,9 @@ export const transformTimeline = ({
         image,
         user: transformSimpleUser(user),
         date,
-        comments: comments.map(transformComment),
-        likes: likes.map(transformSimpleUser)
-    }  
+        comments: transformSimpleComments(comments),
+        likes: transformLikes(likes)
+    };  
 } 
 
-export const transformComment = ({
-    id,
-    body,
-    user
-})=> {
-    return {
-        id,
-        body,
-        user: transformSimpleUser(user),
-    }
-}
+export { transformUser, transformPost, transformTimeline, transformSimpleUser, transformSimplePost };
