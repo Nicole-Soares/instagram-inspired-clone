@@ -10,7 +10,6 @@ import PostController from "./controllers/postController.js";
 import createPostsRouter from "./routes/postsRouter.js";
 import SearchController from "./controllers/searchController.js";
 
-
 const system = getInstagramSystem();
 const app = express();
 const port = 7070;
@@ -36,4 +35,3 @@ app.use("/users", createUsersRouter(userController, tokenController));
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`); 
 });
-

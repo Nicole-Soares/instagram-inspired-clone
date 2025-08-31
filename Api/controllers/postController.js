@@ -1,12 +1,12 @@
 import { ValidationError } from "yup";
-import { transformUser, transformPost} from "../Dtos.js";
+import { transformUser, transformPost } from "../Dtos.js";
 import { bodySchemaPost } from "../schemas.js";
 import { PostException } from "@unq-ui/instagram-model-js";
 
 class PostController {
+    
     constructor(system) {
         this.system = system;
-        
     };
 
     create = async (req, res) => {
@@ -14,14 +14,10 @@ class PostController {
             const { image, description } = await bodySchemaPost.validate(req.body); // para que no me venga algo raro en el body
             const user = transformUser(req.user); //consigo el usuario del req que me puso el tokenController
             
-            const draftPost = {
-                image: image,
-                description: description
-            };
+            const draftPost = { image: image, description: description };
 
             const postCreado = await this.system.addPost(user.id, draftPost);
             res.json(transformPost(postCreado));// modifico el post para que los followers del usuario que lo hizo no generen un loop infinito
-            
         }
         catch (error) {
             if (error instanceof ValidationError) {
@@ -37,7 +33,6 @@ class PostController {
         try {
             const postId = req.params.postId;
             const post = this.system.getPost(postId);
-
             res.json(transformPost(post));
         }
         catch (error){
@@ -49,12 +44,12 @@ class PostController {
         const postId = req.params.postId;
         const post = this.system.getPost(postId);
 
-        if (post.user.id !== req.user.id){
+        if (post.user.id !== req.user.id) {
             return res.status(403).send("Forbidden (User is not the owner of the post)");
         }
 
         try {
-            const {image, description} = await bodySchemaPost.validate(req.body);
+            const { image, description } = await bodySchemaPost.validate(req.body);
             const draftPost = {
                 image: image,
                 description: description
@@ -62,7 +57,6 @@ class PostController {
             
             const updatePost = this.system.editPost(postId, draftPost);
             res.json(transformPost(updatePost));
-
         }
         catch(error){
             if(error instanceof ValidationError) {
@@ -74,7 +68,7 @@ class PostController {
         }
     };
 
-   deletePost = async (req, res) => {
+    deletePost = async (req, res) => {
         const postId = req.params.postId;
         let post;
 
@@ -111,10 +105,7 @@ class PostController {
             const postId = req.params.postId;
             const userId = req.user.id;
             const { body } = req.body;
-            const draftComment = {
-                body: body   
-            };
-            
+            const draftComment = { body: body };
             const commentedPost = this.system.addComment(postId, userId, draftComment);
             const transformedCommentedPost = transformPost(commentedPost);
             res.json(transformedCommentedPost);

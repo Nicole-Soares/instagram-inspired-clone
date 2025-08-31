@@ -13,12 +13,10 @@ class UserController {
     login = async (req, res) => {
         try {
             const { email, password } = await loginBodySchema.validate(req.body);
-            
             const user = this.system.login(email, password);  
             const token = this.tokenController.generateToken(user.id);
             const posts = this.system.getPostByUserId(user.id).map(transformSimplePost);
-
-            res.header(HEADER, token).json({user:transformUser(user), posts}); 
+            res.header(HEADER, token).json({ user:transformUser(user), posts }); 
         }
         catch (error) {
             res.status(400).send('Invalid email or password');
@@ -27,9 +25,8 @@ class UserController {
 
     register = async (req, res) => {
         try {
-            const {name, email, password, image} = await registerBodySchema.validate(req.body);
-        
-            const newUser = {name, email, password, image};
+            const { name, email, password, image } = await registerBodySchema.validate(req.body);
+            const newUser = { name, email, password, image };
             const user = this.system.register(newUser);
             const token = this.tokenController.generateToken(user.id);
 
@@ -73,7 +70,6 @@ class UserController {
             }
 
             res.json({user:transformUser(user), posts})
-
         } 
         catch (error) {
             res.error(400).send('Something went wrong');
@@ -93,17 +89,12 @@ class UserController {
         try {
             const userToFollow = this.system.getUser(userId);
             const newCurrentUser = this.system.updateFollower(currentUser.id, userId);
-        
-            res.json({
-            ...transformUser(newCurrentUser),
-            posts: this.system.getPostByUserId(newCurrentUser.id).map(transformTimeline)
-            }); 
+            res.json({ ...transformUser(newCurrentUser), posts: this.system.getPostByUserId(newCurrentUser.id).map(transformTimeline) }); 
         }
         catch (error) {
             throw new UserException('User not found');
         }   
     };
-
 }
 
 export default UserController;

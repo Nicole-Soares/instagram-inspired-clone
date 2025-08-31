@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken';
-
 import { JWT_SECRET } from '../constants.js';
 
 class TokenController {
+  
   constructor(service) {
     this.service = service;
-  }
+  };
   
   generateToken = (userId) => jwt.sign({ userId }, JWT_SECRET, { expiresIn: '24h' });
   
@@ -35,7 +35,7 @@ class TokenController {
         throw new Error(`Invalid role: ${role}`);
       }
     }
-  }
+  };
 }
 
 export default TokenController;

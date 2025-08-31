@@ -49,7 +49,7 @@ const transformPost = ({
         image,
         description,
         id,
-        user: transformUser(user), // para no generar un loop infinito
+        user: transformUser(user), 
         comments: transformComments(comments),
         likes: transformLikes(likes),
         date
