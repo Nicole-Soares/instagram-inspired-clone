@@ -8,17 +8,10 @@ class SearchController {
 
     search = async (req, res) => { 
         const { query } = req.query;
+        
         const users = this.system.searchByName(query).map(transformSimpleUser);
-        const postByTag = this.system.searchByTag(query).map(transformPost);
-        const postByUserName = this.system.searchByUserName(query).map(transformPost);    
-        let postByUserId = [];
-    
-        try {
-            postByUserId = (this.system.searchByUserId(query) || []).map(transformPost);
-        }  
-        catch {}
-    
-        const posts  = [...postByTag, ...postByUserName, ...postByUserId]; 
+        const posts = this.system.searchByTag(query).map(transformPost);
+        
         res.json({users, posts});
     };
 }
