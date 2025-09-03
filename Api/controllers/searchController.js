@@ -1,4 +1,4 @@
-import { transformPost, transformSimpleUser } from "../Dtos.js";
+import { transformSimplePost, transformSimpleUser } from "../Dtos.js";
 
 class SearchController {
     
@@ -7,12 +7,17 @@ class SearchController {
     };
 
     search = async (req, res) => { 
-        const { query } = req.query;
+        try{
+            const { name, userId } = req.query;
+            const users = this.system.searchByName(name).map(transformSimpleUser);
+            const posts = this.system.searchByUserId(userId).map(transformSimplePost);
         
-        const users = this.system.searchByName(query).map(transformSimpleUser);
-        const posts = this.system.searchByTag(query).map(transformPost);
-        
-        res.json({users, posts});
+            res.json({users, posts});
+        }
+        catch(error){
+            res.status(404).json("not found")
+        }
+    
     };
 }
 
