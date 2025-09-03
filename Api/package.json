@@ -10,9 +10,8 @@
     "dev": "nodemon index.js",
     "start": "node index.js"
   },
-
   "dependencies": {
-    "@unq-ui/instagram-model-js": "^1.0.0",
+    "@unq-ui/instagram-model-js": "1.0.2",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "yup": "^1.7.0"

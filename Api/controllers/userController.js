@@ -1,58 +1,104 @@
 import { HEADER } from"../constants.js";
-import { transformUser} from "../Dtos.js";
-import { logingBodySchema as loginBodySchema } from "../schemas.js";
-//define nuestra api, como queremos que se vea
+import { registerBodySchema, logingBodySchema as loginBodySchema} from "../schemas.js";
+import { transformUser, transformSimpleUser, transformTimeline, transformSimplePost } from "../Dtos.js";
+import { UserException } from "@unq-ui/instagram-model-js";
+import { ValidationError } from "yup";
 
 class UserController {
+    
     constructor(system, tokenController) {
         this.system = system;
         this.tokenController = tokenController;
-    }
+    };
 
-    
     login = async (req, res) => {
-
-        console.log(req.body)
-       try {
-
-            
+        try {
             const { email, password } = await loginBodySchema.validate(req.body);
-            
             const user = this.system.login(email, password);  
             const token = this.tokenController.generateToken(user.id);
+            const posts = this.system.getPostByUserId(user.id).map(transformSimplePost);
+            res.header(HEADER, token).json({ user:transformUser(user), posts }); 
+        }
+        catch (error) {
+            res.status(400).send('Invalid email or password');
+        }
+    };
 
-            res.header(HEADER, token).json({user: transformUser(user), token}); // le devuelve como respuesta el header con el token y un obj json con el usuario transformado para no generar un loop y el token 
-          
-            //no es necesario porque ya esta el try catch
-            /*if (user) {
-                const token = this.tokenController.generateToken(user.id);
+    register = async (req, res) => {
+        try {
+            const { name, email, password, image } = await registerBodySchema.validate(req.body, { abortEarly: false })
+            const newUser = { name, email, password, image };
+            const DraftUser = {
+                name: newUser.name,
+                email: newUser.email,
+                password: newUser.password,
+                image: newUser.image,
+            }
+            const user = this.system.register(DraftUser);
+            const token = this.tokenController.generateToken(user.id);
 
-                res.header(HEADER, token).json({user: transformUser(user), token}); // le devuelve como respuesta el header con el token y un obj json con el usuario transformado para no generar un loop y el token 
-          
+            res.header(HEADER, token).json({...transformUser(user), posts: []});
+        }  
+        catch (error) {
+            if (error instanceof ValidationError) {
+                res.status(400).send('Invalid data');
             } else {
-                res.status(401).send('Invalid email or password');
-            }*/
+                res.status(400).send('User already exists and other errors');
+            }
         }
-        catch(error){
-            res.status(400).send('Invalid email or password');;
-        }
-       
+
     };
 
-    //va a necesitar hacer el login antes para obtener el token mediante el header
+    //GET /user
+    getTimeline = (req, res) => {
+        const currentUser = req.user;
 
+        try {
+            const timelinePosts = this.system.timeline(currentUser.id);
+            res.json({
+                ...transformUser(currentUser),
+                timeline: timelinePosts.map(transformTimeline)
+            });
+        } 
+        catch (error) {
+            res.status(401).send('Unauthorized');
+        }
+    };
+
+    //GET /user/{userId}
     getUser = (req, res) => {
-        const userId = req.params.userId;
-        const user = this.system.getUser(userId);
-      
-        if(user){
-          res.json(transformUser(user));
-        }
-        else{
-          res.status(404).send('User not found');
+        try {
+            const userId = req.params.userId;
+            const user = this.system.getUser(userId);
+            const posts = this.system.getPostByUserId(user.id).map(transformSimplePost);
+
+            res.json({user:transformUser(user), posts})
+        } 
+        catch (error) {
+        
+            res.status(404).send('Not found');
         }
     };
-  
+
+    //PUT /users/{userId}/follow
+    followUser = (req, res) => {
+        const userId = req.params.userId; 
+        const currentUser = req.user; 
+
+        if (currentUser.id === userId) {
+            res.status(400).send('You cannot follow yourself');
+            return;
+        }
+        
+        try {
+            const userToFollow = this.system.getUser(userId);
+            const newCurrentUser = this.system.updateFollower(currentUser.id, userId);
+            res.json({ ...transformUser(newCurrentUser), posts: this.system.getPostByUserId(newCurrentUser.id).map(transformTimeline) }); 
+        }
+        catch (error) {
+              res.status(404).send('Not found');
+        }   
+    };
 }
 
 export default UserController;

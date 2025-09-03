@@ -1,13 +1,10 @@
 import express from 'express';
 
-//todo lo relacionado a usuarios
 const createUserRouter = (userController, tokenController) => {
     const userRouter = express.Router();
-    
-    //userRouter.post("/login", userController.login);
-    userRouter.get("/:userId",tokenController.checkRole("user"), userController.getUser);
-    
+    userRouter.get("/", tokenController.checkRole("user"), userController.getTimeline);
+    userRouter.get("/:userId", tokenController.checkRole("public"), userController.getUser);
     return userRouter;
-}
+};
 
 export default createUserRouter;
