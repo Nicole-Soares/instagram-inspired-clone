@@ -72,14 +72,10 @@ class UserController {
             const user = this.system.getUser(userId);
             const posts = this.system.getPostByUserId(user.id).map(transformSimplePost);
 
-            if (!user) {
-                throw new UserException('User not found');
-            }
-
             res.json({user:transformUser(user), posts})
         } 
         catch (error) {
-            res.error(400).send('Something went wrong');
+            res.status(404).send('Not found');
         }
     };
 
@@ -99,7 +95,7 @@ class UserController {
             res.json({ ...transformUser(newCurrentUser), posts: this.system.getPostByUserId(newCurrentUser.id).map(transformTimeline) }); 
         }
         catch (error) {
-            throw new UserException('User not found');
+              res.status(404).send('Not found');
         }   
     };
 }
