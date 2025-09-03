@@ -7,17 +7,13 @@ class SearchController {
     };
 
     search = async (req, res) => { 
-        try{
-            const { name, userId } = req.query;
-            const users = this.system.searchByName(name).map(transformSimpleUser);
-            const posts = this.system.searchByUserId(userId).map(transformSimplePost);
+        
+            const { query } = req.query;
+            
+            const users = this.system.searchByName(query).map(transformSimpleUser);
+            const posts = this.system.searchByTag(query).map(transformSimplePost);
         
             res.json({users, posts});
-        }
-        catch(error){
-            res.status(404).json("not found")
-        }
-    
     };
 }
 

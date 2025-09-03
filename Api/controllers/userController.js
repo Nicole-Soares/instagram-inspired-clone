@@ -75,6 +75,7 @@ class UserController {
             res.json({user:transformUser(user), posts})
         } 
         catch (error) {
+        
             res.status(404).send('Not found');
         }
     };
