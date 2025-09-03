@@ -2,6 +2,7 @@ import { HEADER } from"../constants.js";
 import { registerBodySchema, logingBodySchema as loginBodySchema} from "../schemas.js";
 import { transformUser, transformSimpleUser, transformTimeline, transformSimplePost } from "../Dtos.js";
 import { UserException } from "@unq-ui/instagram-model-js";
+import { ValidationError } from "yup";
 
 class UserController {
     
@@ -25,9 +26,15 @@ class UserController {
 
     register = async (req, res) => {
         try {
-            const { name, email, password, image } = await registerBodySchema.validate(req.body);
+            const { name, email, password, image } = await registerBodySchema.validate(req.body, { abortEarly: false })
             const newUser = { name, email, password, image };
-            const user = this.system.register(newUser);
+            const DraftUser = {
+                name: newUser.name,
+                email: newUser.email,
+                password: newUser.password,
+                image: newUser.image,
+            }
+            const user = this.system.register(DraftUser);
             const token = this.tokenController.generateToken(user.id);
 
             res.header(HEADER, token).json({...transformUser(user), posts: []});
@@ -35,11 +42,11 @@ class UserController {
         catch (error) {
             if (error instanceof ValidationError) {
                 res.status(400).send('Invalid data');
-            }
-            else {
+            } else {
                 res.status(400).send('User already exists and other errors');
             }
         }
+
     };
 
     //GET /user

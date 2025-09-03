@@ -11,6 +11,10 @@ const bodySchemaPost = object({
     description: string().required()
 }).noUnknown(true).strict();
 
+const bodySchemaPostComment = object({
+    body: string().required()
+}).noUnknown(true).strict();
+
 const registerBodySchema = object({
     name: string().required(),
     email: string().email().required(),
@@ -18,4 +22,4 @@ const registerBodySchema = object({
     image: string().url().required()
 }).noUnknown(true).strict();
 
-export { logingBodySchema, bodySchemaPost, registerBodySchema };
+export { logingBodySchema, bodySchemaPost, registerBodySchema, bodySchemaPostComment};

@@ -20,14 +20,10 @@ app.use(express.json());
 const tokenController = new TokenController(system);
 const userController = new UserController(system, tokenController);
 const postController = new PostController(system);
-
-app.use("/", createAuthRouter(userController, tokenController));
-app.use("/user", createUserRouter(userController, tokenController));
-app.use("/posts", createPostsRouter(postController, tokenController));
-
 const searchController = new SearchController(system);
 
 app.use("/", createAuthRouter(userController, tokenController));
+app.use("/posts", createPostsRouter(postController, tokenController));
 app.use("/user", createUserRouter(userController, tokenController));
 app.use("/search", createSearchRouter(searchController));
 app.use("/users", createUsersRouter(userController, tokenController));

@@ -32,7 +32,9 @@ const transformSimpleComments = (comments) => {
 
 const transformLikes = (likes) => {
     return likes.map(like => ({ 
-        name: like.name 
+        id: like.id,
+        name: like.name,
+        image: like.image
     }));
 }
 
