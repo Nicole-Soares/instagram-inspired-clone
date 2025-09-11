@@ -1,7 +1,6 @@
 import { HEADER } from"../constants.js";
 import { registerBodySchema, logingBodySchema as loginBodySchema} from "../schemas.js";
 import { transformUser, transformSimpleUser, transformTimeline, transformSimplePost } from "../Dtos.js";
-import { UserException } from "@unq-ui/instagram-model-js";
 import { ValidationError } from "yup";
 
 class UserController {
@@ -17,10 +16,10 @@ class UserController {
             const user = this.system.login(email, password);  
             const token = this.tokenController.generateToken(user.id);
             const posts = this.system.getPostByUserId(user.id).map(transformSimplePost);
-            res.header(HEADER, token).json({ user:transformUser(user), posts }); 
+            res.header(HEADER, token).json({...transformUser(user), posts }); 
         }
         catch (error) {
-            res.status(400).send('Invalid email or password');
+            res.status(400).send({error:'Invalid email or password'});
         }
     };
 
@@ -41,12 +40,11 @@ class UserController {
         }  
         catch (error) {
             if (error instanceof ValidationError) {
-                res.status(400).send('Invalid data');
+                res.status(400).send({error:'Invalid data'});
             } else {
-                res.status(400).send('User already exists and other errors');
+                res.status(400).send({error:'User already exists and other errors'});
             }
         }
-
     };
 
     //GET /user
@@ -61,7 +59,7 @@ class UserController {
             });
         } 
         catch (error) {
-            res.status(401).send('Unauthorized');
+            res.status(401).send({error:'Unauthorized'});
         }
     };
 
@@ -72,11 +70,10 @@ class UserController {
             const user = this.system.getUser(userId);
             const posts = this.system.getPostByUserId(user.id).map(transformSimplePost);
 
-            res.json({user:transformUser(user), posts})
+            res.json({...transformUser(user), posts})
         } 
         catch (error) {
-        
-            res.status(404).send('Not found');
+            res.status(404).send({error:'Not found'});
         }
     };
 
@@ -86,7 +83,7 @@ class UserController {
         const currentUser = req.user; 
 
         if (currentUser.id === userId) {
-            res.status(400).send('You cannot follow yourself');
+            res.status(400).send({error:'You cannot follow yourself'});
             return;
         }
         
@@ -96,7 +93,7 @@ class UserController {
             res.json({ ...transformUser(newCurrentUser), posts: this.system.getPostByUserId(newCurrentUser.id).map(transformTimeline) }); 
         }
         catch (error) {
-              res.status(404).send('Not found');
+            res.status(404).send({error:'Not found'});
         }   
     };
 }
