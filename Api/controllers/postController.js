@@ -13,8 +13,8 @@ class PostController {
         const bodySchemaPost = yup.object({
             image: yup
                 .string()
-                .required("La imagen es obligatoria")
-                .url("Debe ser una URL válida")
+                .required("La imagen es obligatoria para la construccion del post.")
+                .url("El URL de la imagen debe ser válido.")
         });
 
         try {       
@@ -28,10 +28,10 @@ class PostController {
         }
         catch (error) {
             if (error instanceof ValidationError) {
-                return res.status(400).send({error:'Invalid post data'});
+                return res.status(400).send({error:"Los campos en la construccion del post son invalidos."});
             }
             else {
-                return res.status(401).send({error:'Unauthorized'});
+                return res.status(401).send({error:"No esta autorizado para crear un post."});
             }
         }
     };  
@@ -43,7 +43,7 @@ class PostController {
             res.json(transformSimplePost(post));
         }
         catch (error) {
-            res.status(404).json({error: "Post not found"});
+            res.status(404).json({error:"El post que solicita no fue encontrado."});
         }
   
     };
@@ -52,8 +52,8 @@ class PostController {
         const bodySchemaPost = yup.object({
             image: yup
                 .string()
-                .required("La imagen es obligatoria")
-                .url("Debe ser una URL válida")
+                .required("La imagen es obligatoria para la construccion del post.")
+                .url("El URL de la imagen debe ser válido.")
         });
 
         try {
@@ -68,18 +68,18 @@ class PostController {
               const post = this.system.getPost(postId);
 
             if (post.user.id !== req.user.id) { //si el post no lo hizo el mismo user que esta haciendo el request
-                return res.status(403).send({error:"Forbidden (User is not the owner of the post)"});
+                return res.status(403).send({error:"No tiene los permisos para modificar este post."});
         }
             res.json(transformSimplePost(updatePost));
         }
         catch(error){
             if(error instanceof ValidationError) {
-                return res.status(400).send({error:"Invalid post data"});
+                return res.status(400).send({error:"Los campos en la construccion del post son invalidos."});
             }
             else{
-                return res.status(404).json({error:"Post not found"});
+                return res.status(404).json({error:"El post que solicita no fue encontrado."});
             }
-        };
+        }
     };
 
     deletePost = async (req, res) => {
@@ -87,15 +87,14 @@ class PostController {
             const postId = req.params.postId;
             let post = this.system.getPost(postId);
             if (post.user.id !== req.user.id) {
-                return res.status(403).send({error:"Forbidden (User is not the owner of the post)"});
+                return res.status(403).send({error:"No tiene los permisos para modificar este post."});
             }
             await this.system.deletePost(postId);
-            res.status(204).send({error:"No Content"});
+            res.status(204).send({error:"Operación realizada con éxito, no hay contenido para mostrar."});
         } 
         catch (error) {
-            res.status(404).json({error:"Post not found"});
+            res.status(404).json({error:"El post que solicita no fue encontrado."});
         }
-
     };
 
     likePost = (req, res) => {
@@ -107,7 +106,7 @@ class PostController {
             res.json(transformedUpdatedPost);   
         } 
         catch (error) {
-            res.status(404).json({error:"Post not found"});
+            res.status(404).json({error:"El post que solicita no fue encontrado."});
         }    
     };
 
@@ -123,12 +122,12 @@ class PostController {
         }
         catch (error) {
             if (error instanceof ValidationError) {
-                return res.status(400).send({error:'Invalid post data'});
+                return res.status(400).send({error:"Los campos en la construccion del post son invalidos."});
             }
             else {
-                return res.status(404).json({error:"Post not found"});
+                return res.status(404).json({error:"El post que solicita no fue encontrado."});
             }
-        };
+        }
     };
 }
 

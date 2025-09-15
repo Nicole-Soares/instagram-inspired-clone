@@ -19,7 +19,7 @@ class UserController {
             res.header(HEADER, token).json({...transformUser(user), posts }); 
         }
         catch (error) {
-            res.status(400).send({error:'Invalid email or password'});
+            res.status(400).send({error:"el email o la contraseña son incorrectos."});
         }
     };
 
@@ -40,9 +40,9 @@ class UserController {
         }  
         catch (error) {
             if (error instanceof ValidationError) {
-                res.status(400).send({error:'Invalid data'});
+                res.status(400).send({error:"Los campos en la construccion del usuario son invalidos."});
             } else {
-                res.status(400).send({error:'User already exists and other errors'});
+                res.status(400).send({error:"El email ya se encuentra registrado."});
             }
         }
     };
@@ -59,7 +59,7 @@ class UserController {
             });
         } 
         catch (error) {
-            res.status(401).send({error:'Unauthorized'});
+            res.status(401).send({error:"No esta autorizado para ver el timeline."});
         }
     };
 
@@ -73,7 +73,7 @@ class UserController {
             res.json({...transformUser(user), posts})
         } 
         catch (error) {
-            res.status(404).send({error:'Not found'});
+            res.status(404).send({error:"No se encontro el usuario solicitado."});
         }
     };
 
@@ -83,7 +83,7 @@ class UserController {
         const currentUser = req.user; 
 
         if (currentUser.id === userId) {
-            res.status(400).send({error:'You cannot follow yourself'});
+            res.status(400).send({error:"No puede seguirse a si mismo."});
             return;
         }
         
@@ -93,7 +93,7 @@ class UserController {
             res.json({ ...transformUser(newCurrentUser), posts: this.system.getPostByUserId(newCurrentUser.id).map(transformTimeline) }); 
         }
         catch (error) {
-            res.status(404).send({error:'Not found'});
+            res.status(404).send({error:"El usuario que intenta seguir no existe."});
         }   
     };
 }
