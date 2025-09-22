@@ -1,0 +1,20 @@
+/* Reset básico */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.agregarPostPantalla {
+    background-color: azure;
+    width: 100%;
+    min-height: 100vh;   /* Ocupa al menos toda la pantalla */
+    padding: 20px;
+    box-sizing: border-box; /* Incluye padding en el width/height */
+}
+
+/* Para el contenedor interno */
+.agregarPostPantalla > div {
+    max-width: 1200px;
+    margin: 0 auto;
+}
