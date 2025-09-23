@@ -1,5 +1,6 @@
 import getInstagramSystem from "@unq-ui/instagram-model-js";
 import express from "express";
+import cors from 'cors';
 import createUserRouter from "./routes/userRouter.js";
 import createUsersRouter from "./routes/usersRouter.js";
 import createAuthRouter from "./routes/authRouter.js";
@@ -12,6 +13,11 @@ import SearchController from "./controllers/searchController.js";
 
 const system = getInstagramSystem();
 const app = express();
+app.use(cors({
+    origin: 'http://localhost:5173', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+  }));
 const port = 7070;
 
 app.use(express.urlencoded({ extended: true }));

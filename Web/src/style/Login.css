@@ -1,0 +1,113 @@
+#root {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    background-color: #FFFFFF;
+}
+
+.instagram-logo{
+    width: 100px;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 80px
+}
+
+.login-photo {
+  width: 600px;
+  height: auto;
+}
+
+.login{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 300px;
+  justify-content: center;
+}
+
+.text-logo {
+    width: 200px;
+}
+
+.login-form{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 80%;
+ }
+
+.login-form input {
+  padding: 6px;
+  border: 1px solid #dbdbdb;
+  border-radius: 5px;
+  background-color: #f7f7f7;
+  font-size: 12px;
+  color: black
+}
+
+.login-form button {
+  display: inline-flex;
+  outline: none;
+  padding: 8px;
+  background-color: #519cce;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  justify-content: center;
+}
+
+.login-form button:hover {
+    background-color: #5289c0;
+}
+
+.login-form button:active  {
+    outline: none;
+    transform: scale(0.96)
+}
+
+.button-spinner {
+  width: 10px;
+  height: 10px;
+  border: 3px solid rgba(255, 255, 255, 0.3); /* borde transparente */
+  border-top: 3px solid #fff; /* borde visible que gira */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.login-form .error {
+    color: red;
+    font-size: 12px;
+}
+
+
+.login-footer {
+    width: 100%;
+}
+
+.login-footer .divider {
+  background-color: #e4e4e4; 
+  width: 100%;   
+}
+
+.login-footer p {
+    color: gray;
+    font-size: 14px;
+}
+
+.login-footer a {
+    color: #5289c0;
+    text-decoration: none;
+}
+
