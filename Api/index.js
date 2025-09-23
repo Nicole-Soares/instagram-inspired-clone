@@ -9,9 +9,15 @@ import TokenController from "./controllers/tokenController.js";
 import PostController from "./controllers/postController.js";
 import createPostsRouter from "./routes/postsRouter.js";
 import SearchController from "./controllers/searchController.js";
+import cors from 'cors';
 
 const system = getInstagramSystem();
 const app = express();
+app.use(cors({
+    origin: 'http://localhost:5173', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+  }));
 const port = 7070;
 
 app.use(express.urlencoded({ extended: true }));
