@@ -9,15 +9,26 @@ function App() {
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
+  
   useEffect(() => {
     setTimeout(() => {
-      fetch("https://jsonplaceholder.typicode.com/posts")
-        .then(res => res.json())
-        .then(data => setPosts(data))
-        .catch(console.error)
-        .finally(() => setLoading(false))
-    }, 1500)
-  }, [])
+          fetch("http://localhost:7070/user", {
+            method: 'GET', 
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyXzEiLCJpYXQiOjE3NTg3Mzc0NzMsImV4cCI6MTc1ODgyMzg3M30.pLXvVxQdPRAXQNNKAUCYLi5O7x0VUpIN_-0g2ZFYIg8',
+            },
+          })
+            .then((res) => {
+              if (!res.ok) throw new Error("Error al obtener el post");
+              return res.json();
+            })
+          
+            .then((data) => setPosts(data.timeline)) 
+            .catch((err) => console.error("Error:", err))
+            .finally(() => setLoading(false))
+          }, 1500)
+        }, []);
 
   return (
     <div className="App">
