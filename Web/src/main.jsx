@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import Post from './pages/Post.js'
-import AgregarPost from './pages/AgregarPost.js'
+import AgregarPost from './pages/AgregarPost.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router'
 
 createRoot(document.getElementById('root')).render(

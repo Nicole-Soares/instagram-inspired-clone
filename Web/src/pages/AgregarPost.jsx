@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState} from "react";
+//import { useNavigate } from 'react-router'
 import '../style/AgregarPost.css';
 import ImagenPreview from '../components/ImagenPreview';
 import FormularioPost from '../components/FormularioPost';
@@ -10,10 +11,10 @@ const AgregarPost = () => {
   //se guarda el valor puesto en el input 
   const [descripcion, setDescripcion] = useState("");
   //se guarda el valor puesto en el input o mismo si se subio un archivo desde documentos 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const fileInputRef = useRef(null);
+  //const navigate = useNavigate();
   //cambios en el input de la url, lo que se va escribindo se setea
-  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUrlChange = (e) => {
     const newUrl = e.target.value;
     setUrl(newUrl);
     
@@ -23,7 +24,7 @@ const AgregarPost = () => {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
@@ -53,6 +54,7 @@ const AgregarPost = () => {
       }
 
       await response.json();
+      ////navigate(`/Home`);
       //redirecciono al home ??
       console.log("se creó");
    
