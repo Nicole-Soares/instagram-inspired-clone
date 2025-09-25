@@ -1,6 +1,6 @@
 import { useState } from "react";
 import loginPhoto from '../assets/instagram-login-photo.png'
-import textLogo from '../assets/instagram-text-logo.png'
+import textLogo from '../assets/instagram-text-logo.svg'
 import '../style/Login.css'
 import { useNavigate } from 'react-router'
 import { useEffect } from "react";
@@ -11,62 +11,46 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true); // <-- estado de carga inicial
+  const [initialLoading, setInitialLoading] = useState(false); // <-- estado de carga inicial
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setInitialLoading(false);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
+  const handleLogin = (e) => {
+  e.preventDefault();
+  setError(null);
+  setLoading(true);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-
-    try {
-      const res = await fetch("http://localhost:7070/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
+  fetch("http://localhost:7070/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  })
+    .then(async (res) => {
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.error || "Error en login");
       }
 
-      const token = res.headers.get("Authorization"); 
+      const token = res.headers.get("Authorization");
       const data = await res.json();
 
       localStorage.setItem("token", token);
-
       console.log("Usuario:", data);
 
-      setTimeout(() => {
-      //navigate(`/Home`); // redirigimos al Home después del delay
+      //navigate(`/Home`);
       setLoading(false);
-      }, 1000);  
-    } catch (err) {
+    })
+    .catch((err) => {
       setError(err.message);
       setLoading(false);
-    }
-  };
-
-  if (initialLoading) {
-  return (
-      <img src={instagramLogo} alt="instagramLogo" className="instagram-logo" />
-  );
-  }
+    });
+};
 
   return (
     <div className="login-container">
       <img src = {loginPhoto} alt="Login" className="login-photo"/>
-      
+
       <div className="login">
         
         <img src = {textLogo} alt="textLogo" className="text-logo"/>

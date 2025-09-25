@@ -42,19 +42,19 @@
  }
 
 .login-form input {
-  padding: 6px;
-  border: 1px solid #dbdbdb;
+  padding: 8px;
+  border: 1px solid #CCCCCC;
   border-radius: 5px;
-  background-color: #f7f7f7;
+  background-color: #FAFAFA;
   font-size: 12px;
-  color: black
+  color: #737373;
 }
 
 .login-form button {
   display: inline-flex;
   outline: none;
   padding: 8px;
-  background-color: #519cce;
+  background-color: #495DF9B2;
   border: none;
   border-radius: 10px;
   color: white;
@@ -64,7 +64,7 @@
 }
 
 .login-form button:hover {
-    background-color: #5289c0;
+    background-color: #495DF9;
 }
 
 .login-form button:active  {
