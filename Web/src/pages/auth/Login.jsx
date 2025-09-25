@@ -15,6 +15,12 @@ function Login() {
   const handleLogin = (e) => {
   e.preventDefault();
   setError(null);
+
+  if(!email || !password) {
+    setError("Completa todos los campos.");
+    return;
+  }
+  
   setLoading(true);
   
   userLogin(email, password)

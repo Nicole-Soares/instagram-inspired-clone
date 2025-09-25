@@ -27,7 +27,8 @@
 }
 
 .divider {
-  width: 300px;
+  width: 100%;
+  align-self: stretch;
 }
 
 .form-container p {
