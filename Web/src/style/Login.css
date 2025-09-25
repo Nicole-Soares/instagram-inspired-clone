@@ -1,113 +1,42 @@
-#root {
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    background-color: #FFFFFF;
-}
-
-.instagram-logo{
-    width: 100px;
-}
+@import './SubmitButton.css';
+@import './InputField.css';
+@import './LoginForm.css';
 
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 80px
+  gap: 80px;  
 }
 
 .login-photo {
-  width: 600px;
-  height: auto;
+  width: 60%;
 }
 
-.login{
+.text-logo {
+  width: 200px;
+}
+
+.form-container{
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
   width: 300px;
-  justify-content: center;
+  margin: 0 auto;
 }
 
-.text-logo {
-    width: 200px;
+.divider {
+  width: 300px;
 }
 
-.login-form{
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: 80%;
- }
-
-.login-form input {
-  padding: 8px;
-  border: 1px solid #CCCCCC;
-  border-radius: 5px;
-  background-color: #FAFAFA;
-  font-size: 12px;
-  color: #737373;
+.form-container p {
+  color: gray;
+  font-size: 14px;
 }
 
-.login-form button {
-  display: inline-flex;
-  outline: none;
-  padding: 8px;
-  background-color: #495DF9B2;
-  border: none;
-  border-radius: 10px;
-  color: white;
-  cursor: pointer;
-  font-size: 12px;
-  justify-content: center;
-}
-
-.login-form button:hover {
-    background-color: #495DF9;
-}
-
-.login-form button:active  {
-    outline: none;
-    transform: scale(0.96)
-}
-
-.button-spinner {
-  width: 10px;
-  height: 10px;
-  border: 3px solid rgba(255, 255, 255, 0.3); /* borde transparente */
-  border-top: 3px solid #fff; /* borde visible que gira */
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.login-form .error {
-    color: red;
-    font-size: 12px;
-}
-
-
-.login-footer {
-    width: 100%;
-}
-
-.login-footer .divider {
-  background-color: #e4e4e4; 
-  width: 100%;   
-}
-
-.login-footer p {
-    color: gray;
-    font-size: 14px;
-}
-
-.login-footer a {
-    color: #5289c0;
-    text-decoration: none;
+.form-container a {
+  color: #5289c0;
+  text-decoration: none;
 }
 

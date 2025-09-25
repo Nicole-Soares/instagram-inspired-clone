@@ -1,0 +1,35 @@
+button {
+  display: inline-flex;
+  outline: none;
+  padding: 8px;
+  background-color: #495DF9B2;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  justify-content: center;
+}
+
+button:hover {
+    background-color: #495DF9;
+}
+
+button:active  {
+    outline: none;
+    transform: scale(0.96)
+}
+
+.button-spinner {
+  width: 10px;
+  height: 10px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #fff; 
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
