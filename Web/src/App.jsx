@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { data, useNavigate } from 'react-router'
 import reactLogo from './assets/react.svg'
 import './App.css'
 
@@ -16,7 +16,7 @@ function App() {
             method: 'GET', 
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyXzEiLCJpYXQiOjE3NTg3Mzc0NzMsImV4cCI6MTc1ODgyMzg3M30.pLXvVxQdPRAXQNNKAUCYLi5O7x0VUpIN_-0g2ZFYIg8',
+              'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyXzEiLCJpYXQiOjE3NTg4NDY4ODEsImV4cCI6MTc1ODkzMzI4MX0.66yEHFAs9VF6r4XwJ0YmQw5sLAkLPIloRc4XmnVS9WU',
             },
           })
             .then((res) => {
@@ -25,6 +25,7 @@ function App() {
             })
           
             .then((data) => setPosts(data.timeline)) 
+            console.log(data)
             .catch((err) => console.error("Error:", err))
             .finally(() => setLoading(false))
           }, 1500)
