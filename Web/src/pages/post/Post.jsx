@@ -2,10 +2,11 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import HeaderPost from "./components/HeaderPost";
+import CommentList from "./components/CommentList";
+import CommentForm from "./components/CommentForm";
 import Info from "./components/Info";
-import Comment from "./components/Comment";
 import { getPostById, addCommentToPost, likePost } from "../../service/post/postService";
-
 import "../../style/Post.css";
 
 const Post= () => {
@@ -14,19 +15,16 @@ const Post= () => {
     const [comentario, setComentario] = useState("");
     const comentariosRef = useRef(null);
 
-    //se ejecuta esto apenas se navega a esta pantalla
     useEffect(() => {
         (async () => {
             try {
-                const data = await getPostById(id); // constante que hace el fetch del post_id
+                const data = await getPostById(id);
                 setPost(data);
             } catch (err) {
                 toast.error(err.message);
             }
         })();
-    }, [id]); 
-    
-    
+    }, [id]);
 
     const handleSubmit = async () => {
         if (!comentario.trim()) {
@@ -34,24 +32,13 @@ const Post= () => {
             return;
         }
         try {
-            const nuevoComentario = {
-                body: comentario,
-                user: {
-                    name: "TuNombre",
-                    image: "https://i.pravatar.cc/40",
-                },
-            };
-            await addCommentToPost(id, comentario);
-            setPost((prevPost) => ({
-                ...prevPost,
-                comments: [...prevPost.comments, nuevoComentario],
-            }));
-            setComentario('');
-            comentariosRef.current?.scrollTo({
-                top: comentariosRef.current.scrollHeight,
-                behavior: "smooth",
-            });
+     
+            const updatedPost = await addCommentToPost(id, comentario); 
+            
+            setPost(updatedPost);
             toast.success("Comentario publicado. 🎉");
+            setComentario('');
+       
         } catch (error) {
             toast.error(error.message);
         }
@@ -65,16 +52,6 @@ const Post= () => {
         } catch (error) {
             toast.error(error.message);
         }
-    };
-
-    const formatearFecha = (isoString) => {
-        const fecha = new Date(isoString);
-        const año = fecha.getFullYear();
-        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-        const día = String(fecha.getDate()).padStart(2, '0');
-        const hora = String(fecha.getHours()).padStart(2, '0');
-        const minutos = String(fecha.getMinutes()).padStart(2, '0');
-        return `${año}/${mes}/${día} - ${hora}:${minutos}`;
     };
 
     if (!post) return <p>Cargando post...</p>;
@@ -94,31 +71,19 @@ const Post= () => {
                 {post.image && <img src={post.image} alt="Imagen del post" />}
             </div>
             <div className="contenedorUsuarioInput">
-                <div className="contenedorImagenUsuario">
-                    <img src={post.user.image} alt="Imagen del usuario" />
-                    <div className="datosUsuarioPost">
-                        <p className="nombreUsuario">{post.user.name || "Usuario desconocido"}</p>
-                        <p className="fechaPost">{formatearFecha(post.date)}</p>
-                    </div>
-                </div>
+                <HeaderPost user={post.user} date={post.date} />
                 <hr className="lineaDivisora" />
-                <div className="comentariosScroll" ref={comentariosRef}>
-                    {todosLosComentarios.map((comment) => (
-                       <Comment comment={comment}/>
-                    ))}
-                </div>
+                <CommentList
+                    todosLosComentarios={todosLosComentarios}
+                    comentariosRef={comentariosRef} 
+                />
                 <hr className="lineaDivisora" />
-                <div className="contenedorInput">
-                    <Info post={post} onLikeClick={handleClickLike} />
-                    <textarea
-                        placeholder="Agregar un comentario"
-                        value={comentario}
-                        onChange={(e) => setComentario(e.target.value)}
-                    />
-                    <button onClick={handleSubmit} className="botonAgregarPost">
-                        Publicar
-                    </button>
-                </div>
+                <Info post={post} onLikeClick={handleClickLike} />
+                <CommentForm
+                    comentario={comentario}
+                    setComentario={setComentario}
+                    handleSubmit={handleSubmit}
+                />
             </div>
         </div>
     );

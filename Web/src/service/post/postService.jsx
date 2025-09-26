@@ -1,5 +1,4 @@
-// src/services/postService.js
-const API_BASE_URL = 'http://localhost:7070';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const AUTH_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyXzEiLCJpYXQiOjE3NTg4NDkxNTMsImV4cCI6MTc1ODkzNTU1M30.jbWtPAZAi_vFj-eLYRrINxo3BJawgHUUgj9MehNRwX4';
 
 const headers = {
