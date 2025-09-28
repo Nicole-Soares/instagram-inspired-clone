@@ -16,7 +16,7 @@ function App() {
             method: 'GET', 
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyXzEiLCJpYXQiOjE3NTg4NDY4ODEsImV4cCI6MTc1ODkzMzI4MX0.66yEHFAs9VF6r4XwJ0YmQw5sLAkLPIloRc4XmnVS9WU',
+              'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyXzEiLCJpYXQiOjE3NTkwMDU0ODksImV4cCI6MTc1OTA5MTg4OX0.JCQk5J6uY8DPIfMN8D48RQIOfbGqphExApanfGZQNe8',
             },
           })
             .then((res) => {

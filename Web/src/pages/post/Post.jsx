@@ -14,6 +14,7 @@ const Post= () => {
     const [post, setPost] = useState(null);
     const [comentario, setComentario] = useState("");
     const comentariosRef = useRef(null);
+    //const token = localStorage.getItem('token');
 
     useEffect(() => {
         (async () => {
@@ -54,8 +55,6 @@ const Post= () => {
         }
     };
 
-    if (!post) return <p>Cargando post...</p>;
-
     const todosLosComentarios = [
         {
             body: post.description,
@@ -63,6 +62,9 @@ const Post= () => {
         },
         ...(post.comments || []),
     ];
+
+    //if (!token) return <ModalBloqueo />;
+    if (!post) return <p>Cargando post...</p>;
 
     return (
         <div className="paginaPost">

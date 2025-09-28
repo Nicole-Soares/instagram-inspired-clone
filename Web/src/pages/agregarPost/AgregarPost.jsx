@@ -1,0 +1,80 @@
+import React, { useRef, useState} from "react";
+import { useNavigate } from 'react-router'
+import '../../style/AgregarPost.css';
+import ImagenPreview from './components/ImagenPreview';
+import FormularioPost from './components/FormularioPost';
+import { crearPost } from "../../service/agregarPost/agregarPostService";
+import { toast, ToastContainer } from 'react-toastify';
+
+const AgregarPost = () => {
+ 
+    //se guarda el valor puesto en el input o mismo si se subio un archivo desde documentos 
+  const [url, setUrl] = useState("");
+  //se guarda el valor puesto en el input 
+  const [descripcion, setDescripcion] = useState("");
+  //se guarda el valor puesto en el input o mismo si se subio un archivo desde documentos 
+  const fileInputRef = useRef(null);
+  const navigate = useNavigate();
+  //const token = localStorage.getItem('token');
+  //cambios en el input de la url, lo que se va escribindo se setea
+  const handleUrlChange = (e) => {
+    const newUrl = e.target.value;
+    setUrl(newUrl);
+    
+  };
+
+  const handleAgregarImagenClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+    
+      setUrl(imageUrl);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      
+      const nuevoPost = await crearPost(url, descripcion);
+     
+      toast.success('Post creado con éxito 🎉');
+      // Redirigir al detalle del post usando su ID
+      navigate(`/post/${nuevoPost.id}`);
+      setUrl('');
+      setDescripcion('');
+    } catch (error){
+      toast.error(error.message || 'Error al crear el post 😢');
+    }
+  };
+
+  //if (!token) return <ModalBloqueo />;
+  return (
+    <div className="paginaAgregarPost">
+       <ToastContainer />
+      <div className="contenedorTituloAgregarPost">
+        <h1 className="tituloAgregarPost">Preview</h1>
+      </div>
+      <div className="contenedorImagenYImputs">
+        <ImagenPreview
+          imagen={url}
+          onAgregarImagenClick={handleAgregarImagenClick}
+          fileInputRef={fileInputRef}
+          onFileChange={handleFileChange}
+        />
+        <FormularioPost
+          url={url}
+          descripcion={descripcion}
+          onUrlChange={handleUrlChange}
+          onDescripcionChange={(e) => setDescripcion(e.target.value)}
+          onSubmit={handleSubmit}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default AgregarPost;
