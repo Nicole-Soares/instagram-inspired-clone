@@ -11,12 +11,13 @@ const userLogin = async (email, password) => {
       body: JSON.stringify({ email, password }),
     });
 
+    //recibio una respuesta con codigo de error
     if (!res.ok) {
       const err = await res.json();
       throw new Error(err.error || "Error en el login");
     }
 
-    console.log(res)
+    //busco el token
     const token = res.headers.get("Authorization");
     if (token) {
       Storage.setToken(token);
@@ -24,10 +25,8 @@ const userLogin = async (email, password) => {
       throw new Error("No se recibió un token de autorización");
     }
 
-    const userData = await res.json();
-    console.log("Usuario:", userData);
-    
-    return userData; 
+    return await res.json();
+   
   } catch (error) {
     console.error("Error en el login:", error);
     throw error; 

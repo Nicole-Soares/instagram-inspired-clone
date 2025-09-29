@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import HeaderPost from "./components/HeaderPost";
@@ -10,6 +10,7 @@ import { getPostById, addCommentToPost, likePost } from "../../service/post/post
 import "../../style/Post.css";
 import Storage from "../../service/storage";
 import UnauthorizedModal from "../../GeneralComponents/UnauthorizedModal";
+import { getUserId } from "../../service/getId";
 
 const Post= () => {
     const { id } = useParams();
@@ -18,9 +19,11 @@ const Post= () => {
     const comentariosRef = useRef(null);
     const [isUnauthorized, setIsUnauthorized] = useState(false);
     const token = Storage.getToken();
-
+    const navigate = useNavigate()
 
     useEffect(() => {
+       
+
         if (!token) {
             setIsUnauthorized(true);
             return;
@@ -28,7 +31,7 @@ const Post= () => {
 
         const fetchPost = async () => {
             try {
-                const data = await getPostById(id);
+                const data = await getPostById(id, navigate);
                 setPost(data);
             } catch (error) {
                 toast.error("Error al cargar el post.");
@@ -55,17 +58,41 @@ const Post= () => {
         }
     };
 
+   
+
+
     const handleClickLike = async () => {
         try {
-            const updatedPost = await likePost(id);
+            const currentUserId = getUserId();
+            if (!currentUserId) {
+                toast.error("Debes iniciar sesión para dar 'Me gusta'.");
+                return;
+            }
+            console.log(currentUserId)
+            // El servidor se encarga de la lógica de like/unlike.
+            // `updatedPost` es el post con la lista de likes ya modificada.
+            const updatedPost = await likePost(id); 
+            console.log(updatedPost)
+            // Verifica si el ID del usuario está en la nueva lista de likes
+            const userHasLiked =  updatedPost.likes.some(like => like.id === currentUserId);
+            //si aparece el like despues de haber hecho el fetch entonces es porque es nuevo
+            if (userHasLiked) {
+                toast.success("¡Me gusta registrado! ❤️");
+                
+
+            } else {
+                // Si el ID ya no está, significa que se quitó el like.
+                toast.success("¡Me gusta eliminado! 💔");
+            }
+
+            // Actualiza el estado del componente
             setPost(updatedPost);
-            toast.success("¡Me gusta registrado! ❤️");
+
         } catch (error) {
-            toast.error("Error al cargar el like.");
+            toast.error("Error al procesar el 'Me gusta'.");
             console.error(error);
         }
     };
-
     if (isUnauthorized) return <UnauthorizedModal />;
     if (!post) return <p>Cargando post...</p>;
     

@@ -1,5 +1,5 @@
 import Storage from '../storage';
-
+import apiFetch from '../apiFetch';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const token = Storage.getToken();
@@ -10,14 +10,7 @@ const headers = {
 };
 
 export const getPostById = async (postId) => {
-    const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
-        method: 'GET',
-        headers: headers,
-    });
-    if (!response.ok) {
-        throw new Error("Error al obtener el post.");
-    }
-    return response.json();
+    return apiFetch(`${API_BASE_URL}/posts/${postId}`, { method: 'GET' }, "Error al obtener el post")
 };
 
 export const addCommentToPost = async (postId, commentBody) => {

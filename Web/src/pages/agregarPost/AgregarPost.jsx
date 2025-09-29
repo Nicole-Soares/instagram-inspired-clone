@@ -1,10 +1,12 @@
-import React, { useRef, useState} from "react";
+import React, { useEffect, useRef, useState} from "react";
 import { useNavigate } from 'react-router'
 import '../../style/AgregarPost.css';
 import ImagenPreview from './components/ImagenPreview';
 import FormularioPost from './components/FormularioPost';
 import { crearPost } from "../../service/agregarPost/agregarPostService";
 import { toast, ToastContainer } from 'react-toastify';
+import UnauthorizedModal from "../../GeneralComponents/UnauthorizedModal";
+import Storage from "../../service/storage";
 
 const AgregarPost = () => {
  
@@ -12,16 +14,26 @@ const AgregarPost = () => {
   const [url, setUrl] = useState("");
   //se guarda el valor puesto en el input 
   const [descripcion, setDescripcion] = useState("");
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
   //se guarda el valor puesto en el input o mismo si se subio un archivo desde documentos 
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
-  //const token = localStorage.getItem('token');
+  const token = Storage.getToken();
   //cambios en el input de la url, lo que se va escribindo se setea
   const handleUrlChange = (e) => {
     const newUrl = e.target.value;
     setUrl(newUrl);
     
   };
+
+  
+      useEffect(() => {
+          if (!token) {
+              setIsUnauthorized(true);
+              return;
+          }
+      }, [token]); // si pasa algun cambio vuelve a ejecutar el useEffect
+
 
   const handleAgregarImagenClick = () => {
     fileInputRef.current?.click();
@@ -51,7 +63,7 @@ const AgregarPost = () => {
     }
   };
 
-  //if (!token) return <ModalBloqueo />;
+  if (isUnauthorized) return <UnauthorizedModal />;
   return (
     <div className="paginaAgregarPost">
        <ToastContainer />
