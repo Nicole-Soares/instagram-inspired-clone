@@ -1,0 +1,43 @@
+@import './SubmitButton.css';
+@import './InputField.css';
+@import './LoginForm.css';
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 80px;  
+}
+
+.login-photo {
+  width: 60%;
+}
+
+.text-logo {
+  width: 200px;
+}
+
+.form-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 300px;
+  margin: 0 auto;
+}
+
+.divider {
+  width: 100%;
+  align-self: stretch;
+}
+
+.form-container p {
+  color: gray;
+  font-size: 14px;
+}
+
+.form-container a {
+  color: #5289c0;
+  text-decoration: none;
+}
+

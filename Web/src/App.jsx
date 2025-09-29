@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { data, useNavigate } from 'react-router'
+import {  useNavigate } from 'react-router'
 import reactLogo from './assets/react.svg'
 import './App.css'
 
@@ -25,7 +25,6 @@ function App() {
             })
           
             .then((data) => setPosts(data.timeline)) 
-            console.log(data)
             .catch((err) => console.error("Error:", err))
             .finally(() => setLoading(false))
           }, 1500)

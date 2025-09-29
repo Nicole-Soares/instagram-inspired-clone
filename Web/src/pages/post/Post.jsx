@@ -8,24 +8,36 @@ import CommentForm from "./components/CommentForm";
 import Info from "./components/Info";
 import { getPostById, addCommentToPost, likePost } from "../../service/post/postService";
 import "../../style/Post.css";
+import Storage from "../../service/storage";
+import UnauthorizedModal from "../../GeneralComponents/UnauthorizedModal";
 
 const Post= () => {
     const { id } = useParams();
     const [post, setPost] = useState(null);
     const [comentario, setComentario] = useState("");
     const comentariosRef = useRef(null);
-    //const token = localStorage.getItem('token');
+    const [isUnauthorized, setIsUnauthorized] = useState(false);
+    const token = Storage.getToken();
+
 
     useEffect(() => {
-        (async () => {
+        if (!token) {
+            setIsUnauthorized(true);
+            return;
+        }
+
+        const fetchPost = async () => {
             try {
                 const data = await getPostById(id);
                 setPost(data);
-            } catch (err) {
-                toast.error(err.message);
+            } catch (error) {
+                toast.error("Error al cargar el post.");
+                console.error(error);
             }
-        })();
-    }, [id]);
+        };
+
+        fetchPost();
+    }, [id, token]); // si pasa algun cambio vuelve a ejecutar el useEffect
 
     const handleSubmit = async () => {
         if (!comentario.trim()) {
@@ -33,15 +45,13 @@ const Post= () => {
             return;
         }
         try {
-     
-            const updatedPost = await addCommentToPost(id, comentario); 
-            
+            const updatedPost = await addCommentToPost(id, comentario);
             setPost(updatedPost);
             toast.success("Comentario publicado. 🎉");
             setComentario('');
-       
         } catch (error) {
-            toast.error(error.message);
+            toast.error("Error al cargar el comentario.");
+            console.error(error);
         }
     };
 
@@ -51,10 +61,14 @@ const Post= () => {
             setPost(updatedPost);
             toast.success("¡Me gusta registrado! ❤️");
         } catch (error) {
-            toast.error(error.message);
+            toast.error("Error al cargar el like.");
+            console.error(error);
         }
     };
 
+    if (isUnauthorized) return <UnauthorizedModal />;
+    if (!post) return <p>Cargando post...</p>;
+    
     const todosLosComentarios = [
         {
             body: post.description,
@@ -62,9 +76,6 @@ const Post= () => {
         },
         ...(post.comments || []),
     ];
-
-    //if (!token) return <ModalBloqueo />;
-    if (!post) return <p>Cargando post...</p>;
 
     return (
         <div className="paginaPost">
