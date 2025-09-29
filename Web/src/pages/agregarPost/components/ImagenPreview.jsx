@@ -1,5 +1,5 @@
 import React from 'react';
-
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 
 const ImagenPreview = ({ imagen, onAgregarImagenClick, fileInputRef, onFileChange }) => (
   <div className="contenedorImagen">
@@ -7,6 +7,7 @@ const ImagenPreview = ({ imagen, onAgregarImagenClick, fileInputRef, onFileChang
       <img src={imagen} alt="Preview" />
     ) : (
       <div onClick={onAgregarImagenClick}>
+        <AddAPhotoIcon />
         <h2 className="agregarImagen">Agregar imagen</h2>
       </div>
     )}

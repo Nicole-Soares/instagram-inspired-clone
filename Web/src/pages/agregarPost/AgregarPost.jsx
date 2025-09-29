@@ -32,6 +32,7 @@ const AgregarPost = () => {
               setIsUnauthorized(true);
               return;
           }
+
       }, [token]); // si pasa algun cambio vuelve a ejecutar el useEffect
 
 
@@ -54,7 +55,7 @@ const AgregarPost = () => {
       const nuevoPost = await crearPost(url, descripcion);
      
       toast.success('Post creado con éxito 🎉');
-      // Redirigir al detalle del post usando su ID
+     
       navigate(`/post/${nuevoPost.id}`);
       setUrl('');
       setDescripcion('');

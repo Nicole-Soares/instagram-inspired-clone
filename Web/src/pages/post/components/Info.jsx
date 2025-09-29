@@ -1,4 +1,3 @@
-// src/pages/PostPage/components/PostInfo.jsx
 import React from 'react';
 
 const Info = ({ post, onLikeClick }) => {

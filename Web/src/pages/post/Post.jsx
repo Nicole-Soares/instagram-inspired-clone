@@ -68,12 +68,9 @@ const Post= () => {
                 toast.error("Debes iniciar sesión para dar 'Me gusta'.");
                 return;
             }
-            console.log(currentUserId)
-            // El servidor se encarga de la lógica de like/unlike.
-            // `updatedPost` es el post con la lista de likes ya modificada.
+         
             const updatedPost = await likePost(id); 
-            console.log(updatedPost)
-            // Verifica si el ID del usuario está en la nueva lista de likes
+    
             const userHasLiked =  updatedPost.likes.some(like => like.id === currentUserId);
             //si aparece el like despues de haber hecho el fetch entonces es porque es nuevo
             if (userHasLiked) {
@@ -81,11 +78,11 @@ const Post= () => {
                 
 
             } else {
-                // Si el ID ya no está, significa que se quitó el like.
+               
                 toast.success("¡Me gusta eliminado! 💔");
             }
 
-            // Actualiza el estado del componente
+            //actualizo mi estado porque ahora el post que tengo esta desactualziado
             setPost(updatedPost);
 
         } catch (error) {
@@ -97,6 +94,7 @@ const Post= () => {
     if (!post) return <p>Cargando post...</p>;
     
     const todosLosComentarios = [
+        //para poner la descripcion primero
         {
             body: post.description,
             user: post.user,

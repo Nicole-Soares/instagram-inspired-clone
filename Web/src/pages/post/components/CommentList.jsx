@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from 'react';
-import Comment from './Comment'; // Suponiendo que ya tienes este componente
+import Comment from './Comment'; 
 
 const CommentList = ({ todosLosComentarios }) => {
     const comentariosRef = useRef(null);
 
-    // Lógica para el scroll
+   
     useEffect(() => {
         if (comentariosRef.current) {
             comentariosRef.current.scrollTop = comentariosRef.current.scrollHeight;
