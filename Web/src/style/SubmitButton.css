@@ -1,14 +1,17 @@
 button {
-  display: inline-flex;
   outline: none;
-  padding: 8px;
   background-color: #495DF9B2;
   border: none;
-  border-radius: 10px;
   color: white;
   cursor: pointer;
   font-size: 12px;
-  justify-content: center;
+  width: 272px;
+  height: 31px;
+  max-width: 300px;
+  gap: 10px;
+  opacity: 1;
+  padding: 8px;
+  border-radius: 8px;
 }
 
 button:hover {
@@ -18,6 +21,10 @@ button:hover {
 button:active  {
     outline: none;
     transform: scale(0.96)
+}
+
+button:focus {
+   outline: none;  
 }
 
 .button-spinner {
