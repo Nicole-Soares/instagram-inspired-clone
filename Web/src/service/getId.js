@@ -11,8 +11,7 @@ export const getUserId = () => {
 
   try {
     const decodedToken = jwtDecode(token);
-    // El campo del ID puede llamarse 'sub', 'userId', 'id', etc.
-    // Asegúrate de usar el nombre correcto según tu API.
+
     return decodedToken.userId; 
   } catch (error) {
     console.error("Error al decodificar el token:", error);

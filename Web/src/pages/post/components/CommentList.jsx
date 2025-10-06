@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import Comment from './Comment'; 
 
-const CommentList = ({ todosLosComentarios }) => {
+const CommentList = ({ todosLosComentarios, handleNavigateToUser}) => {
     const comentariosRef = useRef(null);
 
    
@@ -14,7 +14,9 @@ const CommentList = ({ todosLosComentarios }) => {
     return (
         <div className="comentariosScroll" ref={comentariosRef}>
             {todosLosComentarios.map((comment) => (
-                <Comment key={comment.id} comment={comment} />
+                <Comment key={comment.id} comment={comment} 
+                handlerNavigate={handleNavigateToUser}
+                />
             ))}
         </div>
     );

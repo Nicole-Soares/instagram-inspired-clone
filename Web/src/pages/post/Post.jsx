@@ -9,7 +9,7 @@ import Info from "./components/Info";
 import { getPostById, addCommentToPost, likePost } from "../../service/post/postService";
 import "../../style/Post.css";
 import Storage from "../../service/storage";
-import UnauthorizedModal from "../../GeneralComponents/UnauthorizedModal";
+import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
 import { getUserId } from "../../service/getId";
 
 const Post= () => {
@@ -90,8 +90,13 @@ const Post= () => {
             console.error(error);
         }
     };
+
+    const handleNavigateToUser = (userId) => {
+        navigate(`/usuario/${userId}`);
+    };
+
     if (isUnauthorized) return <UnauthorizedModal />;
-    if (!post) return <p>Cargando post...</p>;
+    if (!post) return <p className="loadingPost">Cargando post...</p>;
     
     const todosLosComentarios = [
         //para poner la descripcion primero
@@ -114,6 +119,7 @@ const Post= () => {
                 <CommentList
                     todosLosComentarios={todosLosComentarios}
                     comentariosRef={comentariosRef} 
+                    handleNavigateToUser={handleNavigateToUser} 
                 />
                 <hr className="lineaDivisora" />
                 <Info post={post} onLikeClick={handleClickLike} />
