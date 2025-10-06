@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import textLogo from '../../assets/instagram-text-logo.svg'
 import { userRegister } from "../../service/authService.js";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import '../../style/Register.css'
 import RegisterForm from "./components/RegisterForm.jsx";
 
@@ -12,6 +12,14 @@ function Register() {
   const [image, setImage] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+        const token = Storage.getToken();
+        if (token) {
+           // navigate('/');  Si el usuario ya está logueado, redirigir al home
+        }
+      }, [navigate]);
 
   const handleRegister = (e) => {
   e.preventDefault();

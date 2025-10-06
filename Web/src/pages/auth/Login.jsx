@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import loginPhoto from '../../assets/instagram-login-photo.png'
 import textLogo from '../../assets/instagram-text-logo.svg'
 import '../../style/Login.css'
-import { userLogin } from "../../service/LoginService.js";
-import { Link } from "react-router";
+import { userLogin } from "../../service/authService.js";
+import { Link, useNavigate } from "react-router";
 import LoginForm from "./components/LoginForm.jsx";
 
 function Login() {
@@ -11,6 +11,14 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      const token = Storage.getToken();
+      if (token) {
+         // navigate('/');  Si el usuario ya está logueado, redirigir al home
+      }
+      }, [navigate]);
 
   const handleLogin = (e) => {
   e.preventDefault();
