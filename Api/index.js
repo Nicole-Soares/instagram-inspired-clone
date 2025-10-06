@@ -16,7 +16,8 @@ const app = express();
 app.use(cors({
     origin: 'http://localhost:5173', 
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
+    credentials: true,
+    exposedHeaders: ['Authorization']
   }));
 const port = 7070;
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import loginPhoto from '../../assets/instagram-login-photo.png'
 import textLogo from '../../assets/instagram-text-logo.svg'
 import '../../style/Login.css'
-import { userLogin } from "../../service/api";
+import { userLogin } from "../../service/LoginService.js";
 import { Link } from "react-router";
 import LoginForm from "./components/LoginForm.jsx";
 
@@ -37,8 +37,10 @@ function Login() {
 
   return (
     <div className="login-container">
-      <img src = {loginPhoto} alt="Login" className="login-photo"/>
-
+      <div className="photo-container">
+        <img src = {loginPhoto} alt="Login" className="login-photo"/>
+      </div>
+      
       <div className="form-container">
         
         <img src = {textLogo} alt="textLogo" className="text-logo"/>

@@ -1,17 +1,18 @@
 button {
+  display: flex;
   outline: none;
   background-color: #495DF9B2;
   border: none;
   color: white;
   cursor: pointer;
   font-size: 12px;
-  width: 272px;
   height: 31px;
+  width: 272px;
   max-width: 300px;
   gap: 10px;
-  opacity: 1;
   padding: 8px;
   border-radius: 8px;
+  justify-content: center;
 }
 
 button:hover {

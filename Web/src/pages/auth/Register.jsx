@@ -1,6 +1,6 @@
 import { useState } from "react";
 import textLogo from '../../assets/instagram-text-logo.svg'
-import { userRegister } from "../../service/api";
+import { userRegister } from "../../service/authService.js";
 import { Link } from "react-router";
 import '../../style/Register.css'
 import RegisterForm from "./components/RegisterForm.jsx";
@@ -58,7 +58,7 @@ function Register() {
         />
         <hr className="register-divider" />
         <p> ¿Tienes una cuenta? <Link to="/login">Inicia sesión</Link> </p>       
-    </div>
+      </div>
   );
 }
 
