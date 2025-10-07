@@ -1,6 +1,6 @@
 import { HEADER } from"../constants.js";
 import { registerBodySchema, logingBodySchema as loginBodySchema} from "../schemas.js";
-import { transformUser, transformSimpleUser, transformTimeline, transformSimplePost } from "../Dtos.js";
+import { transformUser, transformSimpleUser, transformTimeline, transformSimplePost, transformUserWithFollowState } from "../Dtos.js";
 import { ValidationError } from "yup";
 
 class UserController {
@@ -69,8 +69,9 @@ class UserController {
             const userId = req.params.userId;
             const user = this.system.getUser(userId);
             const posts = this.system.getPostByUserId(user.id).map(transformSimplePost);
+            const currentUserId = req.user?.id;
 
-            res.json({...transformUser(user), posts})
+            res.json({...transformUserWithFollowState(user, currentUserId), posts})
         } 
         catch (error) {
             res.status(404).send({error:"No se encontro el usuario solicitado."});
@@ -83,14 +84,16 @@ class UserController {
         const currentUser = req.user; 
 
         if (currentUser.id === userId) {
-            res.status(400).send({error:"No puede seguirse a si mismo."});
-            return;
+            return res.status(400).send({error:"No puede seguirse a si mismo."});
         }
         
         try {
-            const userToFollow = this.system.getUser(userId);
-            const newCurrentUser = this.system.updateFollower(currentUser.id, userId);
-            res.json({ ...transformUser(newCurrentUser), posts: this.system.getPostByUserId(newCurrentUser.id).map(transformTimeline) }); 
+            this.system.getUser(userId);
+            this.system.updateFollower(currentUser.id, userId);
+            const updatedProfile = this.system.getUser(userId);
+            const posts = this.system.getPostByUserId(updatedProfile.id).map(transformSimplePost);
+            
+            res.json({ ...transformUserWithFollowState(updatedProfile, currentUser.id), posts});
         }
         catch (error) {
             res.status(404).send({error:"El usuario que intenta seguir no existe."});

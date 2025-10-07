@@ -13,7 +13,33 @@ const transformUser = ({
         followers: followers.map(transformSimpleUser),
     };
 }
- 
+
+const transformUserWithFollowState = (user, currentUserId) => {
+  const {
+    id,
+    name,
+    email,
+    image,
+    followers = [],
+  } = user;
+
+  const me = currentUserId ? String(currentUserId) : "";
+  const followerIds = followers.map(f => typeof f === "string" ? f : String(f?.id));
+  const isMe = !!me && String(id) === me;
+  const isFollowing = !!me && !!isMe && followerIds.includes(me);
+
+  return {
+    id,
+    name,
+    email,
+    image,
+    followers: followers.map(transformSimpleUser),
+    followersCount: followers.length,
+    isFollowing,
+    isMe,
+  };
+};
+
 const transformComments = (comments) => {
     return comments.map(comment => ({
         id: comment.id,
@@ -106,4 +132,4 @@ const transformTimeline = ({
     };  
 } 
 
-export { transformUser, transformPost, transformTimeline, transformSimpleUser, transformSimplePost };
+export { transformUser, transformPost, transformTimeline, transformSimpleUser, transformSimplePost, transformUserWithFollowState };
