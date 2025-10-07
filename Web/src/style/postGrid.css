@@ -1,0 +1,8 @@
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 10px;
+  justify-content: space-between;
+  padding: 10px;
+  width: max-content;
+}
