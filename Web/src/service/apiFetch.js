@@ -13,19 +13,19 @@ export const setNavigateFunction = (navigate) => {
 const apiFetch = async (url, options = {}, message) => {
 
   const token = Storage.getToken();
-   // Combina los encabezados de forma segura
-   const headers = {
+  // Combina los encabezados de forma segura
+  const headers = {
     'Content-Type': 'application/json',
     'Authorization': token,
     ...options.headers, // Esto permite pasar headers personalizados
   };
 
-    // Construye el objeto de opciones para fetch
-    const fetchOptions = {
-      ...options, // Pasa el método, el body y cualquier otra opción
-      headers: headers, // Añade los headers construidos
-    };
-    
+  // Construye el objeto de opciones para fetch
+  const fetchOptions = {
+    ...options, // Pasa el método, el body y cualquier otra opción
+    headers: headers, // Añade los headers construidos
+  };
+
   const response = await fetch(url, fetchOptions);
 
   // Manejo de errores centralizado
@@ -36,12 +36,18 @@ const apiFetch = async (url, options = {}, message) => {
     if (navigateFunction) {
       navigateFunction('/login');
     }
-    throw new Error("Unauthorized"); 
+    throw new Error("Unauthorized");
   }
 
   // Manejo de otros errores
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
+    if (response.status === 403) {
+      throw new Error(errorData.message || "Forbidden: Acceso denegado");
+    }
+    if (response.status === 404) {
+      throw new Error(errorData.message || "Not Found: El recurso no existe.");
+    }
     throw new Error(errorData.message || message);
   }
 

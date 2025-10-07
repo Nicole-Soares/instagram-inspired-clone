@@ -16,6 +16,8 @@ const userLogin = async (email, password) => {
       const err = await res.json();
       throw new Error(err.error || "Error en el login");
     }
+    //clono la respuesta para no perder el body al leer los headers
+    const resClone = res.clone(); 
 
     //busco el token
     const token = res.headers.get("Authorization");
@@ -23,6 +25,15 @@ const userLogin = async (email, password) => {
       Storage.setToken(token);
     } else {
       throw new Error("No se recibió un token de autorización");
+    }
+
+    //busco el id del usuario en el body
+    const data = await resClone.json();
+    //Si el id del usuario existe, lo guardo en el localStorage. Sino, muestro una advertencia en la consola.
+    if(data.id){
+      Storage.setUserId(data.id);
+    } else {
+        console.warn("Advertencia: El ID del usuario no se encontró en la respuesta del servidor."); 
     }
 
     return await res.json();
