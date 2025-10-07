@@ -10,6 +10,7 @@ import { getPostById, addCommentToPost, likePost } from "../../service/post/post
 import "../../style/Post.css";
 import Storage from "../../service/storage";
 import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
+import NotFoundModal from "../../generalComponents/NotFoundModal";
 import { getUserId } from "../../service/getId";
 
 const Post= () => {
@@ -20,7 +21,8 @@ const Post= () => {
     const [isUnauthorized, setIsUnauthorized] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
     const token = Storage.getToken();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
        
@@ -32,6 +34,7 @@ const Post= () => {
 
         const fetchPost = async () => {
             try {
+                setLoading(true);
                 const data = await getPostById(id, navigate);
                 const loggedUserId = Storage.getUserId();
                 const postId = data.user.id;
@@ -43,6 +46,9 @@ const Post= () => {
                 //tendria que volver al home ??
                 console.error(error);
             }
+            finally {
+                setLoading(false);
+              }
         };
 
         fetchPost();
@@ -114,7 +120,8 @@ const Post= () => {
 
 
     if (isUnauthorized) return <UnauthorizedModal />;
-    if (!post) return <p className="loadingPost">Cargando post...</p>;
+    if (!post) return <NotFoundModal />;;
+    if(loading) return <p className="loadingPost">Cargando post...</p>;
     
     const todosLosComentarios = [
         //para poner la descripcion primero
