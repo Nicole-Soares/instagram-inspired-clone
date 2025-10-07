@@ -9,7 +9,7 @@ import Info from "./components/Info";
 import { getPostById, addCommentToPost, likePost } from "../../service/post/postService";
 import "../../style/Post.css";
 import Storage from "../../service/storage";
-import UnauthorizedModal from "../../GeneralComponents/UnauthorizedModal";
+import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
 import { getUserId } from "../../service/getId";
 
 const Post= () => {
@@ -18,6 +18,7 @@ const Post= () => {
     const [comentario, setComentario] = useState("");
     const comentariosRef = useRef(null);
     const [isUnauthorized, setIsUnauthorized] = useState(false);
+    const [isOwner, setIsOwner] = useState(false);
     const token = Storage.getToken();
     const navigate = useNavigate()
 
@@ -32,15 +33,21 @@ const Post= () => {
         const fetchPost = async () => {
             try {
                 const data = await getPostById(id, navigate);
+                const loggedUserId = Storage.getUserId();
+                const postId = data.user.id;
                 setPost(data);
+                setIsOwner(String(loggedUserId) === String(postId));
+                console.log(isOwner)
             } catch (error) {
                 toast.error("Error al cargar el post.");
+                //tendria que volver al home ??
                 console.error(error);
             }
         };
 
         fetchPost();
     }, [id, token]); // si pasa algun cambio vuelve a ejecutar el useEffect
+
 
     const handleSubmit = async () => {
         if (!comentario.trim()) {
@@ -90,8 +97,24 @@ const Post= () => {
             console.error(error);
         }
     };
+
+    const handleNavigateToUser = (userId) => {
+        navigate(`/usuario/${userId}`);
+    };
+
+    const handleEdit = () => {
+       navigate(`/post/editPost/${id}`);
+
+    };
+
+    const handleDelete = () => {
+        // Implementa aquí la lógica para pedir confirmación y eliminar el post
+        console.log("Eliminando post:", id);
+    };
+
+
     if (isUnauthorized) return <UnauthorizedModal />;
-    if (!post) return <p>Cargando post...</p>;
+    if (!post) return <p className="loadingPost">Cargando post...</p>;
     
     const todosLosComentarios = [
         //para poner la descripcion primero
@@ -106,14 +129,15 @@ const Post= () => {
         <div className="paginaPost">
             <ToastContainer />
             <div className="contenedorImagen">
-                {post.image && <img src={post.image} alt="Imagen del post" />}
+                {post.image && <img src={post.image} alt="Imagen del post" className="imagenPost"/>}
             </div>
             <div className="contenedorUsuarioInput">
-                <HeaderPost user={post.user} date={post.date} />
+                <HeaderPost user={post.user} date={post.date} isOwner={isOwner} onEditClick={handleEdit} onDeleteClick={handleDelete}/>
                 <hr className="lineaDivisora" />
                 <CommentList
                     todosLosComentarios={todosLosComentarios}
                     comentariosRef={comentariosRef} 
+                    handleNavigateToUser={handleNavigateToUser} 
                 />
                 <hr className="lineaDivisora" />
                 <Info post={post} onLikeClick={handleClickLike} />

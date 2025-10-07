@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-
+import { useParams, useNavigate } from "react-router";
 import "../../style/PostEdit.css";
-
 import Storage from "../../service/storage";
 import apiFetch, { setNavigateFunction } from "../../service/apiFetch";
-import UnauthorizedModal from "../../GeneralComponents/UnauthorizedModal";
-import ForbiddenModal from "../../GeneralComponents/ForbiddenModal";
-import NotFoundModal from "../../GeneralComponents/NotFoundModal";
+import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
+import ForbiddenModal from "../../generalComponents/ForbiddenModal";
+import NotFoundModal from "../../generalComponents/NotFoundModal";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 

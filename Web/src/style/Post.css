@@ -195,3 +195,43 @@
   }
   
   
+  .loadingPost{
+      text-align: center;
+      color: #000000; 
+      font-size: 1.2rem; 
+      padding: 20px; 
+      position: fixed; 
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;  
+  }
+
+
+.contenedorImagenUsuario {
+  display: flex;
+  width: 100%; 
+  align-items: center; 
+  justify-content: space-between; 
+}
+
+
+.postActions {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+  margin-left: auto; 
+}
+
+
+.postActions svg {
+  font-size: 24px; 
+  cursor: pointer;
+}
+
+.infoPrincipal {
+  display: flex;
+  align-items: center;
+  gap: 12px; 
+}
+

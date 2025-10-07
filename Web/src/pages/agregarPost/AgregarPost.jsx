@@ -5,7 +5,7 @@ import ImagenPreview from './components/ImagenPreview';
 import FormularioPost from './components/FormularioPost';
 import { crearPost } from "../../service/agregarPost/agregarPostService";
 import { toast, ToastContainer } from 'react-toastify';
-import UnauthorizedModal from "../../GeneralComponents/UnauthorizedModal";
+import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
 import Storage from "../../service/storage";
 
 const AgregarPost = () => {
