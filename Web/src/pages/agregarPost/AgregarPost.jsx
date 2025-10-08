@@ -55,6 +55,7 @@ const AgregarPost = () => {
       setDescripcion("");
     } catch (error) {
       // Error 401: Token inválido
+      //o mejor if (error.message.includes("El token es inválido o ha expirado."))
       if (error.status === 401) {
         setIsUnauthorized(true);
         // Si no, si es 403:
