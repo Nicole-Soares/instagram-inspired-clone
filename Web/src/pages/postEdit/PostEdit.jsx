@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import "../../style/PostEdit.css";
 import Storage from "../../service/storage";
-import apiFetch, { setNavigateFunction } from "../../service/apiFetch";
 import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
 import ForbiddenModal from "../../generalComponents/ForbiddenModal";
 import NotFoundModal from "../../generalComponents/NotFoundModal";
+import apiFetch from '../../service/apiFetch';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -22,9 +22,7 @@ function PostEdit() {
   const token = Storage.getToken();
 
   useEffect(() => {
-    // Inicializa la función de navegación para apiFetch (manejo del 401)
-    setNavigateFunction(navigate);
-
+   
     if (!token) {
       setIsUnauthorized(true);
       setLoading(false); // Detenemos la carga para mostrar el modal

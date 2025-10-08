@@ -23,12 +23,15 @@ const Post= () => {
     const token = Storage.getToken();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
+    const [isNotFound, setIsNotFound] = useState(false);
 
     useEffect(() => {
        
 
+        //puede ser que tenga token pero
         if (!token) {
             setIsUnauthorized(true);
+            setLoading(false); // Detenemos la carga para mostrar el modal
             return;
         }
 
@@ -40,14 +43,21 @@ const Post= () => {
                 const postId = data.user.id;
                 setPost(data);
                 setIsOwner(String(loggedUserId) === String(postId));
-                console.log(isOwner)
+    
             } catch (error) {
-                toast.error("Error al cargar el post.");
-                //tendria que volver al home ??
-                console.error(error);
-            }
-            finally {
-                setLoading(false);
+                // Error 401: Token inválido
+                if (error.message === "Unauthorized") {
+                  setIsUnauthorized(true);
+                  // Si no, si es 403:
+                } else if (error.message.includes("Not Found")) {
+                  setIsNotFound(true)
+                  // Si no es 401, 403 ni 404, asume un error de datos o conexión y muestra un modal genérico
+                } else {
+                    toast.error("Error al cargar el post.");
+                    console.error(error);
+                }
+              } finally {
+                    setLoading(false);
               }
         };
 
@@ -120,7 +130,7 @@ const Post= () => {
 
 
     if (isUnauthorized) return <UnauthorizedModal />;
-    if (!post) return <NotFoundModal />;;
+    if (isNotFound) return <NotFoundModal />;
     if(loading) return <p className="loadingPost">Cargando post...</p>;
     
     const todosLosComentarios = [

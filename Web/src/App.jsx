@@ -3,7 +3,7 @@ import {  useNavigate } from 'react-router'
 import reactLogo from './assets/react.svg'
 import './App.css'
 import Storage from './service/storage'
-import { setNavigateFunction } from './service/apiFetch';
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -19,7 +19,6 @@ const headers = {
 };
   useEffect(() => {
     setTimeout(() => {
-          setNavigateFunction(navigate);
           fetch("http://localhost:7070/user", {
             method: 'GET', 
             headers: headers,
