@@ -32,8 +32,6 @@ const userLogin = async (email, password) => {
     //Si el id del usuario existe, lo guardo en el localStorage. Sino, muestro una advertencia en la consola.
     if(data.id){
       Storage.setUserId(data.id);
-       // 💡 CONSOLA DE VERIFICACIÓN (OPCIONAL):
-            // console.log("ID del usuario GUARDADO:", data.id);
     } else {
         console.warn("Advertencia: El ID del usuario no se encontró en la respuesta del servidor."); 
     }

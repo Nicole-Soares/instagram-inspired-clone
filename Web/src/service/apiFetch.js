@@ -42,6 +42,7 @@ const apiFetch = async (url, options = {}, message) => {
         } catch (e) {
             // Si falla, usamos el texto de estado HTTP o el mensaje por defecto
             errorData.message = response.statusText || message;
+            console.error(e);
         }
 
         // Se mantiene la lógica de errores específicos para que el componente los maneje

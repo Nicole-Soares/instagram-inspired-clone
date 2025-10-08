@@ -26,3 +26,13 @@ export const likePost = async (postId) => {
         "Error al dar like o sacar like" 
     );
 };
+
+export const deletePost = async (postId) => {
+    return apiFetch(
+        `${API_BASE_URL}/posts/${postId}`, 
+        { 
+            method: 'DELETE' 
+        }, 
+        "Error al eliminar el post" 
+    )
+}

@@ -6,11 +6,12 @@ import HeaderPost from "./components/HeaderPost";
 import CommentList from "./components/CommentList";
 import CommentForm from "./components/CommentForm";
 import Info from "./components/Info";
-import { getPostById, addCommentToPost, likePost } from "../../service/post/postService";
+import { getPostById, addCommentToPost, likePost, deletePost} from "../../service/post/postService";
 import "../../style/Post.css";
 import Storage from "../../service/storage";
 import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
 import NotFoundModal from "../../generalComponents/NotFoundModal";
+import DeleteConfirmationModal from "../../generalComponents/DeleteConfirmationModal";
 import { getUserId } from "../../service/getId";
 
 const Post= () => {
@@ -24,11 +25,10 @@ const Post= () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [isNotFound, setIsNotFound] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
-       
-
-        //refactor??
+    
         if (!token) {
             setIsUnauthorized(true);
             setLoading(false); 
@@ -124,11 +124,26 @@ const Post= () => {
 
     };
 
-    const handleDelete = () => {
-        // Implementa aquí la lógica para pedir confirmación y eliminar el post
-        console.log("Eliminando post:", id);
+    const handleDelete = async () => {
+        
+        setShowDeleteModal(true);
     };
 
+    const confirmDelete = async () => {
+        setShowDeleteModal(false); // Cierra el modal primero
+        
+        try {
+            
+            await deletePost(id); 
+            toast.success("Post eliminado exitosamente.");
+            navigate('/'); // va al home
+    
+        } catch (error) {
+            //otras fallas (403, 500, etc.)
+            toast.error("Error al borrar el post");
+            console.error(error);
+        }
+    };
 
     if (isUnauthorized) return <UnauthorizedModal />;
     if (isNotFound) return <NotFoundModal />;
@@ -150,7 +165,7 @@ const Post= () => {
                 {post.image && <img src={post.image} alt="Imagen del post" className="imagenPost"/>}
             </div>
             <div className="contenedorUsuarioInput">
-                <HeaderPost user={post.user} date={post.date} isOwner={isOwner} onEditClick={handleEdit} onDeleteClick={handleDelete}/>
+                <HeaderPost user={post.user} date={post.date} isOwner={isOwner} onEditClick={handleEdit} onDeleteClick={handleDelete} handleNavigateToUser={handleNavigateToUser} />
                 <hr className="lineaDivisora" />
                 <CommentList
                     todosLosComentarios={todosLosComentarios}
@@ -165,6 +180,12 @@ const Post= () => {
                     handleSubmit={handleSubmit}
                 />
             </div>
+            {showDeleteModal && (
+                <DeleteConfirmationModal
+                    onClose={() => setShowDeleteModal(false)} // Función para cancelar
+                    onConfirm={confirmDelete} // Función para eliminar
+                />
+            )}
         </div>
     );
 };

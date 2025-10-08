@@ -15,7 +15,7 @@ const CommentList = ({ todosLosComentarios, handleNavigateToUser}) => {
         <div className="comentariosScroll" ref={comentariosRef}>
             {todosLosComentarios.map((comment) => (
                 <Comment key={comment.id} comment={comment} 
-                handlerNavigate={handleNavigateToUser}
+                handleNavigateToUser={handleNavigateToUser}
                 />
             ))}
         </div>
