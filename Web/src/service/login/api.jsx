@@ -29,13 +29,7 @@ const userLogin = async (email, password) => {
 
     //busco el id del usuario en el body
     const data = await resClone.json();
-    //Si el id del usuario existe, lo guardo en el localStorage. Sino, muestro una advertencia en la consola.
-    if(data.id){
-      Storage.setUserId(data.id);
-    } else {
-        console.warn("Advertencia: El ID del usuario no se encontró en la respuesta del servidor."); 
-    }
-
+   
     return data;
    
   } catch (error) {

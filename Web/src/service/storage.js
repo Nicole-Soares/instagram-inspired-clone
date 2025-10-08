@@ -1,16 +1,33 @@
- const setToken = (token) => {localStorage.setItem("token", token);};
+import { jwtDecode } from 'jwt-decode'; 
 
- const getToken = () => localStorage.getItem("token");
+const setToken = (token) => {
+    localStorage.setItem("token", token);
+};
 
- const clearToken = () => {
+const getToken = () => localStorage.getItem("token");
+
+const clearToken = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("userId");
- };
+};
 
-const setUserId = (userId) => { localStorage.setItem("userId", userId); };
+const getUserId = () => {
+    const token = getToken();
+    if (!token) return null;
+    
+    try {
+        const payload = jwtDecode(token);
+        return payload ? payload.userId : null; 
+    } catch (error) {
+        console.error("Error decodificando el token:", error);
+        return null;
+    }
+};
 
-const getUserId = () => localStorage.getItem("userId");
-
-const Storage = { setToken, getToken, clearToken, setUserId, getUserId };
+const Storage = { 
+    setToken, 
+    getToken, 
+    clearToken, 
+    getUserId 
+};
 
 export default Storage;

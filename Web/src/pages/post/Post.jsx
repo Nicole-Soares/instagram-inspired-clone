@@ -12,7 +12,7 @@ import Storage from "../../service/storage";
 import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
 import NotFoundModal from "../../generalComponents/NotFoundModal";
 import DeleteConfirmationModal from "../../generalComponents/DeleteConfirmationModal";
-import { getUserId } from "../../service/getId";
+
 
 const Post= () => {
     const { id } = useParams();
@@ -43,7 +43,6 @@ const Post= () => {
                 const postId = data.user.id;
                 setPost(data);
                 setIsOwner(String(loggedUserId) === String(postId));
-                console.log(post)
     
             } catch (error) {
                 // Error 401: Token inválido
@@ -87,7 +86,7 @@ const Post= () => {
 
     const handleClickLike = async () => {
         try {
-            const currentUserId = getUserId();
+            const currentUserId = Storage.getUserId();
             if (!currentUserId) {
                 toast.error("Debes iniciar sesión para dar 'Me gusta'.");
                 return;
