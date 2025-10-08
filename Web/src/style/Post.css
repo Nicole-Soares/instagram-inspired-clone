@@ -1,0 +1,345 @@
+.paginaPost {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 32px;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fff; 
+}
+
+.contenedorImagen img {
+  max-width: 500px;
+  width: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.contenedorUsuarioInput {
+  flex: 1;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contenedorImagenUsuario {
+  display: flex;
+  width: 100%; 
+  align-items: center; 
+  justify-content: space-between; 
+}
+
+.infoPrincipal {
+  display: flex;
+  align-items: center;
+  gap: 12px; 
+}
+
+.contenedorImagenUsuario img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.contenedorImagenUsuario h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+.datosUsuarioPost {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start; 
+}
+
+.nombreUsuario {
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0;
+  color: #222;
+  cursor: pointer;
+}
+
+.imagenUsuario {
+  cursor: pointer;
+}
+
+.fechaPost {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin: 2px 0 0;
+}
+
+.deleteIcon{
+  cursor: 'pointer';
+  color: black
+}
+
+.editIcon{
+  cursor: 'pointer';
+  color: black;
+}
+
+.postActions {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+  margin-left: auto; 
+}
+
+.postActions svg {
+  font-size: 24px; 
+  cursor: pointer;
+}
+
+
+.comentario {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 0;
+}
+
+.comentario img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.comentario h4 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.comentario p {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.imagenUsuarioComentario{
+  cursor: pointer;
+}
+
+.nombreUsuarioComentario{
+  cursor: pointer;
+}
+
+.comentarioDescripcion{
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+
+.contenedorInput {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+textarea {
+  resize: none;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.9rem;
+  background-color: #fafafa;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #222;
+}
+
+
+.botonAgregarPost {
+  align-self: stretch; 
+  padding: 10px 0;
+  background-color: #9b87f5;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+}
+
+.botonAgregarPost:hover {
+  background-color: #7c65d1;
+}
+
+h3{
+  color: #222;
+}
+
+.infoPost {
+  display: flex;
+  justify-content: space-around;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.lineaDivisora {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 12px 0;
+}
+
+.comentariosScroll {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 8px;
+  margin-bottom: 16px;
+}
+
+.comentariosScroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.comentariosScroll::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+.loadingPost{
+  text-align: center;
+  color: #000000; 
+  font-size: 1.2rem; 
+  padding: 20px; 
+  position: fixed; 
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;  
+}
+
+
+.modalOverlay {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); 
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  z-index: 1000; 
+}
+
+.modalContent {
+  background-color: #ffffff; 
+  padding: 25px 35px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  width: 90%; 
+  max-width: 400px; 
+  text-align: center;
+  transition: transform 0.3s ease-out;
+}
+
+.modalContent h2 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.modalContent p {
+  color: #666;
+  margin-bottom: 25px;
+  line-height: 1.4;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: space-around; 
+  gap: 15px; 
+}
+
+.modalActions button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+  flex-grow: 1; 
+}
+
+.modalActions .button-confirm {
+  background-color: #e74c3c; 
+  color: white;
+}
+
+.modalActions .button-confirm:hover {
+  background-color: #c0392b;
+}
+
+.modalActions .button-cancel {
+  background-color: #bdc3c7; 
+  color: #333;
+}
+
+.modalActions .button-cancel:hover {
+  background-color: #95a5a6;
+}
+
+
+@media (max-width: 768px) {
+
+
+  .paginaPost {
+      flex-direction: column; 
+      align-items: center; 
+      gap: 20px; 
+      padding: 10px; 
+  }
+
+  .contenedorImagen {
+      width: 100%; 
+      max-width: 100%; 
+  }
+  
+  .contenedorImagen img {
+      width: 100%; 
+      max-width: 100%;
+  }
+
+ 
+  .contenedorUsuarioInput {
+      width: 100%; 
+      max-width: 100%; 
+      padding: 0 10px; 
+  }
+
+
+  .comentario img {
+      width: 30px; 
+      height: 30px;
+  }
+  
+  .comentario h4, .comentario p, .comentarioDescripcion {
+      font-size: 0.85rem; 
+  }
+
+  .comentariosScroll {
+      max-height: 250px; 
+  }
+  
+
+  .infoPost {
+      font-size: 0.8rem;
+  }
+}
