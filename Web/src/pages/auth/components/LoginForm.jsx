@@ -1,8 +1,16 @@
 import InputField from "./InputField";
 import SubmitButton from "./SubmitButton";
-import '../../../style/LoginForm.css'
+import "../../../style/LoginForm.css";
 
-export default function LoginForm({ email, setEmail, password, setPassword, handleLogin, loading, error }) {
+export default function LoginForm({
+  email,
+  setEmail,
+  password,
+  setPassword,
+  handleLogin,
+  loading,
+  error,
+}) {
   return (
     <form className="login-form" onSubmit={handleLogin} noValidate>
       <InputField

@@ -1,7 +1,12 @@
-import React from 'react';
+import React from "react";
 
-
-const FormularioPost = ({ url, descripcion, onUrlChange, onDescripcionChange, onSubmit }) => (
+const FormularioPost = ({
+  url,
+  descripcion,
+  onUrlChange,
+  onDescripcionChange,
+  onSubmit,
+}) => (
   <div className="contenedorImputs">
     <input
       id="url-input"
@@ -16,7 +21,9 @@ const FormularioPost = ({ url, descripcion, onUrlChange, onDescripcionChange, on
       value={descripcion}
       onChange={onDescripcionChange}
     />
-    <button onClick={onSubmit} className="botonAgregarPost">Publicar</button>
+    <button onClick={onSubmit} className="botonAgregarPost">
+      Publicar
+    </button>
   </div>
 );
 

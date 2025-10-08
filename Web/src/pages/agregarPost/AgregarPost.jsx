@@ -49,7 +49,6 @@ const AgregarPost = () => {
     try {
       const nuevoPost = await crearPost(url, descripcion);
 
-      
       toast.success("Post creado con éxito 🎉");
       navigate(`/post/${nuevoPost.id}`);
       setUrl("");

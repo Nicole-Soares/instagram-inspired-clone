@@ -1,11 +1,11 @@
 import { useState } from "react";
-import loginPhoto from '../../assets/instagram-login-photo.png'
-import textLogo from '../../assets/instagram-text-logo.svg'
-import '../../style/Login.css'
+import loginPhoto from "../../assets/instagram-login-photo.png";
+import textLogo from "../../assets/instagram-text-logo.svg";
+import "../../style/Login.css";
 import { userLogin } from "../../service/login/api.jsx";
 import { Link } from "react-router";
 import LoginForm from "./components/LoginForm.jsx";
-import { useNavigate } from 'react-router'
+import { useNavigate } from "react-router";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -15,37 +15,36 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
-  e.preventDefault();
-  setError(null);
+    e.preventDefault();
+    setError(null);
 
-  if(!email || !password) {
-    setError("Completa todos los campos.");
-    return;
-  }
-  
-  setLoading(true);
-  
-  userLogin(email, password)
-    .then(() => {
-      //navigate('/Home');
-      navigate(`/`); // cambiara /Home cuando este
-    })
-    .catch((err) => {
-      setError(err.message);
-    })
-    .finally(() => {
-      setLoading(false);
-    });
-};
+    if (!email || !password) {
+      setError("Completa todos los campos.");
+      return;
+    }
+
+    setLoading(true);
+
+    userLogin(email, password)
+      .then(() => {
+        //navigate('/Home');
+        navigate(`/`); // cambiara /Home cuando este
+      })
+      .catch((err) => {
+        setError(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   return (
     <div className="login-container">
-      <img src = {loginPhoto} alt="Login" className="login-photo"/>
+      <img src={loginPhoto} alt="Login" className="login-photo" />
 
       <div className="form-container">
-        
-        <img src = {textLogo} alt="textLogo" className="text-logo"/>
-        
+        <img src={textLogo} alt="textLogo" className="text-logo" />
+
         <LoginForm
           email={email}
           setEmail={setEmail}
@@ -57,8 +56,11 @@ function Login() {
         />
 
         <hr className="divider" />
-        <p> ¿No tienes una cuenta? <Link to="/register">Regístrate</Link> </p>
-        </div>
+        <p>
+          {" "}
+          ¿No tienes una cuenta? <Link to="/register">Regístrate</Link>{" "}
+        </p>
+      </div>
     </div>
   );
 }

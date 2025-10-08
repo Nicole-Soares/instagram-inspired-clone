@@ -1,7 +1,12 @@
-import React from 'react';
-import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import React from "react";
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 
-const ImagenPreview = ({ imagen, onAgregarImagenClick, fileInputRef, onFileChange }) => (
+const ImagenPreview = ({
+  imagen,
+  onAgregarImagenClick,
+  fileInputRef,
+  onFileChange,
+}) => (
   <div className="contenedorImagen">
     {imagen ? (
       <img src={imagen} alt="Preview" />
@@ -15,7 +20,7 @@ const ImagenPreview = ({ imagen, onAgregarImagenClick, fileInputRef, onFileChang
       type="file"
       accept="image/*"
       ref={fileInputRef}
-      style={{ display: 'none' }}
+      style={{ display: "none" }}
       onChange={onFileChange}
     />
   </div>
