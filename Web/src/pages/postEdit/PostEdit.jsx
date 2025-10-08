@@ -49,7 +49,7 @@ function PostEdit() {
 
         //Si la verificación pasa, relleno los inputs
         setImageUrl(data.image || "");
-        setCaption(data.descripcion || "");
+        setCaption(data.description || "");
         setIsUnauthorized(false); // Confirmo que el token es válido
 
         //Si la verificación no pasa, manejo el error con catch
@@ -81,7 +81,7 @@ function PostEdit() {
       // solicitud PUT usando apiFetch
       await apiFetch(`${API_BASE_URL}/posts/${id}`, {
         method: "PUT",
-        body: JSON.stringify({ image: imageUrl, descripcion: caption }),
+        body: JSON.stringify({ image: imageUrl, description: caption }),
       }, "No se pudo editar el post"); // Mensaje para error no 401
       // Si todo sale bien, navego al post actualizado
       navigate(`/post/${id}`);

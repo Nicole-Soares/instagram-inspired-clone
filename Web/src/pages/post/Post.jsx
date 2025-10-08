@@ -28,10 +28,10 @@ const Post= () => {
     useEffect(() => {
        
 
-        //puede ser que tenga token pero
+        //refactor??
         if (!token) {
             setIsUnauthorized(true);
-            setLoading(false); // Detenemos la carga para mostrar el modal
+            setLoading(false); 
             return;
         }
 
@@ -43,6 +43,7 @@ const Post= () => {
                 const postId = data.user.id;
                 setPost(data);
                 setIsOwner(String(loggedUserId) === String(postId));
+                console.log(post)
     
             } catch (error) {
                 // Error 401: Token inválido
