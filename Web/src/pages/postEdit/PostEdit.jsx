@@ -5,9 +5,9 @@ import Storage from "../../service/storage";
 import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
 import ForbiddenModal from "../../generalComponents/ForbiddenModal";
 import NotFoundModal from "../../generalComponents/NotFoundModal";
-import apiFetch from '../../service/apiFetch';
+import apiFetch from "../../service/apiFetch";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function PostEdit() {
   const { id } = useParams();
@@ -22,7 +22,6 @@ function PostEdit() {
   const token = Storage.getToken();
 
   useEffect(() => {
-   
     if (!token) {
       setIsUnauthorized(true);
       setLoading(false); // Detenemos la carga para mostrar el modal
@@ -33,9 +32,13 @@ function PostEdit() {
     const fetchPost = async () => {
       try {
         setLoading(true);
-        const data = await apiFetch(`${API_BASE_URL}/posts/${id}`, {
-          method: "GET",
-        }, "No se pudo obtener el post"); // Mensaje para error no 401
+        const data = await apiFetch(
+          `${API_BASE_URL}/posts/${id}`,
+          {
+            method: "GET",
+          },
+          "No se pudo obtener el post"
+        ); // Mensaje para error no 401
 
         //Me guardo el id del usuario logueado y el id del autor del post para comparar
         const currentUserId = Storage.getUserId();
@@ -62,7 +65,7 @@ function PostEdit() {
           setIsForbidden(true);
           // Si es 404:
         } else if (error.message.includes("Not Found")) {
-          setIsNotFound(true)
+          setIsNotFound(true);
           // Si no es 401, 403 ni 404, asume un error de datos o conexión y muestra un modal genérico
         } else {
           setErrorMessage(error.message);
@@ -75,14 +78,17 @@ function PostEdit() {
     fetchPost();
   }, [id, navigate, token]);
 
-
   const handleSubmit = async () => {
     try {
       // solicitud PUT usando apiFetch
-      await apiFetch(`${API_BASE_URL}/posts/${id}`, {
-        method: "PUT",
-        body: JSON.stringify({ image: imageUrl, description: caption }),
-      }, "No se pudo editar el post"); // Mensaje para error no 401
+      await apiFetch(
+        `${API_BASE_URL}/posts/${id}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({ image: imageUrl, description: caption }),
+        },
+        "No se pudo editar el post"
+      ); // Mensaje para error no 401
       // Si todo sale bien, navego al post actualizado
       navigate(`/post/${id}`);
     } catch (error) {
@@ -100,7 +106,6 @@ function PostEdit() {
   if (loading) {
     return <div>Cargando...</div>;
   }
-
 
   return (
     <div className="container">

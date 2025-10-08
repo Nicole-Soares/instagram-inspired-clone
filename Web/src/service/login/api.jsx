@@ -17,7 +17,7 @@ const userLogin = async (email, password) => {
       throw new Error(err.error || "Error en el login");
     }
     //clono la respuesta para no perder el body al leer los headers
-    const resClone = res.clone(); 
+    const resClone = res.clone();
 
     //busco el token
     const token = res.headers.get("Authorization");
@@ -29,12 +29,11 @@ const userLogin = async (email, password) => {
 
     //busco el id del usuario en el body
     const data = await resClone.json();
-   
+
     return data;
-   
   } catch (error) {
     console.error("Error en el login:", error);
-    throw error; 
+    throw error;
   }
 };
 
