@@ -11,17 +11,16 @@ import PostController from "./controllers/postController.js";
 import createPostsRouter from "./routes/postsRouter.js";
 import SearchController from "./controllers/searchController.js";
 
-
-
 const system = getInstagramSystem();
 const app = express();
-app.use(cors({
-    origin: 'http://localhost:5173', 
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
-    exposedHeaders: ['Authorization'] 
-  }));
 const port = 7070;
+
+app.use(cors({
+  origin: 'http://localhost:5173', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+  exposedHeaders: ['Authorization'] 
+}));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

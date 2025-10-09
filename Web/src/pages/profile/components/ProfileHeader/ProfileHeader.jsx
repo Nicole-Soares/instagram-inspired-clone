@@ -6,6 +6,7 @@ export default function ProfileHeader({
   name,
   postsCount,
   followedCount,
+  showFollowButton,
   isFollowing,
   onToggleFollow,
 }) {
@@ -15,10 +16,12 @@ export default function ProfileHeader({
       <div className="profile-info">
         <div className="profile-info-top">
           <h2>{name}</h2>
-          <FollowButton
-            isFollowing={isFollowing}
-            onToggle={onToggleFollow}
+          {showFollowButton && (
+            <FollowButton
+              isFollowing={isFollowing}
+              onToggle={onToggleFollow}
           />
+          )}
         </div>
         <div className="profile-stats">
           <p>{postsCount} publicaciones</p>

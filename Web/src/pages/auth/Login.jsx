@@ -3,9 +3,8 @@ import loginPhoto from "../../assets/instagram-login-photo.png";
 import textLogo from "../../assets/instagram-text-logo.svg";
 import "../../style/Login.css";
 import { userLogin } from "../../service/login/api.jsx";
-import { Link } from "react-router";
 import LoginForm from "./components/LoginForm.jsx";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -28,7 +27,7 @@ function Login() {
     userLogin(email, password)
       .then(() => {
         //navigate('/Home');
-        navigate(`/`); // cambiara /Home cuando este
+        navigate("/"); // cambiara /Home cuando este
       })
       .catch((err) => {
         setError(err.message);

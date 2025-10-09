@@ -2,7 +2,9 @@
   display: flex;
   align-items: center;
   gap: 40px;
+  margin-top: 20px;
   margin-bottom: 24px;
+  color: black;
 }
 
 .profile-avatar {

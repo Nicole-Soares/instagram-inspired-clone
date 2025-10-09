@@ -1,18 +1,62 @@
 import React, { useEffect, useState } from "react";
+import apiFetch from "../../service/apiFetch";
 import { useParams } from "react-router-dom";
+import Storage from "../../service/storage";
 
 import ProfileHeader from "./components/ProfileHeader/ProfileHeader";
 import PostGrid from "./components/PostGrid/PostGrid";
 import PostCard from "./components/PostCard/PostCard";
 import "./UserProfile.css";
+import { use } from "react";
 
 const API_URL = "http://localhost:7070";
-const AUTH_TOKEN = localStorage.getItem("token");
+
+//normaliza los ids a string
+const idToString = (v) => {
+  if (!v) return "";
+  if (typeof v === "string") return v.trim();
+  return String(v.id ?? v._id ?? v.userId ?? "").trim();
+};
+
+//comprueba si el usuario logueado esta en la lista de seguidores
+const isFollowedBy = (followers, meId) => {
+  if (!meId || !Array.isArray(followers)) return false;
+  const me = idToString(meId);
+  return followers.some((f) => idToString(f) === me);
+};
+
+//calcula los flags isMe, isFollowing y followersCount
+const computeProfileFlags = (profile, meId) => {
+  const me = idToString(meId);
+  const profileId = idToString(profile);
+  const followers = Array.isArray(profile.followers) ? profile.followers : [];
+  const isMe = !!me && (me === profileId);
+  const isFollowing = !isMe && isFollowedBy(followers, me);
+  const followersCount = Number.isFinite(profile.followersCount)
+    ? profile.followersCount
+    : followers.length;
+  return { isMe, isFollowing, followersCount };
+};
+
+//obtiene el Id del usuario logueado y lo normaliza
+const getMeId = () => {
+  const stored = Storage.getUserId?.();
+  if (stored) return idToString(stored);
+  try {
+    const raw = (Storage.getToken() || "").replace(/^Bearer\s+/i, "");
+    const payload = JSON.parse(atob(raw.split(".")[1] || ""));
+    return idToString(payload.userId);
+  } catch {
+    return "";
+  }
+};
 
 function UserProfile() {
   const { userId } = useParams();
-  const [data, setData] = useState(null);   
-  const [isFollowing, setIsFollowing] = useState(false); 
+  const [data, setData] = useState(null);
+  const [isMe, setIsMe] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followersCount, setFollowersCount] = useState(0);
   const [followPending, setFollowPending] = useState(false);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -20,91 +64,62 @@ function UserProfile() {
   useEffect(() => {
     const controller = new AbortController();
 
-    async function fetchProfile() {
+    (async () => {
       setLoading(true);
       setErrorMessage("");
-      
       try {
-        const res = await fetch(`${API_URL}/user/${userId}`, {
+        const res = await apiFetch(`${API_URL}/user/${userId}`, {
           method: "GET",
           signal: controller.signal,
-          headers: {
-            "Content-Type": "application/json",
-            ...(AUTH_TOKEN ? { Authorization: AUTH_TOKEN } : {}), 
-          },
-        });
+        }, "No fue posible obtener el perfil. ");
 
-        if (!res.ok) {
-          let msg = res.statusText;
-          try {
-            const err = await res.json();
-            msg = err?.error || err?.message || msg;
-          } catch {}
-          throw new Error(msg);
-        }
+        setData(res);
+        const meId = getMeId();
+        const flags = computeProfileFlags(res, meId);
+        setIsMe(flags.isMe);
+        setIsFollowing(flags.isFollowing);
+        setFollowersCount(flags.followersCount);
 
-        const profile = await res.json();
-        setData(profile);
-        setIsFollowing(Boolean(profile?.isFollowing));
       } catch (e) {
         if (e.name !== "AbortError") {
-          setErrorMessage("No fue posible cargar el perfil");
+          setErrorMessage(e.message || "No fue posible cargar el perfil");
           setData(null);
         }
       } finally {
         setLoading(false);
       }
-    }
-    
-    fetchProfile();
+    })();
+
     return () => controller.abort();
   }, [userId]);
-  
-  
-  const handleToggleFollow = async () => {
-    if(!data || followPending) return;
 
+  const handleToggleFollow = async () => {
+    if (!data || followPending || isMe) return;
     setFollowPending(true);
 
-    const prevIsFollowing = isFollowing;
-    setIsFollowing(p => !p);
-
     try {
-      const res = await fetch(`${API_URL}/users/${userId}/follow`, {
+      const res = await apiFetch(`${API_URL}/users/${userId}/follow`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: AUTH_TOKEN,
-        },
-      });
+      }, "Fallo al realizar la accion de seguir/dejar de seguir.");
 
-      if(!res.ok) {
-        let msg = res.statusText;
-        try {
-          const err = await res.json();
-          msg = err?.error || err?.message || msg;
-        } catch {}
-        throw new Error(msg);
-      }
+      setData(res);
+      const meId = getMeId();
+      const flags = computeProfileFlags(res, meId);
+      setIsFollowing(flags.isFollowing);
+      setFollowersCount(flags.followersCount);
 
-      const updated = await res.json();
-      setData(updated);
-      setIsFollowing(Boolean(updated?.isFollowing));
     } catch (e) {
-      setIsFollowing(prevIsFollowing);
       setErrorMessage(e.message);
     } finally {
       setFollowPending(false);
     }
   };
-    
+
   if (loading) return <div className="user-profile"><p>Cargando perfil…</p></div>;
-  if (!data) return <div className="user-profile"><p>{errorMessage || "No se encontro el usuario."}</p></div>;
+  if (!data) return <div className="user-profile"><p>{errorMessage || "No se encontró el usuario."}</p></div>;
 
-  const posts = data.posts ?? [];
-  const followersCount = data.followersCount ?? data.followers?.length ?? 0;
-  const isOwnProfile = Boolean(data.isMe);
-
+  const posts = data.posts || [];
+  
   return (
     <div className="user-profile">
       <ProfileHeader
@@ -112,14 +127,18 @@ function UserProfile() {
         name={data.name}
         postsCount={posts.length}
         followedCount={followersCount}
-        showFollowButton={!isOwnProfile}
+        showFollowButton={!isMe}           
         isFollowing={isFollowing}
         onToggleFollow={handleToggleFollow}
         disabledFollow={followPending}
       />
       <PostGrid>
-        {posts.map(p => (
-          <PostCard key={p.id} src={p.image}/>
+        {posts.map((p) => (
+          <PostCard 
+            key={p.id}
+            id={p.id}
+            src={p.image} 
+          />
         ))}
       </PostGrid>
     </div>

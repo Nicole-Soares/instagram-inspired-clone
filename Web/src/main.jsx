@@ -6,9 +6,7 @@ import App from './App.jsx'
 import Post from './pages/post/Post.jsx'
 import AgregarPost from './pages/agregarPost/AgregarPost.jsx'
 import PostEdit from './pages/postEdit/PostEdit.jsx'
-import { BrowserRouter, Routes, Route } from 'react-router'
 import Login from './pages/auth/Login.jsx'
-import Post from './pages/Post.js'
 import UserProfile from './pages/profile/UserProfile.jsx';
 
 createRoot(document.getElementById('root')).render(
