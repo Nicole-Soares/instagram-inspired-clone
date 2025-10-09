@@ -12,10 +12,6 @@ const searchContent = async (query) => {
 
     const data = await res.json();
 
-    if (!res.ok) {
-      throw new Error(data.error || "Error en la búsqueda");
-    }
-
     return data;
     
   } catch (error) {
