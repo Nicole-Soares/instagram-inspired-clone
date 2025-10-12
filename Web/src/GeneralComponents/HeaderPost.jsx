@@ -1,5 +1,5 @@
 import React from "react";
-import { formateoFecha } from "../../../utils/formateoFecha";
+import { formateoFecha } from "../utils/formateoFecha";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditIcon from "@mui/icons-material/Edit";
 

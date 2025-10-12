@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import HeaderPost from "./components/HeaderPost";
+import HeaderPost from "../../GeneralComponents/HeaderPost";
 import CommentList from "./components/CommentList";
 import CommentForm from "./components/CommentForm";
-import Info from "./components/Info";
+import Info from "../../GeneralComponents/Info";
 import {
   getPostById,
   addCommentToPost,
