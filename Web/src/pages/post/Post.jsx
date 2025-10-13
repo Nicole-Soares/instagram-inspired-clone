@@ -67,6 +67,11 @@ const Post = () => {
     fetchPost();
   }, [id, token]); // si pasa algun cambio vuelve a ejecutar el useEffect
 
+  //Se encarga de actualizar el estado del post
+    const handleUpdatePost = (updatedPost) => {
+        setPost(updatedPost);
+    };
+
   const handleSubmit = async () => {
     if (!comentario.trim()) {
       toast.warn("El comentario no puede estar vacío.");
@@ -79,34 +84,6 @@ const Post = () => {
       setComentario("");
     } catch (error) {
       toast.error("Error al cargar el comentario.");
-      console.error(error);
-    }
-  };
-
-  const handleClickLike = async () => {
-    try {
-      const currentUserId = Storage.getUserId();
-      if (!currentUserId) {
-        toast.error("Debes iniciar sesión para dar 'Me gusta'.");
-        return;
-      }
-
-      const updatedPost = await likePost(id);
-
-      const userHasLiked = updatedPost.likes.some(
-        (like) => like.id === currentUserId
-      );
-      //si aparece el like despues de haber hecho el fetch entonces es porque es nuevo
-      if (userHasLiked) {
-        toast.success("¡Me gusta registrado! ❤️");
-      } else {
-        toast.success("¡Me gusta eliminado! 💔");
-      }
-
-      //actualizo mi estado porque ahora el post que tengo esta desactualziado
-      setPost(updatedPost);
-    } catch (error) {
-      toast.error("Error al procesar el 'Me gusta'.");
       console.error(error);
     }
   };
@@ -174,7 +151,8 @@ const Post = () => {
           handleNavigateToUser={handleNavigateToUser}
         />
         <hr className="lineaDivisora" />
-        <Info post={post} onLikeClick={handleClickLike} />
+        {/*Ahora se le pasa el 'post' al componente info*/}
+        <Info post={post} postId = {id} onUpdatePost={handleUpdatePost}/>
         <CommentForm
           comentario={comentario}
           setComentario={setComentario}

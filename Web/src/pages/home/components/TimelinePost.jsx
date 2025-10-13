@@ -2,7 +2,7 @@ import HeaderPost from '../../../GeneralComponents/HeaderPost';
 import Info from '../../../GeneralComponents/Info';
 import { useNavigate } from 'react-router-dom';
 
-export default function TimelinePost({ post }) {
+export default function TimelinePost({ post, onUpdatePost }) {
     const navigate = useNavigate();
 
     return (
@@ -21,12 +21,7 @@ export default function TimelinePost({ post }) {
                 onClick={() => navigate(`/post/${post.id}`)}
             />
 
-            <Info
-                post={post}
-                onLikeClick={() => {
-                    // Lógica para dar like
-                }}
-            />
+            <Info post={post} postId={post.id} onUpdatePost = {onUpdatePost} />
 
             <div className="post-description" onClick={() => navigate(`/post/${post.id}`)}>
                 <p>{post.description}</p>

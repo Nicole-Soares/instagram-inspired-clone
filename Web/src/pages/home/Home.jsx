@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { ToastContainer } from 'react-toastify';
 
 import '../../style/Home.css';
 
@@ -53,12 +54,23 @@ const Home = () => {
         return <div>Cargando...</div>;
     }
 
+    const handleUpdatePost = (updatedPost) => {
+        setPosts(posts.map(post =>
+            post.id === updatedPost.id ? updatedPost : post
+        ));
+    };
+
     return (
         <div className="home-container">
+            <ToastContainer />
             <div className="main-content-container">
                 <div className="timeline-container">
                     {posts.length > 0 ? (
-                        posts.map(post => <TimelinePost key={post.id} post={post} />)
+                        posts.map(post =>
+                            <TimelinePost
+                                key={post.id}
+                                post={post}
+                                onUpdatePost={handleUpdatePost} />)
                     ) : (
                         <p>No hay publicaciones para mostrar.</p>
                     )}
