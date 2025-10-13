@@ -96,7 +96,6 @@ function PostEdit() {
     }
   };
 
-  // 3. Renderizado Condicional de Seguridad y Carga
   if (isUnauthorized) return <UnauthorizedModal />; // Muestra el modal si no hay token o es inválido (401)
 
   if (isForbidden) return <ForbiddenModal />; // Muestra el modal si no tiene permiso (403)

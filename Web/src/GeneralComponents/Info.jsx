@@ -1,8 +1,9 @@
 import { toast } from "react-toastify";
 import Storage from "../service/storage";
 import { likePost } from "../service/post/postService";
+import "../style/Info.css";
 
-const Info = ({ post, postId, onUpdatePost }) => {
+const Info = ({ post, postId, onUpdatePost, handleRedirect}) => {
 
   const handleClickLike = async () => {
     try {
@@ -11,7 +12,6 @@ const Info = ({ post, postId, onUpdatePost }) => {
         toast.error("Debes iniciar sesión para dar 'Me gusta'.");
         return;
       }
-
 
       const updatedPost = await likePost(postId);
 
@@ -40,7 +40,7 @@ const Info = ({ post, postId, onUpdatePost }) => {
       <p onClick={handleClickLike}>
         ❤️ <strong>{post.likes?.length || 0}</strong> me gusta
       </p>
-      <p>
+      <p onClick={handleRedirect}>
         💬 <strong>{post.comments?.length || 0}</strong> comentarios
       </p>
     </div>

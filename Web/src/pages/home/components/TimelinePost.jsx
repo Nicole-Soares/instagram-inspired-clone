@@ -1,9 +1,14 @@
 import HeaderPost from '../../../GeneralComponents/HeaderPost';
 import Info from '../../../GeneralComponents/Info';
 import { useNavigate } from 'react-router-dom';
+import '../../../style/TimelinePost.css';
 
 export default function TimelinePost({ post, onUpdatePost }) {
     const navigate = useNavigate();
+
+    const handleRedirect = () => {
+        navigate(`/post/${post.id}`);
+    };
 
     return (
         <div className="timeline-post">
@@ -18,12 +23,18 @@ export default function TimelinePost({ post, onUpdatePost }) {
                 src={post.image}
                 alt="Post content"
                 className="post-image"
-                onClick={() => navigate(`/post/${post.id}`)}
+                onClick={handleRedirect}
             />
 
-            <Info post={post} postId={post.id} onUpdatePost = {onUpdatePost} />
+            <Info
+                post={post}
+                postId={post.id}
+                onUpdatePost={onUpdatePost}
+                handleRedirect={handleRedirect}
+            />
 
-            <div className="post-description" onClick={() => navigate(`/post/${post.id}`)}>
+
+            <div className="post-description">
                 <p>{post.description}</p>
             </div>
         </div>

@@ -1,0 +1,14 @@
+.infoPost {
+  display: flex;
+  justify-content: space-around;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+@media (max-width: 768px) {
+  .infoPost {
+    font-size: 0.8rem;
+  }
+}

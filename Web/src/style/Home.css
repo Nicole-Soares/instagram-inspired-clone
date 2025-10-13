@@ -1,29 +1,25 @@
-/* Contenedor principal de toda la página, se expande para ocupar todo el espacio vertical disponible */
 .home-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: #fafafa; /* Fondo claro similar a Instagram */
+    background-color: #fafafa; 
 }
 
-/* Contenedor para la línea de tiempo. Se centra y se le aplica el padding y el ancho máximo de Figma */
 .main-content-container {
     display: flex;
     justify-content: center;
     flex-grow: 1; 
 }
 
-/* Estilos para la línea de tiempo. Los posts se apilan verticalmente con un espacio entre ellos */
 .timeline-container {
     display: flex;
     flex-direction: column;
     width: 100%;
     max-width: 1200px;
-    padding: 16px 32px; /* Top/Bottom 16px, Left/Right 32px */
-    gap: 12px; /* Espacio vertical entre cada post */
+    padding: 16px 32px; 
+    gap: 12px;
 }
 
-/* --- Estilos para un post individual en la línea de tiempo --- */
 .timeline-post {
     background-color: #ffffff;
     border: 1px solid #dbdbdb;
@@ -34,7 +30,6 @@
     gap: 10px;
 }
 
-/* Encabezado del post: info del usuario y fecha */
 .post-header {
     display: flex;
     align-items: center;
@@ -45,7 +40,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    cursor: pointer; /* Hace que toda la sección sea clicable */
+    cursor: pointer;
 }
 
 .post-avatar {
@@ -71,7 +66,7 @@
     font-size: 12px;
 }
 
-/* Imagen del post */
+
 .post-image {
     width: 100%;
     height: auto;
@@ -79,10 +74,9 @@
     cursor: pointer;
 }
 
-/* Acciones del post: likes y comentarios */
 .infoPost {
     display: flex;
-    gap: 15px; /* Espacio entre los elementos */
+    gap: 15px; 
     font-size: 14px;
     color: #8e8e8e;
 }
@@ -98,6 +92,6 @@
 
 .post-description {
     font-size: 14px;
-    margin-top: -5px; /* Ajusta el espacio para que esté cerca de los likes/comentarios */
-    cursor: pointer; /* Toda la descripción es clicable para ir al post */
+    margin-top: -5px; 
+    cursor: pointer;
 }
