@@ -9,7 +9,6 @@ import Info from "../../GeneralComponents/Info";
 import {
   getPostById,
   addCommentToPost,
-  likePost,
   deletePost,
 } from "../../service/post/postService";
 import "../../style/Post.css";

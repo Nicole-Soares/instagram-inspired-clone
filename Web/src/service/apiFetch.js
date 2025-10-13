@@ -39,6 +39,7 @@ const apiFetch = async (url, options = {}, message) => {
         // Intentamos obtener el cuerpo JSON del error
         try {
             errorData = await response.json();
+            console.log(errorData)
         } catch (e) {
             // Si falla, usamos el texto de estado HTTP o el mensaje por defecto
             errorData.message = response.statusText || message;
