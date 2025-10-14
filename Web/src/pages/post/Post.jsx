@@ -31,7 +31,7 @@ const Post = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
-    if (!token) {
+    if (!token || Storage.isTokenExpired) {
       setIsUnauthorized(true);
       setLoading(false);
       return;
@@ -46,13 +46,14 @@ const Post = () => {
         setPost(data);
         setIsOwner(String(loggedUserId) === String(postId));
       } catch (error) {
-        // Error 401: Token inválido
-        if (error.message.includes("El token es inválido o ha expirado.")) {
+        const status = error.response?.status || error.status;
+        
+        if (status === 401) {
           setIsUnauthorized(true);
-          // Si no, si es 403:
-        } else if (error.message.includes("Not Found")) {
+        
+        } else if (status === 404) {
           setIsNotFound(true);
-          // Si no es 401, 403 ni 404, asume un error de datos o conexión y muestra un modal genérico
+         
         } else {
           toast.error("Error al cargar el post.");
           console.error(error);
