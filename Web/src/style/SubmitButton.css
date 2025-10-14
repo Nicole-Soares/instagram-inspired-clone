@@ -1,7 +1,7 @@
-button {
+.submit-button {
   display: flex;
   outline: none;
-  background-color: #495DF9B2;
+  background-color: var(--color-principal);
   border: none;
   color: white;
   cursor: pointer;
@@ -15,16 +15,16 @@ button {
   justify-content: center;
 }
 
-button:hover {
-    background-color: #495DF9;
+.submit-button:hover {
+    background-color: var(--color-principal-hover);
 }
 
-button:active  {
+.submit-button:active  {
     outline: none;
     transform: scale(0.96)
 }
 
-button:focus {
+.submit-button:focus {
    outline: none;  
 }
 

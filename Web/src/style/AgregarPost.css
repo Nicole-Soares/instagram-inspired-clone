@@ -1,5 +1,5 @@
 .paginaAgregarPost {
-    background-color: white;
+    background-color: var(--color-fondo);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -29,10 +29,9 @@
     gap: 20px;
     flex-wrap: wrap;
     align-items: stretch;
-
 }
 
-.agregarImagen{
+.agregarImagen {
     color: #333;
     font-size: clamp(30px, 4vw, 30px);
     font-weight: 400;
@@ -40,8 +39,8 @@
 
 .contenedorImagen {
     width: 50%;
-    background-color:#dedede ;
-    border: 1px  #ccc;
+    background-color: #dedede;
+    border: 1px #ccc;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -51,7 +50,6 @@
     box-sizing: border-box;
     text-align: center;
     overflow: hidden;
-   
 }
 
 .contenedorImagen img {
@@ -59,7 +57,6 @@
     max-height: 100%;
     object-fit: cover;
     border-radius: 8px;
-    
 }
 
 .contenedorImagen div {
@@ -67,7 +64,6 @@
     flex-direction: column;
     align-items: center;
     color: #666;
-
 }
 
 .contenedorImagen svg {
@@ -82,10 +78,10 @@
     flex-direction: column;
     gap: 15px;
     padding: 20px;
-    background-color: #fff;
+    background-color: var(--color-fondo);
     border-radius: 8px;
     box-sizing: border-box;
-    flex:1;
+    flex: 1;
     width: 100%;
 }
 
@@ -98,13 +94,12 @@
     font-size: 12px;
     box-sizing: border-box;
     background-color: #f5f5f5;
-    font-family: Arial, Helvetica, sans-serif;
-    height: 40px; 
+    font-family: var(--font-family);
     resize: none;
 }
 
 .contenedorImputs textarea {
-   height: 60px;
+    height: 60px;
 }
 
 input[type="text"] {
@@ -117,27 +112,29 @@ textarea {
 
 .contenedorImputs input:focus,
 .contenedorImputs textarea:focus {
-   
     border-color: #5d5dff;
+    outline: none;
 }
 
-
-
-.botonAgregarPost {
+.contenedorImputs .botonAgregarPost {
+    display: block;              
     width: 100%;
-    padding: 12px;
-    background-color: #b3b3ff;
-    color: white;
-    font-size: 16px;
-    font-weight: 400;
+    background-color: var(--color-principal);
+    color: var(--color-fondo);
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-weight: bold;
+    font-size: 0.95rem;
+    padding: 12px 0;
+    transition: background-color 0.2s ease;
+    box-sizing: border-box;
+    margin-top: 5px;
+    text-align: center;
 }
 
-.botonAgregarPost:hover {
-    background-color: #4b4bd8;
+.contenedorImputs .botonAgregarPost:hover {
+    background-color: var(--color-principal-hover);
 }
 
 /* --- Media query para dispositivos móviles --- */
@@ -148,12 +145,18 @@ textarea {
         gap: 0;
     }
 
-    .contenedorImagen, .contenedorImputs {
+    .contenedorImagen,
+    .contenedorImputs {
         width: 100%;
         flex: auto;
     }
 
     .contenedorImputs {
         margin-top: 20px;
+    }
+
+    .botonAgregarPost {
+        font-size: 1rem;
+        padding: 14px 0;
     }
 }

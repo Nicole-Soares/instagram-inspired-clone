@@ -108,7 +108,10 @@ function PostEdit() {
 
   return (
     <div className="container">
-      <h2 className="preview-title">Preview</h2>
+      <div className="post-edit-header">
+        <h2 className="preview-title">Preview</h2>
+      </div>
+      <div className="post-edit-content">
       <div className="preview-section">
         <div className="preview">
           {imageUrl ? (
@@ -133,7 +136,7 @@ function PostEdit() {
         />
         <button onClick={handleSubmit}>Guardar Cambios</button>
       </div>
-
+      </div>
       {errorMessage && (
         <div className="modalOverlay">
           <div className="modalContent">

@@ -4,7 +4,7 @@
   align-items: flex-start;
   gap: 32px;
   padding: 20px;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: var(--font-family);
   background-color: #fff; 
 }
 
@@ -73,37 +73,42 @@
   gap: 8px;
   margin-top: 10px;
   width: 100%;
+  align-items: stretch;
 }
 
-textarea {
+.contenedorInput textarea {
   resize: none;
-  padding: 10px;
+  padding: 10px 12px;
   border-radius: 8px;
   border: 1px solid #ddd;
   font-size: 0.9rem;
   background-color: #fafafa;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-family);
   color: #222;
   width: 100%;
+  box-sizing: border-box;
 }
 
-
-.botonAgregarPost {
-  width: 100%; /* Ocupa el ancho completo del contenedorInput */
-  box-sizing: border-box;
-  padding: 12px 0;
-  background-color: #9b87f5;
+.contenedorInput .botonAgregarPost {
+  all: unset;
+  display: block;
+  width: 100%;
+  background-color: var(--color-principal);
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
   font-size: 0.95rem;
+  padding: 12px 0;
+  text-align: center;
   transition: background-color 0.2s ease;
+  margin-top: 4px;
+  box-sizing: border-box;
 }
 
-.botonAgregarPost:hover {
-  background-color: #7c65d1;
+.contenedorInput .botonAgregarPost:hover {
+  background-color: #7d6ff0;
 }
 
 h3{

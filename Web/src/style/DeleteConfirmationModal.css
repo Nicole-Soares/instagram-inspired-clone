@@ -14,7 +14,7 @@
 
 /* -------------------- fondo del cuadrado del modal-------------------- */
 .modalContent {
-    background-color: #ffffff; 
+    background-color: var(--color-fondo); 
     padding: 25px 35px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
