@@ -26,7 +26,7 @@ const AgregarPost = () => {
   };
 
   useEffect(() => {
-    if (!token) {
+    if (!token && Storage.isTokenExpired()) {
       setIsUnauthorized(true);
       return;
     }
@@ -48,9 +48,11 @@ const AgregarPost = () => {
   const handleSubmit = async () => {
     try {
       const nuevoPost = await crearPost(url, descripcion);
-
+      console.log(nuevoPost.id)
       toast.success("Post creado con éxito 🎉");
-      navigate(`/post/${nuevoPost.id}`);
+      setTimeout(() => {
+        navigate(`/post/${nuevoPost.id}`);
+      }, 1000);
       setUrl("");
       setDescripcion("");
     } catch (error) {
