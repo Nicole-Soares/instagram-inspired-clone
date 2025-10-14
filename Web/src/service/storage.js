@@ -23,11 +23,24 @@ const getUserId = () => {
     }
 };
 
+const isTokenExpired = () => {
+    const token = getToken();
+    if (!token) return true;
+    try {
+      const { exp } = jwtDecode(token);
+      const now = Date.now() / 1000;
+      return exp < now;
+    } catch {
+      return true; // token corrupto o inválido
+    }
+  };
+
 const Storage = { 
     setToken, 
     getToken, 
     clearToken, 
-    getUserId 
+    getUserId,
+    isTokenExpired 
 };
 
 export default Storage;

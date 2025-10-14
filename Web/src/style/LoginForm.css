@@ -1,8 +1,12 @@
+@import './InputField.css';
+@import './SubmitButton.css';
+
 .login-form{
   display: flex;
   flex-direction: column;
   gap: 6px;
-  width: 80%;
+  width: 400px;
+  align-items: center;
  }
 
 .login-form .error {

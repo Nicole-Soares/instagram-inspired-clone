@@ -41,7 +41,6 @@ const Post = () => {
       try {
         setLoading(true);
         const data = await getPostById(id, navigate);
-        console.log(data)
         const loggedUserId = Storage.getUserId();
         const postId = data.user.id;
         setPost(data);

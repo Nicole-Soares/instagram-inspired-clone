@@ -3,10 +3,12 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import Post from './pages/post/Post.jsx'
 import AgregarPost from './pages/agregarPost/AgregarPost.jsx'
-import PostEdit from './pages/postEdit/postEdit.jsx'
+import PostEdit from './pages/postEdit/PostEdit.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router'
 import Login from './pages/auth/Login.jsx'
 import Home from './pages/home/Home.jsx'
+import Register from './pages/auth/Register.jsx'
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -17,6 +19,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/post/agregarPost" element={<AgregarPost />} />
         <Route path="/post/editPost/:id" element={<PostEdit />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

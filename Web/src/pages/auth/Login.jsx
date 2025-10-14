@@ -1,11 +1,11 @@
-import { useState } from "react";
-import loginPhoto from "../../assets/instagram-login-photo.png";
-import textLogo from "../../assets/instagram-text-logo.svg";
-import "../../style/Login.css";
-import { userLogin } from "../../service/login/api.jsx";
-import { Link } from "react-router";
+import { useState, useEffect } from "react";
+import loginPhoto from '../../assets/instagram-login-photo.png'
+import textLogo from '../../assets/instagram-text-logo.svg'
+import '../../style/Login.css'
+import { userLogin } from "../../service/authService.js";
+import { Link, useNavigate } from "react-router";
 import LoginForm from "./components/LoginForm.jsx";
-import { useNavigate } from "react-router";
+import Storage from "../../service/storage.js";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -13,6 +13,15 @@ function Login() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+      const token = Storage.getToken();
+      if (token&& !Storage.isTokenExpired()) {
+          navigate('/');  
+      }else{
+        Storage.clearToken();
+      }
+      }, [navigate]);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -27,8 +36,8 @@ function Login() {
 
     userLogin(email, password)
       .then(() => {
-        //navigate('/Home');
-        navigate(`/`); // cambiara /Home cuando este
+        
+        navigate(`/`); 
       })
       .catch((err) => {
         setError(err.message);
@@ -40,8 +49,9 @@ function Login() {
 
   return (
     <div className="login-container">
-      <img src={loginPhoto} alt="Login" className="login-photo" />
-
+      <div className="photo-container">
+        <img src = {loginPhoto} alt="Login" className="login-photo"/>
+      </div>
       <div className="form-container">
         <img src={textLogo} alt="textLogo" className="text-logo" />
 

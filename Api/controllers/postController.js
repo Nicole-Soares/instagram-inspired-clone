@@ -55,9 +55,13 @@ class PostController {
     updatePost = async (req, res) => {
         const bodySchemaPost = yup.object({
             image: yup
-                .string()
-                .required("La imagen es obligatoria para la construccion del post.")
-                .url("El URL de la imagen debe ser válido.")
+            .string()
+            .required("La imagen es obligatoria.")
+            .test('is-valid-url-or-blob', 'La imagen debe ser una URL válida o un blob.', value =>
+                typeof value === 'string' &&
+                (value.startsWith('http://') ||
+                value.startsWith('https://') ||
+                value.startsWith('blob:')))
         });
 
         try {
