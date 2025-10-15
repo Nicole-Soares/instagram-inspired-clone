@@ -5,8 +5,8 @@ import Storage from "../../service/storage";
 import ProfileHeader from "./components/ProfileHeader/ProfileHeader";
 import PostGrid from "./components/PostGrid/PostGrid";
 import PostCard from "./components/PostCard/PostCard";
+import SideBar from "../../GeneralComponents/SideBar";
 import "./UserProfile.css";
-
 
 const API_URL = "http://localhost:7070";
 
@@ -120,27 +120,31 @@ function UserProfile() {
   const posts = data.posts || [];
   
   return (
-    <div className="user-profile">
-      <ProfileHeader
-        avatar={data.image}
-        name={data.name}
-        postsCount={posts.length}
-        followedCount={followersCount}
-        showFollowButton={!isMe}           
-        isFollowing={isFollowing}
-        onToggleFollow={handleToggleFollow}
-        disabledFollow={followPending}
-      />
-      <PostGrid>
-        {posts.map((p) => (
-          <PostCard 
-            key={p.id}
-            id={p.id}
-            src={p.image} 
-          />
-        ))}
-      </PostGrid>
-    </div>
+    <div className="page-container">
+      <SideBar />
+
+      <div className="user-profile">
+        <ProfileHeader
+          avatar={data.image}
+          name={data.name}
+          postsCount={posts.length}
+          followedCount={followersCount}
+          showFollowButton={!isMe}           
+          isFollowing={isFollowing}
+          onToggleFollow={handleToggleFollow}
+          disabledFollow={followPending}
+        />
+        <PostGrid>
+          {posts.map((p) => (
+            <PostCard 
+              key={p.id}
+              id={p.id}
+              src={p.image} 
+            />
+          ))}
+        </PostGrid>
+      </div>
+    </div>  
   );
 }
 

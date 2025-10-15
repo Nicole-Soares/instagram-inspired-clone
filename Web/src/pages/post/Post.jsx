@@ -16,6 +16,7 @@ import Storage from "../../service/storage";
 import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
 import NotFoundModal from "../../generalComponents/NotFoundModal";
 import DeleteConfirmationModal from "../../generalComponents/DeleteConfirmationModal";
+import SideBar from "../../GeneralComponents/SideBar";
 
 const Post = () => {
   const { id } = useParams();
@@ -40,7 +41,6 @@ const Post = () => {
     const fetchPost = async () => {
       try {
         setLoading(true);
-        console.log("pasa")
         const data = await getPostById(id, navigate);
         const loggedUserId = Storage.getUserId();
         const postId = data.user.id;
@@ -128,7 +128,8 @@ const Post = () => {
   return (
     <div className="paginaPost">
       <ToastContainer />
-      <div className="contenedorImagen">
+      <SideBar/>
+      <div className="contenedorImagenPost">
         {post.image && (
           <img src={post.image} alt="Imagen del post" className="imagenPost" />
         )}

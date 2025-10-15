@@ -9,6 +9,7 @@ import Storage from '../../service/storage';
 import apiFetch from '../../service/apiFetch';
 import UnauthorizedModal from '../../generalComponents/UnauthorizedModal';
 import TimelinePost from './components/TimelinePost';
+import SideBar from '../../GeneralComponents/SideBar';
 
 
 const Home = () => {
@@ -63,6 +64,7 @@ const Home = () => {
     return (
         <div className="home-container">
             <ToastContainer />
+            <SideBar/>
             <div className="main-content-container">
                 <div className="timeline-container">
                     {posts.length > 0 ? (

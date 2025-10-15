@@ -7,6 +7,7 @@ import { crearPost } from "../../service/agregarPost/agregarPostService";
 import { toast, ToastContainer } from "react-toastify";
 import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
 import Storage from "../../service/storage";
+import SideBar from "../../GeneralComponents/SideBar";
 
 const AgregarPost = () => {
   //se guarda el valor puesto en el input o mismo si se subio un archivo desde documentos
@@ -46,9 +47,12 @@ const AgregarPost = () => {
   };
 
   const handleSubmit = async () => {
+     if (!url.trim()) {
+          toast.warn("Necesita una imagen para crear un post.");
+          return;
+        }
     try {
       const nuevoPost = await crearPost(url, descripcion);
-      console.log(nuevoPost.id)
       toast.success("Post creado con éxito 🎉");
       setTimeout(() => {
         navigate(`/post/${nuevoPost.id}`);
@@ -70,6 +74,8 @@ const AgregarPost = () => {
   return (
     <div className="paginaAgregarPost">
       <ToastContainer />
+      <SideBar/>
+      <div className="paginaAgregarPostContenido">
       <div className="contenedorTituloAgregarPost">
         <h1 className="tituloAgregarPost">Preview</h1>
       </div>
@@ -87,6 +93,7 @@ const AgregarPost = () => {
           onDescripcionChange={(e) => setDescripcion(e.target.value)}
           onSubmit={handleSubmit}
         />
+      </div>
       </div>
     </div>
   );

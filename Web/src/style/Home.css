@@ -1,26 +1,33 @@
 .home-container {
     display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-color: #fafafa; 
+  flex-direction: row;
+  height: 100vh;
+  overflow: hidden; 
 }
 
 .main-content-container {
-    display: flex;
-    justify-content: center;
-    flex-grow: 1; 
+    display: flex;                
+    justify-content: center;      
+    align-items: flex-start;      
+    flex-grow: 1;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 40px 0;
+    margin-left: 40px;;
 }
 
 .timeline-container {
     display: flex;
     flex-direction: column;
+    gap: 20px;
     width: 100%;
-    max-width: 1200px;
-    padding: 16px 32px; 
-    gap: 12px;
+    max-width: 600px;             
+    margin: 0 auto;               
+    align-items: stretch;
 }
 
 .timeline-post {
+    width: 100%;                  
     background-color: #ffffff;
     border: 1px solid #dbdbdb;
     border-radius: 5px;
