@@ -1,0 +1,111 @@
+.sidebar-container {
+    width: 260px; 
+    flex-shrink: 0;
+    padding-right: 20px;
+    border-right: 2px solid #dbdbdb;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    min-height: 100vh;
+}
+
+.sidebar-logo-link {
+    display: flex;
+    justify-content: left;
+    padding-top: 30px;
+}
+
+.sidebar-logo-image {
+    width: 120px;
+    height: 50px;
+}
+
+.sidebar-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-search input {
+    width: 100%;
+    border-radius: 3px;
+    font-size: 14px;
+    color: #262626;
+}
+
+.search-icon-button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+    outline: none;
+}
+
+.search-icon-button:focus, .search-icon-button:active, .search-icon-button:hover {
+    outline: none;
+    border: none;
+    background: none;
+}
+
+.search-icon-image {
+    position: static;
+    width: 16px;
+    height: 16px;
+}
+
+.sidebar-home {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-home-logo {
+    width: 24px;
+    height: 24px;
+}
+
+.sidebar-create-post-logo {
+    width: 20px;
+    height: 20px;
+}
+
+.sidebar-profile-logo {
+    width: 24px;
+    height: 24px;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 40px; 
+    flex-grow: 1;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #262626;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-link:hover {
+    font-weight: 600;
+    color: #000000;
+}
+
+.nav-link-active {
+    font-weight: 700;
+    color: #000000;
+}
+
+.sidebar-logout-logo {
+    width: 22px;
+    height: 22px;
+    margin-top: auto;
+}
