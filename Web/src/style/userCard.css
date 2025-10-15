@@ -1,9 +1,7 @@
 .user-card {
-    width: 100px;
-    height: 100px;
-    border-radius: 100px;
-    border-width: 1px;
-    border: 1px solid #CCCCCC;
+    aspect-ratio: 1 / 1; 
+    border-radius: 50%;
+    border: 1px solid #ccc;
     overflow: hidden;
 }
 

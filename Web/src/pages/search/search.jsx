@@ -7,15 +7,26 @@ import { searchContent } from "../../service/searchService.js";
 import "../../style/search.css";
 import { Link } from 'react-router';
 import { Storage} from "../../service/storage.js";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 
 
 
 function Search() {
-  const [query, setQuery] = useState("");
+  const [searchParams] = useSearchParams();
+  const queryParam = searchParams.get("q") || "";
+  const [query, setQuery] = useState(queryParam);
   const [results, setResults] = useState({ users: [], posts: [] });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+   useEffect(() => {
+    if (queryParam) {
+      handleSearch(queryParam);
+      setQuery(queryParam)
+    } else {
+      setResults({ users: [], posts: [] });
+    }
+  }, [queryParam]); 
 
   /*useEffect(() => {
     const token = Storage.getToken();
@@ -39,25 +50,28 @@ function Search() {
     setLoading(false);
   };
 
-   const handleChange = (e) => {
-    const value = e.target.value;
-    setQuery(value);
-    handleSearch(value); 
+   const handleSubmit  = (e) => { // Eliminar con el sidebar
+    e.preventDefault(); 
+    if (query.trim()) {
+      navigate(`/search?q=${encodeURIComponent(query)}`);
+    }
   };
 
   return (
     <div className="search-page">
       <div className="search-bar">
-      <input
-          type="search"
-          placeholder="Buscar usuarios o tags..."
-          value={query}
-          onChange={handleChange}
-          className="search-input"
-        />
+      <form onSubmit={handleSubmit}>  {/* Reemplazar por el sidebar */}
+        <input 
+            type="search"
+            placeholder="Buscar usuarios o tags..."
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            className="search-input"
+          />
+        </form>
         </div>
       <div className="search-container">  
-        <p className="search-query"> {loading ? "Buscando..." : query ? `[${query}]` : ""}</p>
+        <p className="search-query"> {loading ? "Buscando..." : queryParam ? `[${queryParam}]` : ""}</p>
 
         {/* users */}
         {results.users.length > 0 && (
@@ -82,7 +96,7 @@ function Search() {
         )}
 
         {/* no results */}
-        {query && !loading && results.users.length === 0 && results.posts.length === 0 && (
+        {queryParam && !loading && results.users.length === 0 && results.posts.length === 0 && (
           <p className="no-results">NO SE ENCONTRARON RESULTADOS!</p>
         )}
       </div>

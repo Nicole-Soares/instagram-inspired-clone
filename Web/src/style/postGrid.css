@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: repeat(3, auto);
   gap: 10px;
-  justify-content: space-between;
+  justify-content: stretch;
   padding: 10px;
-  width: max-content;
+  box-sizing: border-box;
 }
