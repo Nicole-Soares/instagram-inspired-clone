@@ -118,6 +118,10 @@
   text-align: center;
 }
 
+.modalContent p{
+  color: black;
+}
+
 .modalContent button {
   background: var(--color-principal);
   color: white;
