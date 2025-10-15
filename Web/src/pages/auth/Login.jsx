@@ -36,7 +36,6 @@ function Login() {
 
     userLogin(email, password)
       .then(() => {
-        
         navigate(`/`); 
       })
       .catch((err) => {

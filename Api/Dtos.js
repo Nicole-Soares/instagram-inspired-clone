@@ -13,7 +13,7 @@ const transformUser = ({
         followers: followers.map(transformSimpleUser),
     };
 }
- 
+
 const transformComments = (comments) => {
     return comments.map(comment => ({
         id: comment.id,

@@ -86,7 +86,7 @@ const Post = () => {
   };
 
   const handleNavigateToUser = (userId) => {
-    navigate(`/usuario/${userId}`);
+    navigate(`/profile/${userId}`);
   };
 
   const handleEdit = () => {

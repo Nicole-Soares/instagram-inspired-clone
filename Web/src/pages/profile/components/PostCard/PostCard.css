@@ -1,0 +1,11 @@
+.post-card {
+  width: 260px;  
+  height: 400px;
+  overflow: hidden;
+}
+
+.post-card-img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}

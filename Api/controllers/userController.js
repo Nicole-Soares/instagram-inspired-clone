@@ -1,6 +1,6 @@
 import { HEADER } from"../constants.js";
 import { registerBodySchema, logingBodySchema as loginBodySchema} from "../schemas.js";
-import { transformUser, transformSimpleUser, transformTimeline, transformSimplePost } from "../Dtos.js";
+import { transformUser, transformTimeline, transformSimplePost } from "../Dtos.js";
 import { ValidationError } from "yup";
 
 class UserController {
@@ -78,24 +78,42 @@ class UserController {
     };
 
     //PUT /users/{userId}/follow
-    followUser = (req, res) => {
-        const userId = req.params.userId; 
-        const currentUser = req.user; 
+    followUser = async (req, res) => {
+        const followerUser = req.params.userId;
+        const currentUserID = req.user; 
+        const authenticatedId = currentUserID.id || currentUserID._id || currentUserID.userId;
 
-        if (currentUser.id === userId) {
-            res.status(400).send({error:"No puede seguirse a si mismo."});
-            return;
+        if (authenticatedId === followerUser) {
+            return res.status(400).send({ error: "Error: No puede seguirse a sí mismo." });
         }
-        
+
         try {
-            const userToFollow = this.system.getUser(userId);
-            const newCurrentUser = this.system.updateFollower(currentUser.id, userId);
-            res.json({ ...transformUser(newCurrentUser), posts: this.system.getPostByUserId(newCurrentUser.id).map(transformTimeline) }); 
+            const userToFollow = await this.system.getUser(followerUser);
+
+            if (!userToFollow) {
+                return res.status(404).send({ error: "El usuario que intenta seguir no existe." });
+            }
+
+            const isFollowing = userToFollow.followers.includes(authenticatedId);
+
+            if (isFollowing) {
+                await this.system.unfollowUser(followerUser, authenticatedId);
+            } else {
+                await this.system.updateFollower(followerUser, authenticatedId);
+            }
+
+            const newCurrentUser = await this.system.getUser(followerUser);
+
+            res.json({ 
+                ...transformUser(newCurrentUser), 
+                posts: this.system.getPostByUserId(newCurrentUser.id).map(transformTimeline) 
+            });
+
+        } catch (error) {
+            console.error("Error fatal en followUser:", error);
+            res.status(400).send({ error: error.message || "La solicitud no se pudo procesar correctamente." });
         }
-        catch (error) {
-            res.status(404).send({error:"El usuario que intenta seguir no existe."});
-        }   
-    };
-}
+    }
+}    
 
 export default UserController;
