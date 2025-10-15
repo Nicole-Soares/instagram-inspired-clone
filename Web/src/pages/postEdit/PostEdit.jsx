@@ -39,7 +39,6 @@ function PostEdit() {
           },
           "No se pudo obtener el post"
         ); 
-
         //Me guardo el id del usuario logueado y el id del autor del post para comparar
         const currentUserId = Storage.getUserId();
         const postAuthorId = data.user.id;
@@ -77,7 +76,7 @@ function PostEdit() {
 
   const handleSubmit = async () => {
     try {
-      // solicitud PUT usando apiFetch
+    
       await apiFetch(
         `${API_BASE_URL}/posts/${id}`,
         {
@@ -86,7 +85,6 @@ function PostEdit() {
         },
         "No se pudo editar el post"
       ); 
-      // Si todo sale bien, navego al post actualizado
       navigate(`/post/${id}`);
     } catch (error) {
       setErrorMessage(error.message || "Ocurrió un error al guardar.");

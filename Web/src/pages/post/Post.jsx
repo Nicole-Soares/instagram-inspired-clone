@@ -51,7 +51,6 @@ const Post = () => {
         if (status === 401) {
           setIsUnauthorized(true);
         } else if (status === 404) {
-          console.log("pasa")
           setIsNotFound(true);
         } else {
           toast.error("Error al cargar el post.");

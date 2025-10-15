@@ -31,7 +31,7 @@ const isTokenExpired = () => {
       const now = Date.now() / 1000;
       return exp < now;
     } catch {
-      return true; // token corrupto o inválido
+      return true; // token inválido
     }
   };
 
