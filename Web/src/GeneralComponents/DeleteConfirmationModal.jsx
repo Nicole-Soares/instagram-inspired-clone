@@ -4,23 +4,25 @@ import '../style/DeleteConfirmationModal.css';
 function DeleteConfirmationModal({ onClose, onConfirm }) {
     return (
     
-        <div className="modalOverlay">
-            
-            <div className="modalContent" onClick={(e) => e.stopPropagation()}>
-                <h2>Confirmar Eliminación</h2>
-                <p>¿Estás seguro de que deseas eliminar este post?</p>
-                <div className="modalActions">
-                    <button 
-                        className="button-confirm" 
-                        onClick={onConfirm} 
-                    >
-                        Sí, Eliminar
-                    </button>
+        <div className="modalDeleteOverlay">
+            <div className="modalDeleteContent" onClick={(e) => e.stopPropagation()}>
+            <div className="modalDeleteBody">
+          <h2>Eliminar Posteo</h2>
+          <p>¿Estás seguro de que quieres eliminar el post?</p>
+        </div>
+                <div className="modalDeleteActions">
                     <button 
                         className="button-cancel" 
                         onClick={onClose} 
                     >
                         Cancelar
+                    </button>
+
+                    <button 
+                        className="button-confirm" 
+                        onClick={onConfirm} 
+                    >
+                        Borrar
                     </button>
                 </div>
             </div>

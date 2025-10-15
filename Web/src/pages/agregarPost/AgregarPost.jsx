@@ -26,7 +26,7 @@ const AgregarPost = () => {
   };
 
   useEffect(() => {
-    if (!token && Storage.isTokenExpired()) {
+    if (!token || Storage.isTokenExpired() ) {
       setIsUnauthorized(true);
       return;
     }
@@ -56,11 +56,9 @@ const AgregarPost = () => {
       setUrl("");
       setDescripcion("");
     } catch (error) {
-      // Error 401: Token inválido
-      //o mejor if (error.message.includes("El token es inválido o ha expirado."))
-      if (error.status === 401) {
+      const status = error.response?.status || error.status;
+      if (status === 401) {
         setIsUnauthorized(true);
-        // Si no, si es 403:
       } else {
         toast.error("Error al cargar el post.");
         console.error(error);

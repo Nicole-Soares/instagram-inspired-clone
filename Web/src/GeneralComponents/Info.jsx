@@ -2,24 +2,32 @@ import { toast } from "react-toastify";
 import Storage from "../service/storage";
 import { likePost } from "../service/post/postService";
 import "../style/Info.css";
+import { useEffect, useState } from "react";
 
 const Info = ({ post, postId, onUpdatePost, handleRedirect}) => {
 
+  const[ userHasLiked, setUserHasLiked] = useState(false);
+  const currentUserId = Storage.getUserId();
+
+  //cada vez que se carga el componente chequea si el usuario log le puso me gusta o no al post
+   useEffect(() => {
+    if (post?.likes && currentUserId) {
+      setUserHasLiked(post.likes.some((like) => like.id === currentUserId));
+    }
+  }, [post, currentUserId]);
+
+  //cuando hace click al like
   const handleClickLike = async () => {
     try {
-      const currentUserId = Storage.getUserId();
-      if (!currentUserId) {
-        toast.error("Debes iniciar sesión para dar 'Me gusta'.");
-        return;
-      }
-
       const updatedPost = await likePost(postId);
 
-      const userHasLiked = updatedPost.likes.some(
+      const hasLikedNow = updatedPost.likes.some(
         (like) => like.id === currentUserId
       );
-      //si aparece el like despues de haber hecho el fetch entonces es porque es nuevo
-      if (userHasLiked) {
+  
+      setUserHasLiked(hasLikedNow);
+  
+      if (hasLikedNow) {
         toast.success("¡Me gusta registrado! ❤️");
       } else {
         toast.success("¡Me gusta eliminado! 💔");
@@ -38,7 +46,8 @@ const Info = ({ post, postId, onUpdatePost, handleRedirect}) => {
   return (
     <div className="infoPost">
       <p onClick={handleClickLike}>
-        ❤️ <strong>{post.likes?.length || 0}</strong> me gusta
+      {userHasLiked ? "❤️" : "🤍"}{" "}
+         <strong>{post.likes?.length || 0}</strong> me gusta
       </p>
       <p onClick={handleRedirect}>
         💬 <strong>{post.comments?.length || 0}</strong> comentarios

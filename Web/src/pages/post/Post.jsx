@@ -31,7 +31,7 @@ const Post = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
-    if (!token) {
+    if (!token || Storage.isTokenExpired()) {
       setIsUnauthorized(true);
       setLoading(false);
       return;
@@ -40,19 +40,19 @@ const Post = () => {
     const fetchPost = async () => {
       try {
         setLoading(true);
+        console.log("pasa")
         const data = await getPostById(id, navigate);
         const loggedUserId = Storage.getUserId();
         const postId = data.user.id;
         setPost(data);
         setIsOwner(String(loggedUserId) === String(postId));
       } catch (error) {
-        // Error 401: Token inválido
-        if (error.message.includes("El token es inválido o ha expirado.")) {
+        const status = error.response?.status || error.status;
+        if (status === 401) {
           setIsUnauthorized(true);
-          // Si no, si es 403:
-        } else if (error.message.includes("Not Found")) {
+        } else if (status === 404) {
+          console.log("pasa")
           setIsNotFound(true);
-          // Si no es 401, 403 ni 404, asume un error de datos o conexión y muestra un modal genérico
         } else {
           toast.error("Error al cargar el post.");
           console.error(error);
@@ -104,9 +104,10 @@ const Post = () => {
     try {
       await deletePost(id);
       toast.success("Post eliminado exitosamente.");
-      navigate("/"); // va al home
+      setTimeout(() => {
+        navigate(`/`);
+      }, 1000);
     } catch (error) {
-      //otras fallas (403, 500, etc.)
       toast.error("Error al borrar el post");
       console.error(error);
     }

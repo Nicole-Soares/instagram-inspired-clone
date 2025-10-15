@@ -24,12 +24,23 @@ const apiFetch = async (url, options = {}, message) => {
 
     // --- LÓGICA DE MANEJO DE ERRORES CENTRALIZADA ---
     
-    // 1. Manejo del 401 (Unauthorized)
+    // manejo del 401 (Unauthorized)
     if (response.status === 401) {
-        console.error("Error 401: Token inválido o expirado. Sesión cerrada.");
+        console.error("Error 401: Token inválido o expirado.");
         Storage.clearToken();
-        // Lanzamos un error específico para detener la ejecución
-        throw new Error("Unauthorized"); 
+    
+        const error = new Error("Unauthorized");
+        error.status = 401;
+        throw error; 
+        
+    }
+
+    //manejo del 404 (Not Found)
+    if (response.status === 404) {
+        console.error("Error 404: Not Found");
+        const error = new Error("Not Found");
+        error.status = 404;
+        throw error;
         
     }
 
@@ -39,29 +50,23 @@ const apiFetch = async (url, options = {}, message) => {
         // Intentamos obtener el cuerpo JSON del error
         try {
             errorData = await response.json();
-            console.log(errorData)
         } catch (e) {
             // Si falla, usamos el texto de estado HTTP o el mensaje por defecto
             errorData.message = response.statusText || message;
             console.error(e);
         }
 
-        // Se mantiene la lógica de errores específicos para que el componente los maneje
-        if (response.status === 404) {
-            throw new Error(errorData.message || "Not Found"); 
-            
-        }
         // Error 403 o cualquier otro error general de la API
         throw new Error(errorData.message || message);
     }
     
-    // 3. Manejo de la respuesta 204 (No Content)
+    // manejo de la respuesta 204 (No Content)
     // Crucial para peticiones PUT, DELETE o POST que no devuelven cuerpo
     if (response.status === 204 || response.headers.get('content-length') === '0') {
         return {}; // Devolvemos un objeto vacío para evitar errores al intentar parsear JSON
     }
 
-    // Si todo está bien y hay contenido, devuelve el JSON
+    // (200-299) todo ok
     return response.json();
 };
 

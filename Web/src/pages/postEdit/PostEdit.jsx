@@ -22,9 +22,9 @@ function PostEdit() {
   const token = Storage.getToken();
 
   useEffect(() => {
-    if (!token) {
+    if (!token || Storage.isTokenExpired()) {
       setIsUnauthorized(true);
-      setLoading(false); // Detenemos la carga para mostrar el modal
+      setLoading(false); // paramos la carga para mostrar el modal
       return;
     }
 
@@ -38,7 +38,7 @@ function PostEdit() {
             method: "GET",
           },
           "No se pudo obtener el post"
-        ); // Mensaje para error no 401
+        ); 
 
         //Me guardo el id del usuario logueado y el id del autor del post para comparar
         const currentUserId = Storage.getUserId();
@@ -57,16 +57,13 @@ function PostEdit() {
 
         //Si la verificación no pasa, manejo el error con catch
       } catch (error) {
-        // Error 401: Token inválido
-        if (error.message === "Unauthorized") {
+        const status = error.response?.status || error.status;
+        if (status === 401) {
           setIsUnauthorized(true);
-          // Si no, si es 403:
-        } else if (error.message.includes("Forbidden")) {
+        } else if (status === 403) {
           setIsForbidden(true);
-          // Si es 404:
-        } else if (error.message.includes("Not Found")) {
+        } else if (status === 404) {
           setIsNotFound(true);
-          // Si no es 401, 403 ni 404, asume un error de datos o conexión y muestra un modal genérico
         } else {
           setErrorMessage(error.message);
         }
@@ -88,7 +85,7 @@ function PostEdit() {
           body: JSON.stringify({ image: imageUrl, description: caption }),
         },
         "No se pudo editar el post"
-      ); // Mensaje para error no 401
+      ); 
       // Si todo sale bien, navego al post actualizado
       navigate(`/post/${id}`);
     } catch (error) {

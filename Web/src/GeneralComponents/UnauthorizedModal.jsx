@@ -9,7 +9,7 @@ const UnauthorizedModal = () => {
   <div className="modalBloqueo">
     <div className="modalContenido">
       <h2>Acceso restringido 🔒</h2>
-      <p>Debés iniciar sesión para ver este post.</p>
+      <p>Debés iniciar sesión para poder ver esta pantalla.</p>
       <button onClick={() => navigate("/login")}>Ir al login</button>
       <button onClick={() => navigate("/register")}>Ir a registrar</button>
     </div>

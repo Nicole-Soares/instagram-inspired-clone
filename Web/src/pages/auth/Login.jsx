@@ -16,7 +16,7 @@ function Login() {
 
   useEffect(() => {
       const token = Storage.getToken();
-      if (token&& !Storage.isTokenExpired()) {
+      if (token && !Storage.isTokenExpired()) {
           navigate('/');  
       }else{
         Storage.clearToken();

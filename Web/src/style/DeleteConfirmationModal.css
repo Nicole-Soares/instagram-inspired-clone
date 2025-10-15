@@ -1,73 +1,99 @@
-/* -------------------- OVERLAY: Fondo semi-transparente -------------------- */
-.modalOverlay {
-    position: fixed; 
+.modalDeleteOverlay {
+    position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6); 
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.35);
     display: flex;
-    justify-content: center; 
-    align-items: center; 
-    z-index: 1000; /*encima de otros elementos*/
-}
-
-/* -------------------- fondo del cuadrado del modal-------------------- */
-.modalContent {
-    background-color: var(--color-fondo); 
-    padding: 25px 35px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    width: 90%; 
-    max-width: 400px; 
-    text-align: center;
-    transform: scale(1); 
-    transition: transform 0.3s ease-out;
-}
-
-.modalContent h2 {
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* 👈 más alto que cualquier otro elemento */
+    font-family: var(--font-family, 'Inter', sans-serif);
+  }
+  
+  /* Contenedor principal del modal */
+  .modalDeleteContent {
+    background: #fff;
+    padding: 20px 24px;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    animation: fadeIn 0.2s ease-out;
+  }
+  
+  /* Cuerpo de texto */
+  .modalDeleteBody {
+    text-align: left;
+  }
+  
+  .modalDeleteBody h2 {
+    color: #000;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  
+  .modalDeleteBody p {
     color: #333;
-    margin-bottom: 15px;
-    font-size: 1.5rem;
-}
-
-.modalContent p {
-    color: #666;
-    margin-bottom: 25px;
+    font-size: 0.9rem;
     line-height: 1.4;
-}
-
-.modalActions {
+    margin: 0;
+  }
+  
+  /* Botones alineados a la derecha */
+  .modalDeleteActions {
     display: flex;
-    justify-content: space-around; 
-    gap: 15px; 
-}
-
-.modalActions button {
-    padding: 10px 18px;
-    border: none;
-    border-radius: 5px;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  /* Botones */
+  .modalDeleteActions button {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
     cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s ease;
-    flex-grow: 1; 
-}
-
-
-.modalActions .button-confirm {
-    background-color: #e74c3c; 
+    border: none;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+  }
+  
+  /* Cancelar */
+  .modalDeleteActions .button-cancel {
+    background-color: transparent;
+    color: #111;
+  }
+  
+  .modalDeleteActions .button-cancel:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Borrar */
+  .modalDeleteActions .button-confirm {
+    background-color: #3366ff;
     color: white;
-}
-
-.modalActions .button-confirm:hover {
-    background-color: #c0392b;
-}
-
-.modalActions .button-cancel {
-    background-color: #bdc3c7; 
-    color: #333;
-}
-
-.modalActions .button-cancel:hover {
-    background-color: #95a5a6;
-}
+  }
+  
+  .modalDeleteActions .button-confirm:hover {
+    background-color: #2952cc;
+    transform: scale(0.98);
+  }
+  
+  /* Animación sutil */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
