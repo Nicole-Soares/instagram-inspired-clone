@@ -65,7 +65,7 @@ function Search() {
         {results.users.length > 0 && (
           <UsersContainer>
             {results.users.map(u => (
-              <Link key={u.id} to={`/profile/${u.id}`}>
+              <Link key={u.id} to={`/user/${u.id}`}>
                 <UserCard key={u.id} src={u.image} />
               </Link>
             ))}

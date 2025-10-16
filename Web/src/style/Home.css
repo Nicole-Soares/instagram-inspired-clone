@@ -12,8 +12,7 @@
     flex-grow: 1;
     overflow-y: auto;
     box-sizing: border-box;
-    padding: 40px 0;
-    margin-left: 40px;;
+    padding: 40px;
 }
 
 .timeline-container {

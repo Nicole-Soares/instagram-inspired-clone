@@ -18,8 +18,8 @@ const SideBar = () => {
     const meId = Storage.getUserId();
 
     const handleLogOut = () => {
-        Storage.clearToken(); //quizas no es necesario
-        navigate('/login');
+        Storage.clearToken(); 
+        window.location.reload();
     };
 
     const handleSearch = (e) => {
@@ -46,6 +46,9 @@ const SideBar = () => {
                     type="text" 
                     placeholder="Search" 
                     className="sidebar-search-input"
+                    id="search-inpu"
+                    name="search-query"
+                    autoComplete="off"
                     value={searchInput}
                     onChange={e => setSearchInput(e.target.value)}
                 />
@@ -86,7 +89,7 @@ const SideBar = () => {
                     </Link>
                 </div>
                 <div>
-                    <Link to={`/profile/${meId}`} className={isProfileActive ? "nav-link nav-link-active" : "nav-link"}>
+                    <Link to={`/user/${meId}`} className={isProfileActive ? "nav-link nav-link-active" : "nav-link"}>
                         <img
                             src={profileLogo}
                             alt="Profile logo"
