@@ -15,7 +15,7 @@ export default function TimelinePost({ post, onUpdatePost }) {
             <HeaderPost
                 user={post.user}
                 date={post.date}
-                handleNavigateToUser={() => navigate(`/profile/${post.user.id}`)}
+                handleNavigateToUser={() => navigate(`/user/${post.user.id}`)}
                 isOwner={false}
             />
 

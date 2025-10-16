@@ -49,6 +49,7 @@ function Search() {
     setLoading(false);
   };
 
+  console.log(results)
    if (isUnauthorized) {
         return <UnauthorizedModal />;
     }
