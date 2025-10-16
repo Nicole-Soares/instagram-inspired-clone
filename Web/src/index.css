@@ -4,7 +4,10 @@
   font-weight: 400;
 
   color-scheme: light dark;
+
   --color-fondo: rgba(255, 255, 255, 0.87);
+
+  color: rgba(255, 255, 255, 0.87);
   background-color: #ffffff;
 
   font-synthesis: none;
@@ -88,4 +91,5 @@ html, body, #root {
   width: 100%;
   height: 100%;
 }
+
 

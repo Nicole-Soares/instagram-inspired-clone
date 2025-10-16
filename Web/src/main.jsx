@@ -10,6 +10,10 @@ import Home from './pages/home/Home.jsx'
 import Register from './pages/auth/Register.jsx'
 import UserProfile from './pages/profile/UserProfile.jsx';
 
+import App from './App.jsx'
+import Search from './pages/search/search.jsx'
+
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
@@ -21,6 +25,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile/:userId" element={<UserProfile />} />
+        <Route path='/search' element={<Search />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
