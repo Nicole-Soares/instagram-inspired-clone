@@ -2,55 +2,21 @@ import React, { useEffect, useState } from "react";
 import apiFetch from "../../service/apiFetch";
 import { useParams } from "react-router-dom";
 import Storage from "../../service/storage";
+
 import ProfileHeader from "./components/ProfileHeader/ProfileHeader";
 import PostGrid from "./components/PostGrid/PostGrid";
 import PostCard from "./components/PostCard/PostCard";
 import SideBar from "../../GeneralComponents/SideBar";
+
+import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
+
+import { computeProfileFlags, getMeId } from "../../utils/profileHelpers"
+
 import "./UserProfile.css";
 
-const API_URL = "http://localhost:7070";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-//normaliza los ids a string
-const idToString = (v) => {
-  if (!v) return "";
-  if (typeof v === "string") return v.trim();
-  return String(v.id ?? v._id ?? v.userId ?? "").trim();
-};
-
-//comprueba si el usuario logueado esta en la lista de seguidores
-const isFollowedBy = (followers, meId) => {
-  if (!meId || !Array.isArray(followers)) return false;
-  const me = idToString(meId);
-  return followers.some((f) => idToString(f) === me);
-};
-
-//calcula los flags isMe, isFollowing y followersCount
-const computeProfileFlags = (profile, meId) => {
-  const me = idToString(meId);
-  const profileId = idToString(profile);
-  const followers = Array.isArray(profile.followers) ? profile.followers : [];
-  const isMe = !!me && (me === profileId);
-  const isFollowing = !isMe && isFollowedBy(followers, me);
-  const followersCount = Number.isFinite(profile.followersCount)
-    ? profile.followersCount
-    : followers.length;
-  return { isMe, isFollowing, followersCount };
-};
-
-//obtiene el Id del usuario logueado y lo normaliza
-const getMeId = () => {
-  const stored = Storage.getUserId?.();
-  if (stored) return idToString(stored);
-  try {
-    const raw = (Storage.getToken() || "").replace(/^Bearer\s+/i, "");
-    const payload = JSON.parse(atob(raw.split(".")[1] || ""));
-    return idToString(payload.userId);
-  } catch {
-    return "";
-  }
-};
-
-function UserProfile() {
+const UserProfile = () => {
   const { userId } = useParams();
   const [data, setData] = useState(null);
   const [isMe, setIsMe] = useState(false);
@@ -59,6 +25,14 @@ function UserProfile() {
   const [followPending, setFollowPending] = useState(false);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
+
+  useEffect(() => {
+    if (!Storage.getToken() || Storage.isTokenExpired() ) {
+      setIsUnauthorized(true);
+      return;
+    }
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -67,7 +41,7 @@ function UserProfile() {
       setLoading(true);
       setErrorMessage("");
       try {
-        const res = await apiFetch(`${API_URL}/user/${userId}`, {
+        const res = await apiFetch(`${API_BASE_URL}/user/${userId}`, {
           method: "GET",
           signal: controller.signal,
         }, "No fue posible obtener el perfil. ");
@@ -97,7 +71,7 @@ function UserProfile() {
     setFollowPending(true);
 
     try {
-      const res = await apiFetch(`${API_URL}/users/${userId}/follow`, {
+      const res = await apiFetch(`${API_BASE_URL}/users/${userId}/follow`, {
         method: "PUT",
       }, "Fallo al realizar la accion de seguir/dejar de seguir.");
 
@@ -115,9 +89,11 @@ function UserProfile() {
   };
 
   if (loading) return <div className="user-profile"><p>Cargando perfil…</p></div>;
+  if (isUnauthorized) return <UnauthorizedModal />;
   if (!data) return <div className="user-profile"><p>{errorMessage || "No se encontró el usuario."}</p></div>;
-
+  
   const posts = data.posts || [];
+  const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
   
   return (
     <div className="page-container">
@@ -135,7 +111,7 @@ function UserProfile() {
           disabledFollow={followPending}
         />
         <PostGrid>
-          {posts.map((p) => (
+          {sortedPosts.map((p) => (
             <PostCard 
               key={p.id}
               id={p.id}

@@ -20,7 +20,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/post/editPost/:id" element={<PostEdit />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/profile/:userId" element={<UserProfile />} />
+        <Route path="/user/:userId" element={<UserProfile />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
