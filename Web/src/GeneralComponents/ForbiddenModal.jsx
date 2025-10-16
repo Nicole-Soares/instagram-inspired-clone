@@ -10,7 +10,7 @@ const ForbiddenModal = () => {
     <div className="modalContenido">
       <h2>Acceso Denegado 🛑</h2>
       <p>No tienes permiso para realizar esta acción, ya que no eres el autor del post.</p>
-      <button onClick={() => navigate("/")}>Volver al Inicio</button>
+      <button onClick={() => navigate("/home")}>Volver al Inicio</button>
     </div>
   </div>
 

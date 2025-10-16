@@ -17,7 +17,7 @@ function Login() {
   useEffect(() => {
       const token = Storage.getToken();
       if (token && !Storage.isTokenExpired()) {
-          navigate('/');  
+          navigate('/home');  
       }else{
         Storage.clearToken();
       }
@@ -36,7 +36,7 @@ function Login() {
 
     userLogin(email, password)
       .then(() => {
-        navigate(`/`); 
+        navigate(`/home`); 
       })
       .catch((err) => {
         setError(err.message);

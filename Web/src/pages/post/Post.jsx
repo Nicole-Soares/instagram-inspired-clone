@@ -62,7 +62,7 @@ const Post = () => {
     };
 
     fetchPost();
-  }, [id, token]); // si pasa algun cambio vuelve a ejecutar el useEffect
+  }, [id, token, navigate]); // si pasa algun cambio vuelve a ejecutar el useEffect
 
   //Se encarga de actualizar el estado del post
     const handleUpdatePost = (updatedPost) => {
@@ -86,7 +86,7 @@ const Post = () => {
   };
 
   const handleNavigateToUser = (userId) => {
-    navigate(`/profile/${userId}`);
+    navigate(`/user/${userId}`);
   };
 
   const handleEdit = () => {
@@ -104,7 +104,7 @@ const Post = () => {
       await deletePost(id);
       toast.success("Post eliminado exitosamente.");
       setTimeout(() => {
-        navigate(`/`);
+        navigate(`/home`);
       }, 1000);
     } catch (error) {
       toast.error("Error al borrar el post");
@@ -117,18 +117,20 @@ const Post = () => {
   if (loading) return <p className="loadingPost">Cargando post...</p>;
 
   const todosLosComentarios = [
-    //para poner la descripcion primero
-    {
-      body: post.description,
-      user: post.user,
-    },
+    ...(post.description?.trim()
+      ? [{ body: post.description, user: post.user }]
+      : []),
     ...(post.comments || []),
   ];
+  
+   
+  
 
   return (
     <div className="paginaPost">
       <ToastContainer />
       <SideBar/>
+     
       <div className="contenedorImagenPost">
         {post.image && (
           <img src={post.image} alt="Imagen del post" className="imagenPost" />
@@ -158,6 +160,7 @@ const Post = () => {
           handleSubmit={handleSubmit}
         />
       </div>
+     
       {showDeleteModal && (
         <DeleteConfirmationModal
           onClose={() => setShowDeleteModal(false)} // Función para cancelar
