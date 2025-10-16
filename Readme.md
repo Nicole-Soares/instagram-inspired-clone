@@ -25,3 +25,8 @@ Dentro de las carpetas que nosotros subimos tienen que estar su proyecto directa
 * Se refactorizo el PUT `/users/{userId}/follow` ya que arrojaba 500 al presionar el boton de seguir/dejar de seguir
 
 * Se elimino una linea de codigo innecesaria en el GET `/user/{userId}`
+
+# createPost y updatePost
+
+* se tuvo que agregar que la imagen acepte valores que empiecen con blob, https, https para poder meter imagenes desde la computadora
+
