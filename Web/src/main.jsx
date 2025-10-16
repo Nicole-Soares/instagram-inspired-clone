@@ -9,6 +9,8 @@ import Login from './pages/auth/Login.jsx'
 import Home from './pages/home/Home.jsx'
 import Register from './pages/auth/Register.jsx'
 import UserProfile from './pages/profile/UserProfile.jsx';
+import Search from './pages/search/search.jsx'
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -21,6 +23,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/post/agregarPost" element={<AgregarPost />} />
         <Route path="/post/editPost/:id" element={<PostEdit />} />
         <Route path="/register" element={<Register />} />
+        <Route path='/search' element={<Search />} />
         <Route path="/user/:userId" element={<UserProfile />} />
       </Routes>
     </BrowserRouter>

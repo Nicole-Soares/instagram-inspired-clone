@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import textLogo from '../../assets/instagram-text-logo.svg'
-import { userRegister } from "../../service/authService.js";
+import { userRegister } from "../../service/auth/authService.js";
 import { Link, useNavigate } from "react-router";
 import '../../style/Register.css'
 import RegisterForm from "./components/RegisterForm.jsx";
