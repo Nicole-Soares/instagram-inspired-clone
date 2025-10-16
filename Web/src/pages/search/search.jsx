@@ -3,37 +3,36 @@ import PostCard from "./components/postCard.jsx";
 import PostGrid from "./components/postGrid.jsx";
 import UserCard from "./components/userCard.jsx";
 import UsersContainer from "./components/usersContainer.jsx";
-import { searchContent } from "../../service/searchService.js";
+import { searchContent } from "../../service/search/searchService.js";
 import "../../style/search.css";
-import { Link } from 'react-router';
-import { Storage} from "../../service/storage.js";
-import { useNavigate, useSearchParams } from "react-router";
-
+import { Link, useSearchParams } from "react-router";
+import SideBar from '../../GeneralComponents/SideBar';
+import Storage from "../../service/storage.js";
+import UnauthorizedModal from "../../generalComponents/UnauthorizedModal.jsx";
 
 
 function Search() {
   const [searchParams] = useSearchParams();
   const queryParam = searchParams.get("q") || "";
-  const [query, setQuery] = useState(queryParam);
   const [results, setResults] = useState({ users: [], posts: [] });
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
+  const token = Storage.getToken();
 
-   useEffect(() => {
+  useEffect(() => {
+    // Valida que es logueado
+    if (!token || Storage.isTokenExpired()) {
+      setIsUnauthorized(true);
+      return;
+    }
+
+    // Hace la busqueda dependiendo de la query 
     if (queryParam) {
       handleSearch(queryParam);
-      setQuery(queryParam)
     } else {
       setResults({ users: [], posts: [] });
     }
-  }, [queryParam]); 
-
-  /*useEffect(() => {
-    const token = Storage.getToken();
-    if (!token) {
-      navigate("/login");
-    }
-  }, [navigate]);*/ // Si no esta logueado, redirige a login
+  }, [token, queryParam]);
 
   const handleSearch = async (value) => {
 
@@ -50,26 +49,15 @@ function Search() {
     setLoading(false);
   };
 
-   const handleSubmit  = (e) => { // Eliminar con el sidebar
-    e.preventDefault(); 
-    if (query.trim()) {
-      navigate(`/search?q=${encodeURIComponent(query)}`);
+   if (isUnauthorized) {
+        return <UnauthorizedModal />;
     }
-  };
 
   return (
     <div className="search-page">
-      <div className="search-bar">
-      <form onSubmit={handleSubmit}>  {/* Reemplazar por el sidebar */}
-        <input 
-            type="search"
-            placeholder="Buscar usuarios o tags..."
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            className="search-input"
-          />
-        </form>
-        </div>
+      
+      <SideBar/>
+
       <div className="search-container">  
         <p className="search-query"> {loading ? "Buscando..." : queryParam ? `[${queryParam}]` : ""}</p>
 
@@ -77,7 +65,7 @@ function Search() {
         {results.users.length > 0 && (
           <UsersContainer>
             {results.users.map(u => (
-              <Link key={u.id} to={`/user/${u.id}`}>
+              <Link key={u.id} to={`/profile/${u.id}`}>
                 <UserCard key={u.id} src={u.image} />
               </Link>
             ))}

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import loginPhoto from '../../assets/instagram-login-photo.png'
 import textLogo from '../../assets/instagram-text-logo.svg'
 import '../../style/Login.css'
-import { userLogin } from "../../service/authService.js";
+import { userLogin } from "../../service/auth/authService.js";
 import { Link, useNavigate } from "react-router";
 import LoginForm from "./components/LoginForm.jsx";
 import Storage from "../../service/storage.js";

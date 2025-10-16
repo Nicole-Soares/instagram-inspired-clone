@@ -1,9 +1,9 @@
 
-const API = "http://localhost:7070";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const searchContent = async (query) => {
   try {
-    const res = await fetch(`${API}/search?query=${encodeURIComponent(query)}`, {
+    const res = await fetch(`${API_BASE_URL}/search?query=${encodeURIComponent(query)}`, {
       method: "GET",
       headers: { 
         "Content-Type": "application/json"

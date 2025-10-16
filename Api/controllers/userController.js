@@ -19,7 +19,7 @@ class UserController {
             res.header(HEADER, token).json({...transformUser(user), posts }); 
         }
         catch (error) {
-            res.status(400).send({error:"el email o la contraseña son incorrectos."});
+            res.status(400).send({error:"El email o la contraseña son incorrectos."});
         }
     };
 
