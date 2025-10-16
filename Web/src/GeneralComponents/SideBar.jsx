@@ -12,14 +12,15 @@ import '../style/SideBar.css'
 const SideBar = () => {
     const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState('');
-    const isHomeActive = useMatch('/');
+    const isHomeActive = useMatch('/home');
     const isProfileActive = useMatch('/user/:userId');
     const isCreatePostActive = useMatch('/post/agregarPost');
     const meId = Storage.getUserId();
 
     const handleLogOut = () => {
         Storage.clearToken(); 
-        window.location.reload();
+        // para que le de tiempo al storage de sincronizarse y cuando vaya al login no entre directo al home y aparezca el modal de no autorizado
+        setTimeout(() => navigate('/login'), 0); 
     };
 
     const handleSearch = (e) => {
@@ -34,7 +35,7 @@ const SideBar = () => {
 
     return (
         <div className="sidebar-container">
-            <Link to="/" className="sidebar-logo-link">
+            <Link to="/home" className="sidebar-logo-link">
                 <img
                     src={textLogo}
                     alt="Instagram logo"
@@ -68,7 +69,7 @@ const SideBar = () => {
 
             <nav className="sidebar-nav">
                 <div className="sidebar-home">
-                    <Link to="/" className={isHomeActive ? "nav-link nav-link-active" : "nav-link"}>
+                    <Link to="/home" className={isHomeActive ? "nav-link nav-link-active" : "nav-link"}>
                         <img
                         src={homeLogo}
                         alt="Home logo"

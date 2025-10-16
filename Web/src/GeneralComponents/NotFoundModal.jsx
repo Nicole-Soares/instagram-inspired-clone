@@ -8,8 +8,8 @@ const NotFoundModal = () => {
 
   <div className="modalBloqueo">
     <div className="modalContenido">
-      <h2>No se ha encontrado el post ⚠️ </h2>
-      <button onClick={() => navigate("/")}>Volver al Inicio</button>
+      <h2>No se ha encontrado lo solicitado ⚠️ </h2>
+      <button onClick={() => navigate("/home")}>Volver al Inicio</button>
     </div>
   </div>
 

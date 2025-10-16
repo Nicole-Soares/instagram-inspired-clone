@@ -31,6 +31,7 @@ export const computeProfileFlags = (profile, meId) => {
   return { isMe, isFollowing, followersCount };
 };
 
+
 //obtiene el Id del usuario logueado y lo normaliza
 export const getMeId = () => {
   const stored = Storage.getUserId?.();

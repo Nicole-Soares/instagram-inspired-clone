@@ -74,7 +74,9 @@ const Home = () => {
                                 post={post}
                                 onUpdatePost={handleUpdatePost} />)
                     ) : (
-                        <p>No hay publicaciones para mostrar.</p>
+                        <div className='home-container-sinSeguidos'>
+                        <p>Seguí a tus amigos para ver fotos y videos.</p>
+                        </div>
                     )}
                 </div>
             </div>

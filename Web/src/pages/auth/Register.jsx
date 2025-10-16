@@ -18,7 +18,7 @@ function Register() {
   useEffect(() => {
         const token = Storage.getToken();
         if (token && !Storage.isTokenExpired()) {
-           navigate('/');  
+           navigate('/home');  
         }else{
           Storage.clearToken();
         }
@@ -37,8 +37,7 @@ function Register() {
   
   userRegister(name, email, password, image)
     .then(() => {
-      console.log("pase")
-      navigate('/');
+      navigate('/home');
     })
     .catch((err) => {
       setError(err.message);
