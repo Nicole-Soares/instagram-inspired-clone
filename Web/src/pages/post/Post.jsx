@@ -11,11 +11,11 @@ import {
   addCommentToPost,
   deletePost,
 } from "../../service/post/postService";
-import "../../style/Post.css";
+import "../../style/Post/Post.css";
 import Storage from "../../service/storage";
 import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
-import NotFoundModal from "../../generalComponents/NotFoundModal";
-import DeleteConfirmationModal from "../../generalComponents/DeleteConfirmationModal";
+import NotFoundModal from "../../GeneralComponents/NotFoundModal";
+import DeleteConfirmationModal from "../../GeneralComponents/DeleteConfirmationModal";
 import SideBar from "../../GeneralComponents/SideBar";
 
 const Post = () => {

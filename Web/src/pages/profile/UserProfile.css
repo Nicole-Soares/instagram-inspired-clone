@@ -1,9 +1,7 @@
 .page-container {
   display: flex;
-  gap: 60px;
 }
 
 .user-profile {
-  padding-right: 40px;
-  padding-bottom: 20px;
+  padding: 16px 32px;
 }

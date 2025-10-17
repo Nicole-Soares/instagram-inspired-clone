@@ -4,8 +4,8 @@ import UserService from "../../service/profile/UserService";
 import Storage from "../../service/storage";
 
 import ProfileHeader from "./components/ProfileHeader/ProfileHeader";
-import PostGrid from "./components/PostGrid/PostGrid";
-import PostCard from "./components/PostCard/PostCard";
+import PostGrid from "../../GeneralComponents/PostGrid/PostGrid";
+import PostCard from "../../GeneralComponents/PostGrid/PostCard";
 import SideBar from "../../GeneralComponents/SideBar";
 
 import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";

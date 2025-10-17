@@ -2,31 +2,20 @@
     display: flex;
 }
 
-.search-bar{
-    width: 300px;
-    height: 982px;
-    gap: 32px;
-    padding-top: 32px;
-    padding-right: 16px;
-    padding-bottom: 32px;
-    padding-left: 16px;
-    border-right-width: 1px;
-}
-
-.search-container {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    width: 100%;
-    padding: 32px 16px;
-}
-
 .search-query{
     padding-left: 10px;
     font-size: 20px;
     color: #b3b3b3;
     margin: 0;
     font-weight: 400;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100vw;
+    padding: 16px 32px;
 }
 
 .search-container .no-results{

@@ -2,7 +2,7 @@ import React from "react";
 import { formateoFecha } from "../utils/formateoFecha";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditIcon from "@mui/icons-material/Edit";
-import "../style/HeaderPost.css";
+import "../style/GeneralComponents/HeaderPost.css";
 
 const HeaderPost = ({
   user,

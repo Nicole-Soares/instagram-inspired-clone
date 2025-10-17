@@ -1,6 +1,3 @@
-@import './InputField.css';
-@import './SubmitButton.css';
-
 .login-form{
   display: flex;
   flex-direction: column;

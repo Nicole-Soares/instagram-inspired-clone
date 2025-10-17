@@ -1,4 +1,4 @@
-import "../../../style/userCard.css";
+import "../../../style/Search/userCard.css";
 
 function UserCard({ src }) {
   return (

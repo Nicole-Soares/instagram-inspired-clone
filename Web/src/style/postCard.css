@@ -1,14 +1,16 @@
-.search-post-card {
+.post-card {
+  aspect-ratio: 362 / 496;
+  width: 100%;
   overflow: hidden;
 }
 
-.search-post-card-img {
+.post-card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: filter 0.3s ease;
 }
 
-.search-post-card:hover .search-post-card-img {
+.post-card:hover .post-card-img {
   filter: brightness(60%);
 }

@@ -1,4 +1,4 @@
-import "../../../style/usersContainer.css";
+import "../../../style/Search/usersContainer.css";
 
 function UsersContainer({ children }) {
   return <div className="users-container">{children}</div>;

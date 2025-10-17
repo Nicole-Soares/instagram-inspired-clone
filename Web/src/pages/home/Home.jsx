@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ToastContainer } from 'react-toastify';
 
-import '../../style/Home.css';
+import '../../style/Home/Home.css';
 
 
 import Storage from '../../service/storage';

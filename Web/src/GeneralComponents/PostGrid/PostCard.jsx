@@ -1,8 +1,7 @@
-import React from "react";
+import "../../style/PostCard.css";
 import { Link } from "react-router-dom";
-import "./PostCard.css";
 
-export default function PostCard({ id, src }) {
+function PostCard({ id, src }) {
   return (
     <Link to={`/post/${id}`} className="post-card-link">
       <article className="post-card">
@@ -11,3 +10,5 @@ export default function PostCard({ id, src }) {
     </Link>
   );
 }
+
+export default PostCard;

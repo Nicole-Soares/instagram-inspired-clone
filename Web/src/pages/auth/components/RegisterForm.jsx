@@ -1,6 +1,6 @@
 import InputField from "./InputField";
 import SubmitButton from "./SubmitButton";
-import '../../../style/RegisterForm.css'
+import '../../../style/Register/RegisterForm.css'
 
 export default function RegisterForm({name, setName, email, setEmail, password, setPassword,image, setImage, handleRegister, loading, error }) {
   return (

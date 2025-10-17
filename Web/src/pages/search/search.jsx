@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import PostCard from "./components/postCard.jsx";
-import PostGrid from "./components/postGrid.jsx";
+import PostCard from "../../GeneralComponents/PostGrid/PostCard.jsx";
+import PostGrid from "../../GeneralComponents/PostGrid/PostGrid.jsx";
 import UserCard from "./components/userCard.jsx";
 import UsersContainer from "./components/usersContainer.jsx";
 import { searchContent } from "../../service/search/searchService.js";
-import "../../style/search.css";
+import "../../style/Search/search.css";
 import { Link, useSearchParams } from "react-router";
 import SideBar from '../../GeneralComponents/SideBar';
 import Storage from "../../service/storage.js";
@@ -77,9 +77,7 @@ function Search() {
         {results.posts.length > 0 && (
           <PostGrid>
             {results.posts.map(p => (
-             <Link key={p.id} to={`/post/${p.id}`}>
-                <PostCard src={p.image} />
-             </Link>
+                <PostCard key={p.id} id={p.id} src={p.image} />   
             ))}
           </PostGrid>
         )}
