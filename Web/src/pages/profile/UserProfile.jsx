@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import apiFetch from "../../service/apiFetch";
 import { useParams } from "react-router-dom";
+import UserService from "../../service/profile/UserService";
 import Storage from "../../service/storage";
 
 import ProfileHeader from "./components/ProfileHeader/ProfileHeader";
@@ -9,12 +9,11 @@ import PostCard from "./components/PostCard/PostCard";
 import SideBar from "../../GeneralComponents/SideBar";
 
 import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
+import NotFoundModal from "../../generalComponents/NotFoundModal";
 
 import { computeProfileFlags, getMeId } from "../../utils/profileHelpers"
 
 import "./UserProfile.css";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const UserProfile = () => {
   const { userId } = useParams();
@@ -26,6 +25,7 @@ const UserProfile = () => {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [isUnauthorized, setIsUnauthorized] = useState(false);
+  const [isNotFound, setIsNotFound] = useState(false);
 
   useEffect(() => {
     if (!Storage.getToken() || Storage.isTokenExpired() ) {
@@ -35,17 +35,15 @@ const UserProfile = () => {
   }, []);
 
   useEffect(() => {
-    const controller = new AbortController();
 
-    (async () => {
+    if (isUnauthorized) return;
+
+    const loadProfile = async () => {
       setLoading(true);
       setErrorMessage("");
-      try {
-        const res = await apiFetch(`${API_BASE_URL}/user/${userId}`, {
-          method: "GET",
-          signal: controller.signal,
-        }, "No fue posible obtener el perfil. ");
 
+      try {
+        const res = await UserService.getUserProfile(userId);
         setData(res);
         const meId = getMeId();
         const flags = computeProfileFlags(res, meId);
@@ -53,28 +51,33 @@ const UserProfile = () => {
         setIsFollowing(flags.isFollowing);
         setFollowersCount(flags.followersCount);
 
-      } catch (e) {
-        if (e.name !== "AbortError") {
-          setErrorMessage(e.message || "No fue posible cargar el perfil");
+      } catch (error) {
+        const status = error.status || 0;
+        const message = error.message || "Error desconocido";
+
+        if (status === 401) {
+          setIsUnauthorized(true);
+        } else if (status == 404) {
+          setIsNotFound(true);
+        } else {
+          setErrorMessage(message);
           setData(null);
         }
       } finally {
         setLoading(false);
       }
-    })();
+    };
 
-    return () => controller.abort();
-  }, [userId]);
+    loadProfile();
+
+  }, [userId, isUnauthorized]);
 
   const handleToggleFollow = async () => {
     if (!data || followPending || isMe) return;
     setFollowPending(true);
 
     try {
-      const res = await apiFetch(`${API_BASE_URL}/users/${userId}/follow`, {
-        method: "PUT",
-      }, "Fallo al realizar la accion de seguir/dejar de seguir.");
-
+      const res = await UserService.followUser(userId);
       setData(res);
       const meId = getMeId();
       const flags = computeProfileFlags(res, meId);
@@ -82,14 +85,19 @@ const UserProfile = () => {
       setFollowersCount(flags.followersCount);
 
     } catch (e) {
-      setErrorMessage(e.message);
+      if (e.status === 401) {
+        setIsUnauthorized(true);
+      } else {
+        setErrorMessage(e.message);
+      }
     } finally {
       setFollowPending(false);
     }
   };
 
-  if (loading) return <div className="user-profile"><p>Cargando perfil…</p></div>;
   if (isUnauthorized) return <UnauthorizedModal />;
+  if (isNotFound) return <NotFoundModal />;
+  if (loading) return <div className="user-profile"><p>Cargando perfil…</p></div>;
   if (!data) return <div className="user-profile"><p>{errorMessage || "No se encontró el usuario."}</p></div>;
   
   const posts = data.posts || [];
