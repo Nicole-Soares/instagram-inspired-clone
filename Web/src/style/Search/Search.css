@@ -16,6 +16,7 @@
     gap: 12px;
     width: 100vw;
     padding: 16px 32px;
+    margin-left: 300px;
 }
 
 .search-container .no-results{

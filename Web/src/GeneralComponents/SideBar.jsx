@@ -5,7 +5,6 @@ import textLogo from '../assets/instagram-text-logo.svg';
 import searchIcon from '../assets/search-logo.png';
 import homeLogo from '../assets/instagram-home-icon.png';
 import createPostLogo from '../assets/instagram-create-post-icon.png';
-import profileLogo from '../assets/instagram-profile-icon.png';
 import logoutLogo from '../assets/instagram-salir-logo.png';
 import '../style/GeneralComponents/SideBar.css'
 
@@ -16,6 +15,7 @@ const SideBar = () => {
     const isProfileActive = useMatch('/user/:userId');
     const isCreatePostActive = useMatch('/post/agregarPost');
     const meId = Storage.getUserId();
+    const avatarImage = Storage.getAvatarImage();
 
     const handleLogOut = () => {
         Storage.clearToken(); 
@@ -92,9 +92,9 @@ const SideBar = () => {
                 <div>
                     <Link to={`/user/${meId}`} className={isProfileActive ? "nav-link nav-link-active" : "nav-link"}>
                         <img
-                            src={profileLogo}
-                            alt="Profile logo"
-                            className="sidebar-profile-logo"
+                            src={avatarImage}
+                            alt="User avatar"
+                            className="sidebar-profile-avatar"
                         />
                         Perfil
                     </Link>                    

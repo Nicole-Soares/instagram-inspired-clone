@@ -18,6 +18,7 @@
   box-sizing: border-box;
   text-align: center;
   overflow: hidden;
+  margin-left: 300px;
 }
 
 .contenedorImagenPost img {
