@@ -1,5 +1,7 @@
 .page-container {
   display: flex;
+  margin-left: 300px;
+  width: fit-content;
 }
 
 .user-profile {

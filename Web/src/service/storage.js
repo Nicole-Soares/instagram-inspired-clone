@@ -1,13 +1,22 @@
 import { jwtDecode } from 'jwt-decode'; 
 
+const AVATAR_URL_KEY = "user_avatar_url";
+
 const setToken = (token) => {
     localStorage.setItem("token", token);
 };
 
 const getToken = () => localStorage.getItem("token");
 
+const setAvatarImage = (url) => {
+    localStorage.setItem(AVATAR_URL_KEY, url);
+};
+
+const getAvatarImage = () => localStorage.getItem(AVATAR_URL_KEY);
+
 const clearToken = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem(AVATAR_URL_KEY);
 };
 
 const getUserId = () => {
@@ -40,7 +49,9 @@ const Storage = {
     getToken, 
     clearToken, 
     getUserId,
-    isTokenExpired 
+    isTokenExpired, 
+    setAvatarImage,
+    getAvatarImage,
 };
 
 export default Storage;

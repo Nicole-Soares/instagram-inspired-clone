@@ -21,6 +21,11 @@ const authRequest = async (endpoint, data) => {
     if (!token) throw new Error("No se recibió un token de autorización");
     
     Storage.setToken(token);
+
+    if (responseData.image) {
+      Storage.setAvatarImage(responseData.image);
+    }
+    
     return responseData;
     
   } catch (error) {
