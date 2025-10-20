@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import UserService from "../../service/profile/UserService";
+import{getUserProfile, followUser} from "../../service/profile/UserService";
 import Storage from "../../service/storage";
-
 import ProfileHeader from "./components/ProfileHeader/ProfileHeader";
-import PostGrid from "../../GeneralComponents/PostGrid/PostGrid";
-import PostCard from "../../GeneralComponents/PostGrid/PostCard";
-import SideBar from "../../GeneralComponents/SideBar";
-
-import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
-import NotFoundModal from "../../generalComponents/NotFoundModal";
-
+import PostGrid from "../../generalComponents/PostGrid/PostGrid";
+import PostCard from "../../generalComponents/PostGrid/PostCard";
+import SideBar from "../../generalComponents/SideBar";
+import UnauthorizedModal from "../../generalComponents/modals/UnauthorizedModal";
+import NotFoundModal from "../../generalComponents/modals/NotFoundModal";
 import { computeProfileFlags, getMeId } from "../../utils/profileHelpers"
-
 import "./UserProfile.css";
 
 const UserProfile = () => {
@@ -27,23 +23,26 @@ const UserProfile = () => {
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [isNotFound, setIsNotFound] = useState(false);
 
-  useEffect(() => {
+ /* useEffect(() => {
     if (!Storage.getToken() || Storage.isTokenExpired() ) {
       setIsUnauthorized(true);
       return;
     }
-  }, []);
+  }, []);*/
 
   useEffect(() => {
 
-    if (isUnauthorized) return;
+    if (!Storage.getToken() || Storage.isTokenExpired() ) {
+      setIsUnauthorized(true);
+      return;
+    }
 
     const loadProfile = async () => {
       setLoading(true);
       setErrorMessage("");
 
       try {
-        const res = await UserService.getUserProfile(userId);
+        const res = await getUserProfile(userId);
         setData(res);
         const meId = getMeId();
         const flags = computeProfileFlags(res, meId);
@@ -77,7 +76,7 @@ const UserProfile = () => {
     setFollowPending(true);
 
     try {
-      const res = await UserService.followUser(userId);
+      const res = await followUser(userId);
       setData(res);
       const meId = getMeId();
       const flags = computeProfileFlags(res, meId);

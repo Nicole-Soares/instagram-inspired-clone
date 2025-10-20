@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import PostCard from "../../GeneralComponents/PostGrid/PostCard.jsx";
-import PostGrid from "../../GeneralComponents/PostGrid/PostGrid.jsx";
+import PostCard from "../../generalComponents/PostGrid/PostCard.jsx";
+import PostGrid from "../../generalComponents/PostGrid/PostGrid.jsx";
 import UserCard from "./components/userCard.jsx";
 import UsersContainer from "./components/usersContainer.jsx";
 import { searchContent } from "../../service/search/searchService.js";
-import "../../style/Search/search.css";
+import "../../style/search/search.css";
 import { Link, useSearchParams } from "react-router";
-import SideBar from '../../GeneralComponents/SideBar';
+import SideBar from '../../generalComponents/SideBar';
 import Storage from "../../service/storage.js";
-import UnauthorizedModal from "../../generalComponents/UnauthorizedModal.jsx";
+import UnauthorizedModal from "../../generalComponents/modals/UnauthorizedModal.jsx";
 
 
 function Search() {

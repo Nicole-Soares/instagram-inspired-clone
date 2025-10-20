@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { ToastContainer } from 'react-toastify';
-
-import '../../style/Home/Home.css';
-
-
+import { ToastContainer, toast } from 'react-toastify';
+import '../../style/home/Home.css';
 import Storage from '../../service/storage';
 import apiFetch from '../../service/apiFetch';
-import UnauthorizedModal from '../../generalComponents/UnauthorizedModal';
+import UnauthorizedModal from '../../generalComponents/modals/UnauthorizedModal';
 import TimelinePost from './components/TimelinePost';
-import SideBar from '../../GeneralComponents/SideBar';
+import SideBar from '../../generalComponents/SideBar';
 
 
 const Home = () => {
@@ -22,7 +19,7 @@ const Home = () => {
 
     useEffect(() => {
         // Redirección si no hay token (verificación inicial)
-        if (!token) {
+        if (!token || Storage.isTokenExpired()) {
             setIsUnauthorized(true);
             setLoading(false);
             return;
@@ -33,11 +30,13 @@ const Home = () => {
                 const data = await apiFetch(`${API_BASE_URL}/user`, { method: 'GET' });
                 setPosts(data.timeline || []);
                 setIsUnauthorized(false);
-            } catch (err) {
-                if (err.message === "Unauthorized") {
+            } catch (error) {
+                const status = error.response?.status || error.status;
+                if (status === 401) {
                     setIsUnauthorized(true);
                 } else {
-                    console.error("Error al obtener la línea de tiempo:", err);
+                    toast.error("Error al obtener la linea de tiempo.");
+                    console.error(error);
                 }
             } finally {
                 setLoading(false);

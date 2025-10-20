@@ -1,10 +1,12 @@
-import HeaderPost from '../../../GeneralComponents/HeaderPost';
-import Info from '../../../GeneralComponents/Info';
+import HeaderPost from '../../../generalComponents/HeaderPost';
+import Info from '../../../generalComponents/Info';
 import { useNavigate } from 'react-router-dom';
-import '../../../style/Home/TimelinePost.css';
+import Storage from '../../../service/storage';
+import '../../../style/home/TimelinePost.css';
 
 export default function TimelinePost({ post, onUpdatePost }) {
     const navigate = useNavigate();
+    const loggedUserId = Storage.getUserId();
 
     const handleRedirect = () => {
         navigate(`/post/${post.id}`);
@@ -16,7 +18,7 @@ export default function TimelinePost({ post, onUpdatePost }) {
                 user={post.user}
                 date={post.date}
                 handleNavigateToUser={() => navigate(`/user/${post.user.id}`)}
-                isOwner={false}
+                isOwner={(String(loggedUserId) === String(post.user.id))}
             />
 
             <img
