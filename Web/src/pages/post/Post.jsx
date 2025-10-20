@@ -2,21 +2,21 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import HeaderPost from "../../GeneralComponents/HeaderPost";
+import HeaderPost from "../../generalComponents/HeaderPost";
 import CommentList from "./components/CommentList";
 import CommentForm from "./components/CommentForm";
-import Info from "../../GeneralComponents/Info";
+import Info from "../../generalComponents/Info";
 import {
   getPostById,
   addCommentToPost,
   deletePost,
 } from "../../service/post/postService";
-import "../../style/Post/Post.css";
+import "../../style/post/Post.css";
 import Storage from "../../service/storage";
-import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
-import NotFoundModal from "../../GeneralComponents/NotFoundModal";
-import DeleteConfirmationModal from "../../GeneralComponents/DeleteConfirmationModal";
-import SideBar from "../../GeneralComponents/SideBar";
+import UnauthorizedModal from "../../generalComponents/modals/UnauthorizedModal";
+import NotFoundModal from "../../generalComponents/modals/NotFoundModal";
+import DeleteConfirmationModal from "../../generalComponents/modals/DeleteConfirmationModal"
+import SideBar from "../../generalComponents/SideBar";
 
 const Post = () => {
   const { id } = useParams();

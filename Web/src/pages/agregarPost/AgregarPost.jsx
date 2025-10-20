@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import "../../style/AgregarPost/AgregarPost.css";
+import "../../style/agregarPost/AgregarPost.css";
 import ImagenPreview from "./components/ImagenPreview";
 import FormularioPost from "./components/FormularioPost";
 import { crearPost } from "../../service/agregarPost/agregarPostService";
 import { toast, ToastContainer } from "react-toastify";
-import UnauthorizedModal from "../../generalComponents/UnauthorizedModal";
+import UnauthorizedModal from "../../generalComponents/modals/UnauthorizedModal";
 import Storage from "../../service/storage";
-import SideBar from "../../GeneralComponents/SideBar";
+import SideBar from "../../generalComponents/SideBar";
 
 const AgregarPost = () => {
   //se guarda el valor puesto en el input o mismo si se subio un archivo desde documentos
