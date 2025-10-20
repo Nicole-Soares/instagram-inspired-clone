@@ -17,27 +17,29 @@ import UnauthorizedModal from "../../generalComponents/modals/UnauthorizedModal"
 import NotFoundModal from "../../generalComponents/modals/NotFoundModal";
 import DeleteConfirmationModal from "../../generalComponents/modals/DeleteConfirmationModal"
 import SideBar from "../../generalComponents/SideBar";
+import RenderValidation from "../../generalComponents/RenderValidation";
 
 const Post = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [comentario, setComentario] = useState("");
   const comentariosRef = useRef(null);
-  const [isUnauthorized, setIsUnauthorized] = useState(false);
+  //const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const token = Storage.getToken();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isNotFound, setIsNotFound] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  //const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!token || Storage.isTokenExpired()) {
+   /* if (!token || Storage.isTokenExpired()) {
       setIsUnauthorized(true);
       setLoading(false);
       return;
     }
-
+*/
     const fetchPost = async () => {
       try {
         setLoading(true);
@@ -48,9 +50,7 @@ const Post = () => {
         setIsOwner(String(loggedUserId) === String(postId));
       } catch (error) {
         const status = error.response?.status || error.status;
-        if (status === 401) {
-          setIsUnauthorized(true);
-        } else if (status === 404) {
+         if (status === 404) {
           setIsNotFound(true);
         } else {
           toast.error("Error al cargar el post.");
@@ -112,9 +112,12 @@ const Post = () => {
     }
   };
 
-  if (isUnauthorized) return <UnauthorizedModal />;
+  
+  //if (isUnauthorized) return <UnauthorizedModal />;
   if (isNotFound) return <NotFoundModal />;
   if (loading) return <p className="loadingPost">Cargando post...</p>;
+
+//if(error) return <RenderValidation error ={error}/>
 
   const todosLosComentarios = [
     ...(post.description?.trim()

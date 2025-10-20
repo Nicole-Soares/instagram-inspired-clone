@@ -1,5 +1,6 @@
 import { jwtDecode } from 'jwt-decode'; 
 
+
 const AVATAR_URL_KEY = "user_avatar_url";
 
 const setToken = (token) => {
@@ -44,6 +45,27 @@ const isTokenExpired = () => {
     }
   };
 
+  export const isValid = (token) => {
+    return token && !isTokenExpired()
+}
+
+  export const isLoggedIn = () => {
+    const token = getToken();
+    return isValid(token);
+}
+
+/*export const checkRoles = (roles) => {
+    const role = getRoles()
+    return role.some(rol => roles.includes(rol));
+}*/
+
+/*export const getRoles = () => {
+    var token = localStorage.getItem('jwt');
+    var decoded = decode(token);
+    var role = decoded['role'];
+    return role.split(",")
+}*/
+
 const Storage = { 
     setToken, 
     getToken, 
@@ -52,6 +74,7 @@ const Storage = {
     isTokenExpired, 
     setAvatarImage,
     getAvatarImage,
+    isLoggedIn
 };
 
 export default Storage;
