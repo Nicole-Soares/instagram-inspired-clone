@@ -28,7 +28,7 @@ function Login() {
     setError(null);
 
     if (!email || !password) {
-      setError("Completa todos los campos.");
+      setError("Completá todos los campos.");
       return;
     }
 

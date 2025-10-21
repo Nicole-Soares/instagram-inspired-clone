@@ -29,7 +29,7 @@ function Register() {
   setError(null);
 
   if(!email || !password || !name || !image) {
-    setError("Completa todos los campos.");
+    setError("Completá todos los campos.");
     return;
   }
   
