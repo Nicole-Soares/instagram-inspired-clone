@@ -1,5 +1,4 @@
-import Storage from "../service/storage";
-
+import { getUserProfile } from "../service/profile/UserService";
 //funciones auxiliares para manejar perfiles de usuario
 
 //normaliza los ids a string
@@ -10,38 +9,31 @@ export const idToString = (v) => {
 };
 
 //comprueba si el usuario logueado esta en la lista de seguidores
-export const isFollowedBy = (followers, meId) => {
+const isFollowedBy = (followers, meId) => {
   if (!meId || !Array.isArray(followers)) return false;
   const me = idToString(meId);
   return followers.some((f) => idToString(f) === me);
 };
 
-//calcula los flags isMe, isFollowing y followersCount
-export const computeProfileFlags = (profile, meId) => {
+export const computeProfileFlags = async (profile, meId, isFollowingOverride) => {
   const me = idToString(meId);
   const profileId = idToString(profile);
-  const followers = Array.isArray(profile.followers) ? profile.followers : [];
+
+  // Trae la lista de usuarios seguidos por el usuario logueado
+  const meProfile = await getUserProfile(me);
+  const seguidores = Array.isArray(meProfile.followers) ? meProfile.followers : [];
 
   const isMe = !!me && (me === profileId);
-  const isFollowing = !isMe && isFollowedBy(followers, me);
+
+  // Si se pasa un override, lo usamos. Si no, calculamos normalmente
+  const isFollowing = isFollowingOverride !== undefined
+    ? isFollowingOverride
+    : (!isMe && isFollowedBy(seguidores, profileId));
+
   const followersCount = Number.isFinite(profile.followersCount)
     ? profile.followersCount
-    : followers.length;
+    : seguidores.length;
 
   return { isMe, isFollowing, followersCount };
 };
 
-
-//obtiene el Id del usuario logueado y lo normaliza
-export const getMeId = () => {
-  const stored = Storage.getUserId?.();
-  if (stored) return idToString(stored);
-
-  try {
-    const raw = (Storage.getToken() || "").replace(/^Bearer\s+/i, "");
-    const payload = JSON.parse(atob(raw.split(".")[1] || ""));
-    return idToString(payload.userId);
-  } catch {
-    return "";
-  }
-};

@@ -8,7 +8,7 @@ import PostCard from "../../generalComponents/PostGrid/PostCard";
 import SideBar from "../../generalComponents/SideBar";
 import UnauthorizedModal from "../../generalComponents/modals/UnauthorizedModal";
 import NotFoundModal from "../../generalComponents/modals/NotFoundModal";
-import { computeProfileFlags, getMeId } from "../../utils/profileHelpers"
+import { computeProfileFlags } from "../../utils/profileHelpers"
 import "./UserProfile.css";
 
 const UserProfile = () => {
@@ -23,12 +23,6 @@ const UserProfile = () => {
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [isNotFound, setIsNotFound] = useState(false);
 
- /* useEffect(() => {
-    if (!Storage.getToken() || Storage.isTokenExpired() ) {
-      setIsUnauthorized(true);
-      return;
-    }
-  }, []);*/
 
   useEffect(() => {
 
@@ -44,8 +38,9 @@ const UserProfile = () => {
       try {
         const res = await getUserProfile(userId);
         setData(res);
-        const meId = getMeId();
-        const flags = computeProfileFlags(res, meId);
+        const meId = Storage.getUserId();
+        const flags = await computeProfileFlags(res, meId);
+        console.log(flags)
         setIsMe(flags.isMe);
         setIsFollowing(flags.isFollowing);
         setFollowersCount(flags.followersCount);
@@ -73,26 +68,30 @@ const UserProfile = () => {
 
   const handleToggleFollow = async () => {
     if (!data || followPending || isMe) return;
+  
     setFollowPending(true);
-
+  
     try {
-      const res = await followUser(userId);
-      setData(res);
-      const meId = getMeId();
-      const flags = computeProfileFlags(res, meId);
-      setIsFollowing(flags.isFollowing);
-      setFollowersCount(flags.followersCount);
-
+      // ✅ Actualización visual instantánea (optimistic update)
+      setIsFollowing((prev) => !prev);
+      setFollowersCount((prev) => (isFollowing ? prev - 1 : prev + 1));
+  
+      // ✅ Llamamos al backend (mismo endpoint follow/unfollow)
+      await followUser(userId);
+  
     } catch (e) {
-      if (e.status === 401) {
-        setIsUnauthorized(true);
-      } else {
-        setErrorMessage(e.message);
-      }
+      console.error("Error en follow/unfollow:", e);
+  
+      // ⚠️ Revertimos los cambios si falla
+      setIsFollowing((prev) => !prev);
+      setFollowersCount((prev) => (isFollowing ? prev + 1 : prev - 1));
+      setErrorMessage(e.message || "Error al seguir usuario");
     } finally {
+      // 🔓 Rehabilitamos el botón siempre
       setFollowPending(false);
     }
   };
+  
 
   if (isUnauthorized) return <UnauthorizedModal />;
   if (isNotFound) return <NotFoundModal />;
