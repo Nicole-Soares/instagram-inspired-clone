@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import '../../style/home/Home.css';
 import Storage from '../../service/storage';
 import apiFetch from '../../service/apiFetch';
@@ -62,7 +62,6 @@ const Home = () => {
 
     return (
         <div className="home-container">
-            <ToastContainer />
             <SideBar/>
             <div className="main-content-container">
                 <div className="timeline-container">

@@ -17,11 +17,11 @@ const SideBar = () => {
     const meId = Storage.getUserId();
     const avatarImage = Storage.getAvatarImage();
 
-    const handleLogOut = () => {
-        Storage.clearToken(); 
-        // para que le de tiempo al storage de sincronizarse y cuando vaya al login no entre directo al home y aparezca el modal de no autorizado
-        setTimeout(() => navigate('/login'), 0); 
-    };
+    const handleLogOut = async () => {
+        Storage.clearToken();
+        await Promise.resolve(); 
+        navigate('/login', { replace: true });
+      };
 
     const handleSearch = (e) => {
         e.preventDefault();

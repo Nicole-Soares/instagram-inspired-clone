@@ -28,5 +28,5 @@ Dentro de las carpetas que nosotros subimos tienen que estar su proyecto directa
 
 # createPost y updatePost
 
-* se tuvo que agregar que la imagen acepte valores que empiecen con blob, https, https para poder meter imagenes desde la computadora
+* se tuvo que agregar que la imagen acepte valores que empiecen con https, https 
 
