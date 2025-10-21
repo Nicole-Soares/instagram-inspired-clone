@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
+import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import HeaderPost from "../../generalComponents/HeaderPost";
 import CommentList from "./components/CommentList";
@@ -103,9 +103,7 @@ const Post = () => {
     try {
       await deletePost(id);
       toast.success("Post eliminado exitosamente.");
-      setTimeout(() => {
-        navigate(`/home`);
-      }, 1000);
+      navigate(`/home`);
     } catch (error) {
       toast.error("Error al borrar el post");
       console.error(error);
@@ -128,7 +126,6 @@ const Post = () => {
 
   return (
     <div className="paginaPost">
-      <ToastContainer />
       <SideBar/>
      
       <div className="contenedorImagenPost">

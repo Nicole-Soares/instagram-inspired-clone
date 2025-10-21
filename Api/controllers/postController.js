@@ -12,14 +12,14 @@ class PostController {
     create = async (req, res) => {
         const bodySchemaPost = yup.object({
             image: yup
-                .string()
-                .required("La imagen es obligatoria.")
-                .test('is-valid-url-or-blob', 'La imagen debe ser una URL válida o un blob.', value =>
-                    typeof value === 'string' &&
-                    (value.startsWith('http://') ||
-                    value.startsWith('https://') ||
-                    value.startsWith('blob:')))
-        });
+              .string()
+              .required("La imagen es obligatoria.")
+              .test('is-valid-url', 'La imagen debe ser una URL válida (http o https).', value =>
+                typeof value === 'string' &&
+                (value.startsWith('http://') || value.startsWith('https://'))
+              )
+          });
+          
 
         try {       
             const { image, description } = await bodySchemaPost.validate(req.body); // para que no me venga algo raro en el body
@@ -55,14 +55,14 @@ class PostController {
     updatePost = async (req, res) => {
         const bodySchemaPost = yup.object({
             image: yup
-            .string()
-            .required("La imagen es obligatoria.")
-            .test('is-valid-url-or-blob', 'La imagen debe ser una URL válida o un blob.', value =>
+              .string()
+              .required("La imagen es obligatoria.")
+              .test('is-valid-url', 'La imagen debe ser una URL válida (http o https).', value =>
                 typeof value === 'string' &&
-                (value.startsWith('http://') ||
-                value.startsWith('https://') ||
-                value.startsWith('blob:')))
-        });
+                (value.startsWith('http://') || value.startsWith('https://'))
+              )
+          });
+          
 
         try {
             const postId = req.params.postId;

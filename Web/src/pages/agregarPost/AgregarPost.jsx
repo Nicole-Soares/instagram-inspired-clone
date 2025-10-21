@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import "../../style/agregarPost/AgregarPost.css";
 import ImagenPreview from "./components/ImagenPreview";
 import FormularioPost from "./components/FormularioPost";
 import { crearPost } from "../../service/agregarPost/agregarPostService";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import UnauthorizedModal from "../../generalComponents/modals/UnauthorizedModal";
 import Storage from "../../service/storage";
 import SideBar from "../../generalComponents/SideBar";
@@ -16,7 +16,7 @@ const AgregarPost = () => {
   const [descripcion, setDescripcion] = useState("");
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   //se guarda el valor puesto en el input o mismo si se subio un archivo desde documentos
-  const fileInputRef = useRef(null);
+ 
   const navigate = useNavigate();
   const token = Storage.getToken();
 
@@ -33,18 +33,7 @@ const AgregarPost = () => {
     }
   }, [token]); // si pasa algun cambio vuelve a ejecutar el useEffect
 
-  const handleAgregarImagenClick = () => {
-    fileInputRef.current?.click();
-  };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-
-      setUrl(imageUrl);
-    }
-  };
 
   const handleSubmit = async () => {
      if (!url.trim()) {
@@ -54,9 +43,7 @@ const AgregarPost = () => {
     try {
       const nuevoPost = await crearPost(url, descripcion);
       toast.success("Post creado con éxito 🎉");
-      setTimeout(() => {
-        navigate(`/post/${nuevoPost.id}`);
-      }, 1000);
+      navigate(`/post/${nuevoPost.id}`);
       setUrl("");
       setDescripcion("");
     } catch (error) {
@@ -73,7 +60,6 @@ const AgregarPost = () => {
   if (isUnauthorized) return <UnauthorizedModal />;
   return (
     <div className="paginaAgregarPost">
-      <ToastContainer />
       <SideBar/>
       <div className="paginaAgregarPostContenido">
       <div className="contenedorTituloAgregarPost">
@@ -82,9 +68,6 @@ const AgregarPost = () => {
       <div className="contenedorImagenYImputs">
         <ImagenPreview
           imagen={url}
-          onAgregarImagenClick={handleAgregarImagenClick}
-          fileInputRef={fileInputRef}
-          onFileChange={handleFileChange}
         />
         <FormularioPost
           url={url}
