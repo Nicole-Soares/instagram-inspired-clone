@@ -40,7 +40,6 @@ const UserProfile = () => {
         setData(res);
         const meId = Storage.getUserId();
         const flags = await computeProfileFlags(res, meId);
-        console.log(flags)
         setIsMe(flags.isMe);
         setIsFollowing(flags.isFollowing);
         setFollowersCount(flags.followersCount);
@@ -72,22 +71,20 @@ const UserProfile = () => {
     setFollowPending(true);
   
     try {
-      // ✅ Actualización visual instantánea (optimistic update)
+   
       setIsFollowing((prev) => !prev);
       setFollowersCount((prev) => (isFollowing ? prev - 1 : prev + 1));
   
-      // ✅ Llamamos al backend (mismo endpoint follow/unfollow)
       await followUser(userId);
   
     } catch (e) {
       console.error("Error en follow/unfollow:", e);
   
-      // ⚠️ Revertimos los cambios si falla
       setIsFollowing((prev) => !prev);
       setFollowersCount((prev) => (isFollowing ? prev + 1 : prev - 1));
       setErrorMessage(e.message || "Error al seguir usuario");
     } finally {
-      // 🔓 Rehabilitamos el botón siempre
+      
       setFollowPending(false);
     }
   };
