@@ -40,7 +40,7 @@ const isTokenExpired = () => {
       const now = Date.now() / 1000;
       return exp < now;
     } catch {
-      return true; // token inválido
+      return true; 
     }
   };
 

@@ -1,10 +1,9 @@
-import React from 'react';
 import { useNavigate } from "react-router-dom";
 import '../../style/generalComponents/UnauthorizedModal.css'; 
 
 const NotFoundModal = () => {
-    const navigate = useNavigate(); 
-    return(
+  const navigate = useNavigate(); 
+  return(
 
   <div className="modalBloqueo">
     <div className="modalContenido">

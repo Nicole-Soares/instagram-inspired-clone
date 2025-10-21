@@ -1,5 +1,4 @@
 import { getUserProfile } from "../service/profile/UserService";
-//funciones auxiliares para manejar perfiles de usuario
 
 //normaliza los ids a string
 export const idToString = (v) => {
@@ -19,13 +18,11 @@ export const computeProfileFlags = async (profile, meId, isFollowingOverride) =>
   const me = idToString(meId);
   const profileId = idToString(profile);
 
-  // Trae la lista de usuarios seguidos por el usuario logueado
   const meProfile = await getUserProfile(me);
   const seguidores = Array.isArray(meProfile.followers) ? meProfile.followers : [];
 
   const isMe = !!me && (me === profileId);
 
-  // Si se pasa un override, lo usamos. Si no, calculamos normalmente
   const isFollowing = isFollowingOverride !== undefined
     ? isFollowingOverride
     : (!isMe && isFollowedBy(seguidores, profileId));

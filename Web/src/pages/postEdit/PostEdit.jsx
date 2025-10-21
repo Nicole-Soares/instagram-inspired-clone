@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import "../../style/post/PostEdit.css";
 import Storage from "../../service/storage";
-import UnauthorizedModal from "../../generalComponents/modals/UnauthorizedModal";
-import ForbiddenModal from "../../generalComponents/modals/ForbiddenModal";
-import NotFoundModal from "../../generalComponents/modals/NotFoundModal";
+import UnauthorizedModal from "../../GeneralComponents/modals/UnauthorizedModal";
+import ForbiddenModal from "../../GeneralComponents/modals/ForbiddenModal";
+import NotFoundModal from "../../GeneralComponents/modals/NotFoundModal";
 import apiFetch from "../../service/apiFetch";
 import SideBar from "../../generalComponents/SideBar";
 
@@ -25,11 +25,10 @@ function PostEdit() {
   useEffect(() => {
     if (!token || Storage.isTokenExpired()) {
       setIsUnauthorized(true);
-      setLoading(false); // paramos la carga para mostrar el modal
+      setLoading(false); 
       return;
     }
 
-    //me traigo los datos del post actual, relleno los valores de los inputs (si se puede) y ejecuto.
     const fetchPost = async () => {
       try {
         setLoading(true);
@@ -40,22 +39,19 @@ function PostEdit() {
           },
           "No se pudo obtener el post"
         ); 
-        //Me guardo el id del usuario logueado y el id del autor del post para comparar
+        
         const currentUserId = Storage.getUserId();
         const postAuthorId = data.user.id;
 
-        //Vefifico si el post pertenece al usuario logueado
         if (postAuthorId !== currentUserId) {
           setIsForbidden(true);
           throw new Error("El post no pertenece a este usuario");
         }
 
-        //Si la verificación pasa, relleno los inputs
         setImageUrl(data.image || "");
         setCaption(data.description || "");
-        setIsUnauthorized(false); // Confirmo que el token es válido
+        setIsUnauthorized(false); 
 
-        //Si la verificación no pasa, manejo el error con catch
       } catch (error) {
         const status = error.response?.status || error.status;
         if (status === 401) {
@@ -92,12 +88,9 @@ function PostEdit() {
     }
   };
 
-  if (isUnauthorized) return <UnauthorizedModal />; // Muestra el modal si no hay token o es inválido (401)
-
-  if (isForbidden) return <ForbiddenModal />; // Muestra el modal si no tiene permiso (403)
-
-  if (isNotFound) return <NotFoundModal />; // Muestra el modal si el post no existe (404)
-
+  if (isUnauthorized) return <UnauthorizedModal />; 
+  if (isForbidden) return <ForbiddenModal />; 
+  if (isNotFound) return <NotFoundModal />; 
   if (loading) {
     return <div>Cargando...</div>;
   }

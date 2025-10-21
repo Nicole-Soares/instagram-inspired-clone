@@ -9,14 +9,12 @@ const Info = ({ post, postId, onUpdatePost, handleRedirect}) => {
   const[ userHasLiked, setUserHasLiked] = useState(false);
   const currentUserId = Storage.getUserId();
 
-  //cada vez que se carga el componente chequea si el usuario log le puso me gusta o no al post
-   useEffect(() => {
+  useEffect(() => {
     if (post?.likes && currentUserId) {
       setUserHasLiked(post.likes.some((like) => like.id === currentUserId));
     }
   }, [post, currentUserId]);
 
-  //cuando hace click al like
   const handleClickLike = async () => {
     try {
       const updatedPost = await likePost(postId);

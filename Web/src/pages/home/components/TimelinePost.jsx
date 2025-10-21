@@ -1,5 +1,5 @@
-import HeaderPost from '../../../generalComponents/HeaderPost';
-import Info from '../../../generalComponents/Info';
+import HeaderPost from '../../../GeneralComponents/HeaderPost';
+import Info from '../../../GeneralComponents/Info';
 import { useNavigate } from 'react-router-dom';
 import Storage from '../../../service/storage';
 import '../../../style/home/TimelinePost.css';

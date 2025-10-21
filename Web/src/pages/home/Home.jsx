@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import '../../style/home/Home.css';
 import Storage from '../../service/storage';
 import apiFetch from '../../service/apiFetch';
-import UnauthorizedModal from '../../generalComponents/modals/UnauthorizedModal';
+import UnauthorizedModal from '../../GeneralComponents/modals/UnauthorizedModal';
 import TimelinePost from './components/TimelinePost';
 import SideBar from '../../generalComponents/SideBar';
 
@@ -18,7 +18,6 @@ const Home = () => {
     const token = Storage.getToken();
 
     useEffect(() => {
-        // Redirección si no hay token (verificación inicial)
         if (!token || Storage.isTokenExpired()) {
             setIsUnauthorized(true);
             setLoading(false);
@@ -35,7 +34,7 @@ const Home = () => {
                 if (status === 401) {
                     setIsUnauthorized(true);
                 } else {
-                    toast.error("Error al obtener la linea de tiempo.");
+                    toast.error("Error al cargar las publicaciones de los usuarios que seguis.");
                     console.error(error);
                 }
             } finally {

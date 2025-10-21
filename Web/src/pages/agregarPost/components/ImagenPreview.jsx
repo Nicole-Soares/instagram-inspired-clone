@@ -1,4 +1,3 @@
-import React from "react";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 
 const ImagenPreview = ({

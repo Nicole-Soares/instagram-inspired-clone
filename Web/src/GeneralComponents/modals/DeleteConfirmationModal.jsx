@@ -1,4 +1,3 @@
-import React from 'react';
 import '../../style/generalComponents/DeleteConfirmationModal.css';
 
 function DeleteConfirmationModal({ onClose, onConfirm }) {

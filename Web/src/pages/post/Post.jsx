@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import HeaderPost from "../../generalComponents/HeaderPost";
+import HeaderPost from "../../GeneralComponents/HeaderPost";
 import CommentList from "./components/CommentList";
 import CommentForm from "./components/CommentForm";
-import Info from "../../generalComponents/Info";
+import Info from "../../GeneralComponents/Info";
 import {
   getPostById,
   addCommentToPost,
@@ -13,8 +13,8 @@ import {
 } from "../../service/post/postService";
 import "../../style/post/Post.css";
 import Storage from "../../service/storage";
-import UnauthorizedModal from "../../generalComponents/modals/UnauthorizedModal";
-import NotFoundModal from "../../generalComponents/modals/NotFoundModal";
+import UnauthorizedModal from "../../GeneralComponents/modals/UnauthorizedModal";
+import NotFoundModal from "../../GeneralComponents/modals/NotFoundModal";
 import DeleteConfirmationModal from "../../generalComponents/modals/DeleteConfirmationModal"
 import SideBar from "../../generalComponents/SideBar";
 
@@ -62,9 +62,8 @@ const Post = () => {
     };
 
     fetchPost();
-  }, [id, token, navigate]); // si pasa algun cambio vuelve a ejecutar el useEffect
+  }, [id, token, navigate]); 
 
-  //Se encarga de actualizar el estado del post
     const handleUpdatePost = (updatedPost) => {
         setPost(updatedPost);
     };
@@ -98,7 +97,7 @@ const Post = () => {
   };
 
   const confirmDelete = async () => {
-    setShowDeleteModal(false); // Cierra el modal primero
+    setShowDeleteModal(false); 
 
     try {
       await deletePost(id);
@@ -121,9 +120,6 @@ const Post = () => {
     ...(post.comments || []),
   ];
   
-   
-  
-
   return (
     <div className="paginaPost">
       <SideBar/>
@@ -149,7 +145,7 @@ const Post = () => {
           handleNavigateToUser={handleNavigateToUser}
         />
         <hr className="lineaDivisora" />
-        {/*Ahora se le pasa el 'post' al componente info*/}
+        
         <Info post={post} postId = {id} onUpdatePost={handleUpdatePost}/>
         <CommentForm
           comentario={comentario}
@@ -160,8 +156,8 @@ const Post = () => {
      
       {showDeleteModal && (
         <DeleteConfirmationModal
-          onClose={() => setShowDeleteModal(false)} // Función para cancelar
-          onConfirm={confirmDelete} // Función para eliminar
+          onClose={() => setShowDeleteModal(false)} 
+          onConfirm={confirmDelete} 
         />
       )}
     </div>

@@ -44,29 +44,27 @@ const apiFetch = async (url, options = {}, message) => {
         
     }
 
-    // 2. Manejo de otros errores 4xx/5xx
+    //Manejo de otros errores 4xx/5xx
     if (!response.ok) {
         let errorData = {};
-        // Intentamos obtener el cuerpo JSON del error
+        
         try {
             errorData = await response.json();
         } catch (e) {
-            // Si falla, usamos el texto de estado HTTP o el mensaje por defecto
+            
             errorData.message = response.statusText || message;
             console.error(e);
         }
 
-        // Error 403 o cualquier otro error general de la API
         throw new Error(errorData.message || message);
     }
     
     // manejo de la respuesta 204 (No Content)
-    // Crucial para peticiones PUT, DELETE o POST que no devuelven cuerpo
     if (response.status === 204 || response.headers.get('content-length') === '0') {
-        return {}; // Devolvemos un objeto vacío para evitar errores al intentar parsear JSON
+        return {}; 
     }
 
-    // (200-299) todo ok
+    // respuesta 200, todo ok
     return response.json();
 };
 

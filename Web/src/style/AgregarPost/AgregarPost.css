@@ -189,7 +189,7 @@ textarea {
     background-color: var(--color-principal-hover);
 }
 
-/* --- Media query para dispositivos móviles --- */
+/* --- Media query para celular --- */
 @media (max-width: 900px) {
     .paginaAgregarPost{ 
         padding-bottom: 80px;  

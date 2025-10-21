@@ -5,22 +5,18 @@ import ImagenPreview from "./components/ImagenPreview";
 import FormularioPost from "./components/FormularioPost";
 import { crearPost } from "../../service/agregarPost/agregarPostService";
 import { toast } from "react-toastify";
-import UnauthorizedModal from "../../generalComponents/modals/UnauthorizedModal";
+import UnauthorizedModal from "../../GeneralComponents/modals/UnauthorizedModal";
 import Storage from "../../service/storage";
 import SideBar from "../../generalComponents/SideBar";
 
 const AgregarPost = () => {
-  //se guarda el valor puesto en el input o mismo si se subio un archivo desde documentos
   const [url, setUrl] = useState("");
-  //se guarda el valor puesto en el input
   const [descripcion, setDescripcion] = useState("");
   const [isUnauthorized, setIsUnauthorized] = useState(false);
-  //se guarda el valor puesto en el input o mismo si se subio un archivo desde documentos
  
   const navigate = useNavigate();
   const token = Storage.getToken();
 
-  //cambios en el input de la url, lo que se va escribindo se setea
   const handleUrlChange = (e) => {
     const newUrl = e.target.value;
     setUrl(newUrl);
@@ -31,9 +27,7 @@ const AgregarPost = () => {
       setIsUnauthorized(true);
       return;
     }
-  }, [token]); // si pasa algun cambio vuelve a ejecutar el useEffect
-
-
+  }, [token]);
 
   const handleSubmit = async () => {
      if (!url.trim()) {
@@ -51,7 +45,7 @@ const AgregarPost = () => {
       if (status === 401) {
         setIsUnauthorized(true);
       } else {
-        toast.error("Error al cargar el post.");
+        toast.error("Error al crear la publicacion: Solo se permiten URLs del tipo http o https.");
         console.error(error);
       }
     }

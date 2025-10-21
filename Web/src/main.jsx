@@ -17,7 +17,7 @@ import Search from './pages/search/search.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-    <ToastContainer position="top-right" autoClose={1000} />
+    <ToastContainer position="top-right" autoClose={2000} />
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />

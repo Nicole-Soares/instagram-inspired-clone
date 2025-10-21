@@ -3,11 +3,11 @@ import { useParams } from "react-router-dom";
 import{getUserProfile, followUser} from "../../service/profile/UserService";
 import Storage from "../../service/storage";
 import ProfileHeader from "./components/ProfileHeader/ProfileHeader";
-import PostGrid from "../../generalComponents/PostGrid/PostGrid";
-import PostCard from "../../generalComponents/PostGrid/PostCard";
+import PostGrid from "../../GeneralComponents/PostGrid/PostGrid";
+import PostCard from "../../GeneralComponents/PostGrid/PostCard";
 import SideBar from "../../generalComponents/SideBar";
-import UnauthorizedModal from "../../generalComponents/modals/UnauthorizedModal";
-import NotFoundModal from "../../generalComponents/modals/NotFoundModal";
+import UnauthorizedModal from "../../GeneralComponents/modals/UnauthorizedModal";
+import NotFoundModal from "../../GeneralComponents/modals/NotFoundModal";
 import { computeProfileFlags } from "../../utils/profileHelpers"
 import "./UserProfile.css";
 
@@ -74,22 +74,21 @@ const UserProfile = () => {
    
       setIsFollowing((prev) => !prev);
       setFollowersCount((prev) => (isFollowing ? prev - 1 : prev + 1));
-  
       await followUser(userId);
   
     } catch (e) {
+
       console.error("Error en follow/unfollow:", e);
-  
       setIsFollowing((prev) => !prev);
       setFollowersCount((prev) => (isFollowing ? prev + 1 : prev - 1));
       setErrorMessage(e.message || "Error al seguir usuario");
+
     } finally {
       
       setFollowPending(false);
     }
   };
   
-
   if (isUnauthorized) return <UnauthorizedModal />;
   if (isNotFound) return <NotFoundModal />;
   if (loading) return <div className="user-profile"><p>Cargando perfil…</p></div>;
