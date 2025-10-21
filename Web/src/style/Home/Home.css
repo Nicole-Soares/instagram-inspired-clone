@@ -3,7 +3,6 @@
   flex-direction: row;
   height: 100vh;
   overflow: hidden;
-  margin-left: 200px; 
 }
 
 .main-content-container {
@@ -11,6 +10,7 @@
     justify-content: center;      
     align-items: flex-start;      
     flex-grow: 1;
+    margin-left: 200px;
     overflow-y: auto;
     box-sizing: border-box;
     padding: 40px;
@@ -103,6 +103,21 @@
     cursor: pointer;
 }
 
-.home-container-sinSeguidos p{
-    color: black;
-}
+.home-container-sinSeguidos {
+    text-align: center;
+    margin-top: 50px;
+    color: #999;
+  }
+
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .home-container {
+      flex-direction: column;
+    }
+  
+    .main-content-container {
+      margin-left: 0;
+      padding-bottom: 80px; 
+    }
+  }

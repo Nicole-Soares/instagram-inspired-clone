@@ -7,3 +7,10 @@
 .user-profile {
   padding: 16px 32px;
 }
+
+@media (max-width: 1092px){
+
+  .page-container{
+    margin-left: 0px;
+  }
+}

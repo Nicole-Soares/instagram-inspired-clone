@@ -6,9 +6,10 @@
   font-family: var(--font-family);
 }
 
-/* Header: solo el título */
+
 .post-edit-header {
   margin-bottom: 15px;
+  margin-left: 300px;
 }
 
 .preview-title {
@@ -19,23 +20,23 @@
   margin-left: 20px;
 }
 
-/* Contenedor principal: imagen + inputs */
+
 .post-edit-content {
   display: flex;
-  justify-content: center;  /* 👈 centra ambas columnas */
+  justify-content: center;  
   align-items: flex-start;
-  gap: 40px;                /* 👈 espacio entre imagen e inputs */
+  gap: 40px;                
   flex-wrap: wrap;   
+  margin-left: 300px;
+  width: 100%;
 }
 
-/* Columna de la imagen */
+
 .preview-section {
   flex: 1;
-  display: flex;
-  max-width: 600px; 
+  display: flex; 
   justify-content: center;
   align-items: center;
-  background-color: #dedede;
   border-radius: 8px;
   padding: 16px;
   box-sizing: border-box;
@@ -55,7 +56,7 @@
   color: #5e5c5c;
 }
 
-/* Columna de inputs */
+
 .inputs {
   flex: 1;
   display: flex;
@@ -63,7 +64,7 @@
   gap: 10px;
   padding: 30px;
   box-sizing: border-box;
-  max-width: 500px; /* 👈 mismo límite para equilibrar */
+  max-width: 500px; 
   margin: 0 auto; 
 }
 
@@ -135,13 +136,24 @@
   background: var(--color-principal-hover);
 }
 
-/* --- Responsive: en pantallas chicas se apilan --- */
-@media (max-width: 900px) {
+
+@media (max-width: 1100px) {
   .post-edit-content {
     flex-direction: column;
     align-items: center;
+    margin-left: 0px;
   }
 
+
+.post-edit-header {
+  margin-left: 0px
+}
+
+  .preview img {
+    max-width: 620px;
+    max-height: 780px;
+    object-fit: cover;
+  }
   .preview-section,
   .inputs {
     max-width: 100%;

@@ -6,6 +6,7 @@ import UnauthorizedModal from "../../generalComponents/modals/UnauthorizedModal"
 import ForbiddenModal from "../../generalComponents/modals/ForbiddenModal";
 import NotFoundModal from "../../generalComponents/modals/NotFoundModal";
 import apiFetch from "../../service/apiFetch";
+import SideBar from "../../generalComponents/SideBar";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -103,6 +104,7 @@ function PostEdit() {
 
   return (
     <div className="container">
+      <SideBar/>
       <div className="post-edit-header">
         <h2 className="preview-title">Preview</h2>
       </div>
@@ -122,7 +124,6 @@ function PostEdit() {
           type="text"
           placeholder="URL de la imagen"
           value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
         />
         <textarea
           placeholder="Escribe algo..."
