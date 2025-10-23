@@ -1,0 +1,43 @@
+.submit-button {
+  display: flex;
+  outline: none;
+  background-color: var(--color-principal);
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  height: 31px;
+  width: 272px;
+  max-width: 300px;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 8px;
+  justify-content: center;
+}
+
+.submit-button:hover {
+    background-color: var(--color-principal-hover);
+}
+
+.submit-button:active  {
+    outline: none;
+    transform: scale(0.96)
+}
+
+.submit-button:focus {
+   outline: none;  
+}
+
+.button-spinner {
+  width: 10px;
+  height: 10px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #fff; 
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

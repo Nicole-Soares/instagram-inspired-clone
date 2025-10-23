@@ -12,19 +12,24 @@ class PostController {
     create = async (req, res) => {
         const bodySchemaPost = yup.object({
             image: yup
-                .string()
-                .required("La imagen es obligatoria para la construccion del post.")
-                .url("El URL de la imagen debe ser válido.")
-        });
+              .string()
+              .required("La imagen es obligatoria.")
+              .test('is-valid-url', 'La imagen debe ser una URL válida (http o https).', value =>
+                typeof value === 'string' &&
+                (value.startsWith('http://') || value.startsWith('https://'))
+              )
+          });
+          
 
         try {       
-            const { image, description } = await bodySchemaPost.validate(req.body); // para que no me venga algo raro en el body
+            const { image, description } = await bodySchemaPost.validate(req.body);
             const user = transformUser(req.user); 
             
             const DraftPost = { image: image, description: description };
-
             const postCreado = await this.system.addPost(user.id, DraftPost);
-            res.json(transformSimplePost(postCreado));// modifico el post para que los followers del usuario que lo hizo no generen un loop infinito
+            const postReal = this.system.getPost(postCreado.id);
+
+            res.json(transformSimplePost(postReal));
         }
         catch (error) {
             if (error instanceof ValidationError) {
@@ -51,10 +56,14 @@ class PostController {
     updatePost = async (req, res) => {
         const bodySchemaPost = yup.object({
             image: yup
-                .string()
-                .required("La imagen es obligatoria para la construccion del post.")
-                .url("El URL de la imagen debe ser válido.")
-        });
+              .string()
+              .required("La imagen es obligatoria.")
+              .test('is-valid-url', 'La imagen debe ser una URL válida (http o https).', value =>
+                typeof value === 'string' &&
+                (value.startsWith('http://') || value.startsWith('https://'))
+              )
+          });
+          
 
         try {
             const postId = req.params.postId;

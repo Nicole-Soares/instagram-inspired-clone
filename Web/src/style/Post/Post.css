@@ -1,0 +1,167 @@
+.paginaPost {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  font-family: var(--font-family);
+  background-color: #fff; 
+}
+
+.contenedorImagenPost {
+  width: 50%;
+  border: 1px #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 700px;
+  cursor: pointer;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
+  overflow: hidden;
+  margin-left: 300px;
+  
+}
+
+.contenedorImagenPost img {
+  max-width: 620px;
+  max-height: 780px;
+  width: 100%;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.contenedorUsuarioInput {
+  flex: 1;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-right: 60px;
+  padding-top: 20px;
+}
+
+.contenedorInput {
+  margin-top: auto;
+}
+
+.comentario {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 0;
+}
+
+.comentario img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.comentario h4 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.comentario p {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.imagenUsuarioComentario{
+  cursor: pointer;
+}
+
+.nombreUsuarioComentario{
+  cursor: pointer;
+}
+
+.comentarioDescripcion{
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+
+h3{
+  color: #222;
+}
+
+.lineaDivisora {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 12px 0;
+}
+
+.comentariosScroll {
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.comentariosScroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.comentariosScroll::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+.loadingPost{
+  text-align: center;
+  color: #000000; 
+  font-size: 1.2rem; 
+  padding: 20px; 
+  position: fixed; 
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;  
+}
+
+
+@media (max-width: 1200px) {
+
+
+  .paginaPost {
+    flex-direction: column; 
+    align-items: center; 
+    gap: 20px; 
+    padding: 10px; 
+    padding-bottom: 80px; 
+      
+  }
+
+  .contenedorImagen {
+    width: 100%; 
+    max-width: 100%; 
+  }
+  
+  .contenedorImagenPost {
+    margin-left: 0px;
+    gap: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    width: 100%;
+  }
+  
+  .comentario img {
+    width: 30px; 
+    height: 30px;
+  }
+  
+  .comentario h4, .comentario p, .comentarioDescripcion {
+    font-size: 0.85rem; 
+  }
+
+  .comentariosScroll {
+    max-height: 250px; 
+  }
+  
+}
+

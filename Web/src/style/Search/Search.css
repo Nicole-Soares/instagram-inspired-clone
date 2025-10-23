@@ -1,0 +1,36 @@
+.search-page {
+    display: flex;
+}
+
+.search-query{
+    padding-left: 10px;
+    font-size: 20px;
+    color: #b3b3b3;
+    margin: 0;
+    font-weight: 400;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100vw;
+    padding: 16px 32px;
+    margin-left: 300px;
+}
+
+.search-container .no-results{
+    position: fixed;   
+    top: 40%;
+    font-size: 30px;
+    font-weight: 600;
+    color: #b3b3b3;
+    animation: fadeIn 0.3s ease;
+    align-self: center;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+

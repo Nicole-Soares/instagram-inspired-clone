@@ -1,0 +1,158 @@
+.container {
+  max-width: 1200px; 
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: var(--font-family);
+}
+
+.post-edit-header {
+  padding-bottom: 15px;
+  padding-top: 30px;
+  margin-left: 180px;
+}
+
+.preview-title {
+  color: #333;
+  font-size: clamp(20px, 4vw, 30px);
+  font-weight: 400;
+  margin: 0;
+  margin-left: 20px;
+}
+
+.post-edit-content {
+  display: flex;
+  justify-content: center;  
+  align-items: flex-start;               
+  flex-wrap: wrap;   
+  margin-left: 160px;
+  width: 100%;
+}
+
+.preview-section {
+  flex: 1;
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  padding: 16px;
+  box-sizing: border-box;
+  min-height: 500px;
+  margin: 0 auto;
+}
+
+.preview img {
+  width: 100%;
+  height: 100%;
+}
+
+.placeholder {
+  font-size: 30px;
+  font-weight: bold;
+  color: #5e5c5c;
+}
+
+
+.inputs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 16px;
+  padding-right: 30px;
+  box-sizing: border-box;
+  max-width: 480px; 
+  margin: 0 auto; 
+}
+
+.inputs input,
+.inputs textarea {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #f5f5f5;
+}
+
+.inputs textarea {
+  resize: none;
+  height: 100px;
+}
+
+.inputs button {
+  padding: 12px;
+  background-color: var(--color-principal);
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.inputs button:hover {
+  background-color: var(--color-principal-hover);
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.modalContent p{
+  color: black;
+}
+
+.modalContent button {
+  background: var(--color-principal);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modalContent button:hover {
+  background: var(--color-principal-hover);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 1100px) {
+  .post-edit-content {
+    flex-direction: column;
+    align-items: center;
+    margin-left: 0px;
+  }
+
+
+.post-edit-header {
+  margin-left: 0px
+}
+
+  .preview img {
+    max-width: 620px;
+    max-height: 780px;
+    object-fit: cover;
+  }
+  .preview-section,
+  .inputs {
+    max-width: 100%;
+    width: 100%;
+  }
+}
