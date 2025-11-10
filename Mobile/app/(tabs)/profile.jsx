@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Redirect } from "expo-router";
 import ViewProfile from "../../components/ViewPorfile";
 import { getUser } from "../../service/Api";
+import InstagramSpinner from "../../components/InstagramSpinner";
 
 /*profile (tab) = perfil del usuario logueado. 
 Es la pantalla “Mi perfil”: ver tus posts, editar/eliminar, cerrar sesión. 
@@ -19,15 +20,17 @@ export default function Profile() {
     const fetchUser = async () => {
       try {
         const savedToken = await AsyncStorage.getItem("token");
-
         if (!savedToken) {
           setIsLoading(false);
           return;
         }
-
+  
         setToken(savedToken);
-
-        const { data } = await getUser(); // obtiene /user
+  
+        // simulamos que la request tarda 2.5s
+        await new Promise((resolve) => setTimeout(resolve, 2500));
+  
+        const { data } = await getUser();
         setUser(data);
       } catch (error) {
         console.log("Error al obtener usuario:", error);
@@ -35,10 +38,10 @@ export default function Profile() {
         setIsLoading(false);
       }
     };
-
+  
     fetchUser();
   }, []);
-
+  
   // Spinner mientras carga
   if (isLoading) {
     return (
