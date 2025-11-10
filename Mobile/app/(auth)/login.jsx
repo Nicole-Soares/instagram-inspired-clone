@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, Alert, ActivityIndicator } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { login, debugBase } from '../../service/Api';
+import { login } from '../../service/Api';
 
 export default function Login() {
   const { returnTo } = useLocalSearchParams();
@@ -13,7 +13,6 @@ export default function Login() {
 
   useEffect(() => {
     (async () => {
-      debugBase();
       const t = await AsyncStorage.getItem('token');
       if (t) return router.replace('/home');
       setChecking(false);

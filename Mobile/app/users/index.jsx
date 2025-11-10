@@ -3,7 +3,6 @@ import { FlatList, StyleSheet, Text} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import User from "../../components/User";
 import Api from "../../service/Api";
-import InstagramSpinner from "../../components/InstagramSpinner";
 
 export default function Users() {
   const [users, setUsers] = useState([]);

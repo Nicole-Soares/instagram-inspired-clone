@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Redirect } from 'expo-router';
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import InstagramSpinner from '../components/InstagramSpinner';
 
 export default function Index() {
   const [loading, setLoading] = useState(true);
@@ -19,7 +18,7 @@ export default function Index() {
   if (loading) {
     return (
       <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <InstagramSpinner />
+        {/* <InstagramSpinner size="large" /> */}
       </SafeAreaView>
     );
   }

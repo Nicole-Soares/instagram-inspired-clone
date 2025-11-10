@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Redirect } from "expo-router";
-import InstagramSpinner from "../../components/InstagramSpinner";
 import ViewProfile from "../../components/ViewPorfile";
 import { getUser } from "../../service/Api";
 
