@@ -1,31 +1,97 @@
-import { useMemo } from 'react';
-import { FlatList, Image, Pressable, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { View, Text, FlatList, RefreshControl, Alert } from "react-native";
+import { Redirect } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getUser } from "../../../service/Api";
+import { isTokenExpired } from "../../utils/isTokenExpired";
+import useFetchDataEffect from "../../../hooks/useFetchDataEffect";
+import InstagramSpinner from "../../../components/InstagramSpinner";
+import TimelinePost from "../../../components/home/TimelinePost";
 
 export default function Home() {
-  const posts = useMemo(() => ([
-    { id:101, user:{ id:1, name:'Juan' }, image:'https://picsum.photos/800/600?1', commentsCount:7, createdAt:'2025/09/15 - 16:31', description:'Texto ejemplo' },
-    { id:102, user:{ id:2, name:'Nico' }, image:'https://picsum.photos/800/600?2', commentsCount:3, createdAt:'2025/09/13 - 10:12', description:'Otro post' },
-  ]), []);
+  const [unauthorized, setUnauthorized] = useState(false);
 
-  return (
-    <FlatList
-      data={posts}
-      keyExtractor={(p) => String(p.id)}
-      renderItem={({ item }) => (
-        <View style={{ padding:12, gap:8, borderTopWidth:1, borderColor:'#eee' }}>
-          <Text style={{ fontWeight:'700' }}>{item.user.name}</Text>
-          <Text style={{ color:'#666' }}>{item.createdAt}</Text>
+  const fetchTimeline = async () => {
+    const token = await AsyncStorage.getItem("token");
 
-          <Pressable onPress={() => router.push(`/post/${item.id}`)} style={{ marginTop:8 }}>
-            <Image source={{ uri: item.image }} style={{ width:'100%', height:300, borderRadius:12 }} />
-          </Pressable>
+    if (!token || isTokenExpired(token)) {
+      const error = new Error("UNAUTHORIZED");
+      error.status = 401;
+      throw error;
+    }
 
-          <Pressable onPress={() => router.push(`/home/comments/${item.id}`)} style={{ paddingVertical:8 }}>
-            <Text style={{ color:'#555' }}>💬 Comentarios ({item.commentsCount})</Text>
-          </Pressable>
+    const { data } = await getUser(); // axios
+    return data;
+  };
+
+  // Uso del hook reutilizable
+  const {
+    isLoading,
+    isError,
+    dataState: data,
+    reloadScreen,
+  } = useFetchDataEffect(fetchTimeline, {}, [], (error) => {
+    const status = error?.response?.status || error?.status;
+    if (status === 401) {
+      setUnauthorized(true);
+    } else {
+      console.error("Error timeline:", error);
+      Alert.alert("Error", "Error al cargar publicaciones.");
+    }
+  });
+
+  //  Redirección si no hay token válido
+  if (unauthorized) {
+    return <Redirect href="/login" />;
+  }
+
+  //  Cargando...
+  if (isLoading) {
+    return (
+      <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <InstagramSpinner />
+        <Text style={{ marginTop: 8, color: "#666" }}>Cargando...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  //  Error de fetch
+  if (isError) {
+    return (
+      <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ color: "#555" }}>Ocurrió un error al cargar el timeline.</Text>
+      </SafeAreaView>
+    );
+  }
+
+  //  Publicaciones del usuario
+  const posts = data?.timeline ?? data?.posts ?? [];
+
+  //  Sin publicaciones
+  if (!posts || posts.length === 0) {
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingHorizontal: 16 }}>
+          <Text style={{ color: "#555", textAlign: "center" }}>
+            Seguí a tus amigos para ver fotos y videos.
+          </Text>
         </View>
-      )}
-    />
+      </SafeAreaView>
+    );
+  }
+
+  //  Lista de publicaciones
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <FlatList
+        data={posts}
+        keyExtractor={(item) => String(item.id)}
+        renderItem={({ item }) => <TimelinePost post={item} />}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={reloadScreen} />
+        }
+      />
+    </SafeAreaView>
   );
 }
