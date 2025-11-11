@@ -1,4 +1,3 @@
-// app/_layout.jsx  (asegurate que el archivo se llame _layout.jsx con guión bajo)
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';

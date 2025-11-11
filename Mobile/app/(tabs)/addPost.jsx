@@ -1,158 +1,267 @@
-// app/(tabs)/addPost.jsx
-import React, { useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
+import { Redirect, useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import {
-  View,
+  Alert,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
   Text,
   TextInput,
-  Image,
   TouchableOpacity,
-  StyleSheet,
-  Alert,
-  ScrollView,
+  View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createPost } from "../../service/Api"; // usa tu API real
+import InstagramSpinner from "../../components/InstagramSpinner";
+import { createPost } from "../../service/Api";
+import { isTokenExpired } from "../../utils/isTokenExpired";
 
-export default function AddPost() {
-  const router = useRouter();
-  const [imageUrl, setImageUrl] = useState("");
-  const [comment, setComment] = useState("");
+export default function AgregarPost() {
+  const [url, setUrl] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState(false) 
+  const [errDesc, setErrDesc] = useState('')
+  const router = useRouter();
 
-  const onPublish = async () => {
-    if (!imageUrl.trim()) {
-      Alert.alert("Falta imagen", "Ingresá una URL de imagen (http/https).");
+  //verifica token
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = await AsyncStorage.getItem("token");
+      if (!token || isTokenExpired(token)) setIsUnauthorized(true);
+    };
+    checkAuth();
+  }, []);
+
+  //Limpia al volver a la pantalla
+  useFocusEffect(
+    useCallback(() => {
+      setIsError(false);
+      setErrDesc("");
+      setUrl("");
+    }, [])
+  );
+
+  const isValidUrl = (string) => {
+    return /^https?:\/\/.+/i.test(string);
+  };
+  
+  //crea el post
+  const handleSubmit = async () => {
+    if (!url.trim()) {
+      setIsError(true);
+      setErrDesc("Tiene que agregar una url");
       return;
     }
+
     try {
       setLoading(true);
-      const token = await AsyncStorage.getItem("token");
-      if (!token) {
-        Alert.alert("Sesión expirada", "Iniciá sesión para publicar.");
-        return router.replace("/login");
+      const nuevoPost = await createPost(url, descripcion);
+      router.push(`/post/${nuevoPost.id}`);
+      setUrl("");
+      setDescripcion("");
+    } catch (error) {
+      const status = error.response?.status || error.status;
+      if (status === 401) {
+        setIsUnauthorized(true);
+      } else {
+        setIsError(true); 
+        setErrDesc("Error al crear la publicacion: Solo se permiten URLs del tipo http o https.");
       }
-
-      const { id } = await createPost(imageUrl.trim(), comment.trim());
-      setImageUrl("");
-      setComment("");
-      Alert.alert("Éxito", "Post creado con éxito 🎉");
-      router.push(`/post/${id}`);
-    } catch (e) {
-      const msg =
-        e?.response?.data?.message ||
-        e?.message ||
-        "Error al crear la publicación.";
-      Alert.alert("Error", msg);
     } finally {
       setLoading(false);
     }
   };
 
+  if (isUnauthorized) {
+    return <Redirect href="/login" />;
+  }
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.centered}>
+        <InstagramSpinner />
+        <Text style={{ marginTop: 8, color: "#666" }}>Publicando...</Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
-    <SafeAreaView style={s.container}>
-      {/* Header propio (porque en tabs tenés headerShown:false) */}
-      <View style={s.header}>
-        <TouchableOpacity onPress={() => router.back()} style={s.backBtn}>
-          <Ionicons name="chevron-back" size={24} color="#111" />
-        </TouchableOpacity>
-        <Text style={s.headerTitle}>Crear publicación</Text>
-        <View style={{ width: 24 }} />{/* spacer para centrar el título */}
-      </View>
-
-      <ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
-        {/* Input: Image (URL) */}
-        <TextInput
-          style={s.input}
-          placeholder="Image"
-          value={imageUrl}
-          onChangeText={setImageUrl}
-          autoCapitalize="none"
-        />
-
-        {/* Preview gris con ícono y texto, o la imagen si hay URL */}
-        <View style={s.preview}>
-          {imageUrl ? (
-            <Image source={{ uri: imageUrl }} style={s.previewImage} />
-          ) : (
-            <View style={s.placeholder}>
-              <MaterialCommunityIcons name="camera-plus-outline" size={72} color="#222" />
-              <Text style={s.placeholderText}>Agregar imagen</Text>
-            </View>
-          )}
+    <SafeAreaView style={styles.safe}>
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <MaterialIcons name="arrow-back-ios" size={20} color="#333" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Crear publicación</Text>
         </View>
 
-        {/* Textarea: comentario */}
+        {/* Input de URL */}
         <TextInput
-          style={[s.input, s.textarea]}
-          placeholder="Agrega un comentario"
-          value={comment}
-          onChangeText={setComment}
-          multiline
-          textAlignVertical="top"
+          style={styles.input}
+          placeholder="URL de la imagen"
+          value={url}
+          onChangeText={setUrl}
+          placeholderTextColor="#999"
         />
 
-        {/* Botón Publicar */}
+        {/* Preview / Placeholder */}
         <TouchableOpacity
-          onPress={onPublish}
-          disabled={loading}
-          style={[s.primaryBtn, loading && { opacity: 0.7 }]}
-        >
-          <Text style={s.primaryBtnText}>{loading ? "Publicando…" : "Publicar"}</Text>
-        </TouchableOpacity>
+  style={styles.imageBox}
+  activeOpacity={0.8}
+  onPress={() =>
+    Alert.alert("Seleccionar imagen", "Acá podrías abrir un picker 📸")
+  }
+>
+  {isValidUrl(url) ? (
+    <Image source={{ uri: url }} style={styles.image} />
+  ) : (
+    <View style={styles.placeholder}>
+      <MaterialIcons name="add-a-photo" size={70} color="#666" />
+      <Text style={styles.placeholderText}>Agregar imagen</Text>
+    </View>
+  )}
+</TouchableOpacity>
+
+        {/* Input de descripción */}
+        <TextInput
+          style={[styles.input, styles.textarea]}
+          placeholder="Agrega un comentario"
+          value={descripcion}
+          onChangeText={setDescripcion}
+          multiline
+          placeholderTextColor="#999"
+        />
+
+  
+<Pressable
+  onPress={handleSubmit}
+  disabled={loading}
+  style={({ pressed }) => [
+    styles.button,
+    pressed  && styles.buttonActive, 
+    loading && { opacity: 0.6 },
+  ]}
+>
+  <Text style={styles.buttonText}>Publicar</Text>
+</Pressable>
+{isError && (
+  <View style={styles.errorBox}>
+    <Text style={styles.errorText}>
+      {errDesc ? `⚠️ ${errDesc}` : "Ocurrió un error inesperado."}
+    </Text>
+  </View>
+)}
+
+
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-const s = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
-
+const styles = StyleSheet.create({
+  safe: {
+    flex: 1,
+    backgroundColor: "#f9f9f9", // fondo claro general
+  },
+  container: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
   header: {
-    height: 52,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
+    marginBottom: 16,
   },
-  backBtn: { width: 24, height: 24, justifyContent: "center", alignItems: "center" },
-  headerTitle: { flex: 1, textAlign: "center", fontSize: 18, fontWeight: "600", color: "#111" },
-
-  content: { padding: 12, gap: 12 },
-
-  input: {
-    borderWidth: 1,
-    borderColor: "#dcdcdc",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 15,
-    backgroundColor: "#fff",
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginLeft: 4,
+    color: "#333",
   },
-
-  preview: {
-    height: 400,               // alto grande como el figma
-    backgroundColor: "#e0e0e0",
-    borderRadius: 12,
-    overflow: "hidden",
+  label: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#555",
+    marginBottom: 8,
+  },
+  imageBox: {
+    width: "100%",
+    height: 300,
+    backgroundColor: "#ddd",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  placeholder: {
     justifyContent: "center",
     alignItems: "center",
   },
-  previewImage: { width: "100%", height: "100%", resizeMode: "cover" },
-
-  placeholder: { justifyContent: "center", alignItems: "center", gap: 10 },
-  placeholderText: { fontSize: 20, color: "#222" },
-
-  textarea: { minHeight: 90 },
-
-  primaryBtn: {
-    backgroundColor: "#7F8CFF", // violeta del figma
+  placeholderText: {
+    marginTop: 8,
+    color: "#555",
+    fontSize: 16,
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
     borderRadius: 8,
-    paddingVertical: 12,
+    backgroundColor: "#fff",
+    padding: 12,
+    marginBottom: 12,
+    fontSize: 14,
+  },
+  textarea: {
+    height: 100,
+    textAlignVertical: "top",
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
   },
-  primaryBtnText: { color: "#fff", fontWeight: "600", fontSize: 15 },
+  button: {
+    backgroundColor: "#7F8CFF", // color normal
+    borderRadius: 8,
+    paddingVertical: 14,
+    alignItems: "center",
+    marginTop: 8,
+    transition: "background-color 0.2s", // suave en web
+  },
+  buttonActive: {
+    backgroundColor: "#6E79E6", // más oscuro al tocar o hover
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16,
+  },
+  errorBox: {
+    backgroundColor: "#fdecea",      // rojo muy suave
+    borderWidth: 1,
+    borderColor: "#f5c6cb",
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    marginTop: 10,
+    alignItems: "center",
+  },
+  errorText: {
+    color: "#a94442",                // rojo más oscuro, legible
+    fontSize: 14,
+    fontWeight: "500",
+    textAlign: "center",
+  },
+  
 });

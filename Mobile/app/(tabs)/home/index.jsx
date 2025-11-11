@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, FlatList, RefreshControl, Alert } from "react-native";
 import { Redirect } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
+
 import { getUser } from "../../../service/Api";
-import { isTokenExpired } from "../../utils/isTokenExpired";
+import { isTokenExpired } from "../../../utils/isTokenExpired";
 import useFetchDataEffect from "../../../hooks/useFetchDataEffect";
 import InstagramSpinner from "../../../components/InstagramSpinner";
 import TimelinePost from "../../../components/home/TimelinePost";
@@ -12,6 +14,7 @@ import TimelinePost from "../../../components/home/TimelinePost";
 export default function Home() {
   const [unauthorized, setUnauthorized] = useState(false);
 
+  //  Función que pide el timeline
   const fetchTimeline = async () => {
     const token = await AsyncStorage.getItem("token");
 
@@ -21,11 +24,11 @@ export default function Home() {
       throw error;
     }
 
-    const { data } = await getUser(); // axios
+    const { data } = await getUser();
     return data;
   };
 
-  // Uso del hook reutilizable
+  //  Hook genérico para manejar la carga
   const {
     isLoading,
     isError,
@@ -41,12 +44,19 @@ export default function Home() {
     }
   });
 
-  //  Redirección si no hay token válido
+  // Solo recarga los datos cuando la pestaña Home está activa
+  useFocusEffect(
+    useCallback(() => {
+      reloadScreen();
+    }, [])
+  );
+
+  //  Si no hay token válido
   if (unauthorized) {
     return <Redirect href="/login" />;
   }
 
-  //  Cargando...
+  //  Cargando
   if (isLoading) {
     return (
       <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -56,7 +66,7 @@ export default function Home() {
     );
   }
 
-  //  Error de fetch
+  // 🔸 Error
   if (isError) {
     return (
       <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -65,14 +75,21 @@ export default function Home() {
     );
   }
 
-  //  Publicaciones del usuario
+  // 🔸 Posts del usuario
   const posts = data?.timeline ?? data?.posts ?? [];
 
-  //  Sin publicaciones
+  // 🔸 Si no tiene publicaciones
   if (!posts || posts.length === 0) {
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingHorizontal: 16 }}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            paddingHorizontal: 16,
+          }}
+        >
           <Text style={{ color: "#555", textAlign: "center" }}>
             Seguí a tus amigos para ver fotos y videos.
           </Text>
@@ -81,7 +98,7 @@ export default function Home() {
     );
   }
 
-  //  Lista de publicaciones
+  // 🔸 Lista de publicaciones
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <FlatList
