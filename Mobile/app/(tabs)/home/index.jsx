@@ -4,7 +4,7 @@ import { View, Text, FlatList, RefreshControl, Alert } from "react-native";
 import { Redirect } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getUser } from "../../../service/Api";
-import { isTokenExpired } from "../../utils/isTokenExpired";
+import { isTokenExpired } from "../../../utils/isTokenExpired";
 import useFetchDataEffect from "../../../hooks/useFetchDataEffect";
 import InstagramSpinner from "../../../components/InstagramSpinner";
 import TimelinePost from "../../../components/home/TimelinePost";

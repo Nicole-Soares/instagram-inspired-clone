@@ -1,4 +1,3 @@
-import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
@@ -24,46 +23,30 @@ const ViewProfile = ({ user, setToken }) => {
   if (!user) return null;
 
   return (
-    <View style={styles.container}>
-      {/* Header con avatar e info */}
+    <View>
       <View style={styles.header}>
-        <Image
-          source={{
-            uri:
-              user.image ||
-              "https://cdn-icons-png.flaticon.com/512/847/847969.png",
-          }}
-          style={styles.avatar}
-        />
-        <View style={styles.infoContainer}>
-          <Text style={styles.username}>@{user.username || user.name}</Text>
-          <Text style={styles.name}>{user.name || "Usuario"}</Text>
+        <View style={styles.leftBlock}>
+          <Image source={{ uri: user.image }} style={styles.avatar} />
 
-          <View style={styles.statsRow}>
-            <View style={styles.statBox}>
-              <Text style={styles.statNumber}>{user.posts?.length || 0}</Text>
-              <Text style={styles.statLabel}>Publicaciones</Text>
-            </View>
-            <View style={styles.statBox}>
-              <Text style={styles.statNumber}>{user.followers?.length || 0}</Text>
-              <Text style={styles.statLabel}>Seguidores</Text>
-            </View>
-            <View style={styles.statBox}>
-              <Text style={styles.statNumber}>{user.following?.length || 0}</Text>
-              <Text style={styles.statLabel}>Seguidos</Text>
+          <View style={styles.infoColumn}>
+            <Text style={styles.name} numberOfLines={1}>{user.name}</Text>
+
+            <View style={styles.statsColumn}>
+              <Text style={styles.statLine}>
+                <Text style={styles.statNumber}>{user.posts?.length || 0}</Text> Publicaciones
+              </Text>
+              <Text style={styles.statLine}>
+                <Text style={styles.statNumber}>{user.followers?.length || 0}</Text> Seguidos
+              </Text>
             </View>
           </View>
-
-          <TouchableOpacity
-            style={[styles.logoutButton]}
-            onPress={handleLogout}
-          >
-            <Text style={styles.logoutText}>Cerrar sesión</Text>
-          </TouchableOpacity>
         </View>
+        
+        <TouchableOpacity style={[styles.logoutButton]} onPress={handleLogout} >
+            <Text style={styles.logoutButtonText}>Logout</Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Posts grid */}
       <FlatList
         numColumns={3}
         data={user.posts || []}
@@ -83,35 +66,80 @@ const ViewProfile = ({ user, setToken }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff", paddingTop: 20 },
-  header: { flexDirection: "row", paddingHorizontal: 16, marginBottom: 10 },
-  avatar: { width: 90, height: 90, borderRadius: 45, marginRight: 16 },
-  infoContainer: { flex: 1 },
-  username: { fontSize: 18, fontWeight: "bold" },
-  name: { color: "#777", fontSize: 14, marginBottom: 6 },
-  statsRow: { flexDirection: "row", marginTop: 8 },
-  statBox: { alignItems: "center", flex: 1 },
-  statNumber: { fontWeight: "bold", fontSize: 16 },
-  statLabel: { color: "#777", fontSize: 12 },
-  editButton: {
-    marginTop: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#dbdbdb",
-    alignItems: "center",
+  header: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  paddingHorizontal: 12,
+  paddingTop: 12,
+  paddingBottom: 40,
   },
-  editButtonText: { color: "black", fontWeight: "500" },
+
+  leftBlock: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  flexShrink: 1,            
+  },
+
+  avatar: { 
+    width: 84, 
+    height: 84,
+    borderRadius: 64,
+    marginRight: 20 
+  },
+
+  infoColumn: {
+    flexShrink: 1 
+  },
+
+  name: { 
+    fontSize: 24, 
+    fontWeight: '700'
+  },
+
+  statsColumn: {
+    marginTop: 10
+  },
+
+  statLine: {
+    color: '#6b7280',
+    marginTop: 8
+  },
+
+  statNumber: {
+    fontWeight: '700',
+    color: '#111827'
+  },
+
   logoutButton: {
-    marginTop: 8,
-    paddingVertical: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 6,
     borderRadius: 8,
-    backgroundColor: "#efefef",
-    alignItems: "center",
+    backgroundColor: '#1a57ffff',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
   },
-  logoutText: { color: "red", fontWeight: "500" },
-  postImage: { width: "33%", height: 120 },
-  noPosts: { textAlign: "center", color: "#888", marginTop: 20 },
+
+  logoutButtonText: {
+    color: "#fff", 
+    fontWeight: "500",
+    fontSize: 14
+  },
+  
+  postImage: { 
+    width: "33.33%",
+    height: 120, 
+    aspectRatio: 0.6, 
+    borderWidth: 1, 
+    borderColor: '#fff' 
+  },
+
+  noPosts: { 
+    textAlign: "center", 
+    color: "#888", 
+    marginTop: 40 
+  }
+
 });
 
 export default ViewProfile;

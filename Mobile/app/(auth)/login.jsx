@@ -23,7 +23,13 @@ export default function Login() {
     if (!email.trim() || !pass.trim()) return Alert.alert('Completa email y contraseña');
     try {
       setSubmitting(true);
-      await login(email, pass); // guarda token real
+      const loginData = await login(email, pass); 
+      
+      if (loginData?.id) {
+          await AsyncStorage.setItem('userId', loginData.id); 
+      } else {
+          console.warn('Advertencia: El ID de usuario no se pudo guardar.');
+      }
       const target = typeof returnTo === 'string' && returnTo.startsWith('/') ? returnTo : '/home';
       router.replace(target);
     } catch (e) {
