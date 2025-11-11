@@ -1,7 +1,12 @@
 import { Tabs } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import ProfileTabImage from "../../components/ProfileTabImage";
+import useProfileImage from "../../hooks/useProfileImage";
 
 export default function TabsLayout() {
+
+  const userImage = useProfileImage();
+
   return (
     <Tabs
       screenOptions={{
@@ -50,11 +55,10 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <MaterialCommunityIcons
-              name={focused ? "account" : "account-outline"} 
-              size={size + 4}
-              color={color}
+          tabBarIcon: ({ focused }) => ( 
+            <ProfileTabImage 
+              focused={focused} 
+              userImage={userImage} 
             />
           ),
         }}
