@@ -4,7 +4,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Redirect, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
-  Alert,
   Image,
   Pressable,
   ScrollView,
@@ -111,13 +110,8 @@ export default function AgregarPost() {
         />
 
         {/* Preview / Placeholder */}
-        <TouchableOpacity
-  style={styles.imageBox}
-  activeOpacity={0.8}
-  onPress={() =>
-    Alert.alert("Seleccionar imagen", "Acá podrías abrir un picker 📸")
-  }
->
+  
+  <View  style={styles.imageBox}>
   {isValidUrl(url) ? (
     <Image source={{ uri: url }} style={styles.image} />
   ) : (
@@ -126,8 +120,8 @@ export default function AgregarPost() {
       <Text style={styles.placeholderText}>Agregar imagen</Text>
     </View>
   )}
-</TouchableOpacity>
 
+</View>
         {/* Input de descripción */}
         <TextInput
           style={[styles.input, styles.textarea]}

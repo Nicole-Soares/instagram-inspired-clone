@@ -48,7 +48,10 @@ export const createPost = async (image, description) => {
   return data; 
 };
 
-export const getPostById  = (postId) => api.get(`/posts/${postId}`);
+export const getPostById = async (postId) => {
+  const { data } = await api.get(`/posts/${postId}`);
+  return data; 
+};
 export const updatePost   = (postId, image, description) => api.put(`/posts/${postId}`, { image, description });
 export const deletePost   = (postId) => api.delete(`/posts/${postId}`);
 export const toggleLike   = (postId) => api.put(`/posts/${postId}/like`);

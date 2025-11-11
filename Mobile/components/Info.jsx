@@ -1,98 +1,78 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
-import {
-    Alert,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
-import { likePost } from "../service/Api";
+import { MaterialIcons } from "@expo/vector-icons";
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { toggleLike } from "../service/Api";
 
-export default function Info({ post, postId, onUpdatePost, handleRedirect }) {
-  const [userHasLiked, setUserHasLiked] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState(null);
-
-  useEffect(() => {
-    const loadUserId = async () => {
-      const id = await AsyncStorage.getItem("userId");
-      setCurrentUserId(id);
-    };
-    loadUserId();
-  }, []);
-
-  useEffect(() => {
-    if (post?.likes && currentUserId) {
-      setUserHasLiked(post.likes.some((like) => String(like.id) === String(currentUserId)));
-    }
-  }, [post, currentUserId]);
-
-  const handleClickLike = async () => {
+export default function Info({ post, postId, onUpdatePost, onShowComments }) {
+  const handleLike = async () => {
     try {
-      const updatedPost = await likePost(postId);
-
-      const hasLikedNow = updatedPost.likes.some(
-        (like) => String(like.id) === String(currentUserId)
-      );
-
-      setUserHasLiked(hasLikedNow);
-
-      Alert.alert(
-        "Me gusta",
-        hasLikedNow
-          ? "¡Me gusta registrado! ❤️"
-          : "¡Me gusta eliminado! 💔"
-      );
-
-      if (onUpdatePost) onUpdatePost(updatedPost);
+      const updatedPost = await toggleLike(postId);
+      onUpdatePost(updatedPost);
     } catch (error) {
-      console.error(error);
-      Alert.alert("Error", "Error al procesar el 'Me gusta'.");
+      console.error("Error al dar like:", error);
     }
   };
 
   return (
-    <View style={styles.infoPost}>
-      <TouchableOpacity onPress={handleClickLike} style={styles.row}>
-        <Text style={styles.icon}>{userHasLiked ? "❤️" : "🤍"}</Text>
-        <Text style={styles.text}>
-          <Text style={styles.bold}>{post.likes?.length || 0}</Text> me gusta
-        </Text>
-      </TouchableOpacity>
+    <View style={styles.container}>
+      {/* ---- ICONOS (like y comentarios) ---- */}
+      <View style={styles.actionsRow}>
+        <TouchableOpacity style={styles.iconButton} onPress={handleLike}>
+          <MaterialIcons
+            name="favorite-border"
+            size={22}
+            color="#444"
+            style={styles.icon}
+          />
+          <Text style={styles.iconText}>{post.likes?.length || 0}</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={handleRedirect} style={styles.row}>
-        <Text style={styles.icon}>💬</Text>
-        <Text style={styles.text}>
-          <Text style={styles.bold}>{post.comments?.length || 0}</Text>{" "}
-          comentarios
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.iconButton} onPress={onShowComments}>
+          <MaterialIcons
+            name="chat-bubble-outline"
+            size={22}
+            color="#444"
+            style={styles.icon}
+          />
+          <Text style={styles.iconText}>
+            {post.comments?.length || 0}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* ---- DESCRIPCIÓN ---- */}
+      {post.description ? (
+        <Text style={styles.description}>{post.description}</Text>
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  infoPost: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderColor: "#eee",
+  container: {
+    marginTop: 8,
   },
-  row: {
+  actionsRow: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 6,
+  },
+  iconButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 16,
   },
   icon: {
-    fontSize: 20,
     marginRight: 4,
   },
-  text: {
-    fontSize: 16,
-    color: "#333",
+  iconText: {
+    fontSize: 15,
+    color: "#444",
   },
-  bold: {
-    fontWeight: "bold",
+  description: {
+    fontSize: 15,
+    color: "#222",
+    marginTop: 6,
+    lineHeight: 20,
   },
 });

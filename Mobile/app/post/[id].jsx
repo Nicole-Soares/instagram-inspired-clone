@@ -1,29 +1,18 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
 import {
-  Alert,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View
-} from "react-native";
-
+  Redirect,
+  useLocalSearchParams,
+  useNavigation,
+  useRouter,
+} from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import ErrorScreen from "../../components/ErrorScreen";
 import Info from "../../components/Info";
 import InstagramSpinner from "../../components/InstagramSpinner";
 import NotFoundScreen from "../../components/NotFoundScreen";
-import CommentForm from "../../components/post/CommentForm";
-import CommentList from "../../components/post/CommentList";
 import HeaderPost from "../../components/post/HeaderPost";
-import {
-  addCommentToPost,
-  deletePost,
-  getPostById,
-} from "../../service/Api";
+import { addCommentToPost, deletePost, getPostById } from "../../service/Api";
 import { isTokenExpired } from "../../utils/isTokenExpired";
 
 export default function Post() {
@@ -31,13 +20,14 @@ export default function Post() {
   const router = useRouter();
   const [post, setPost] = useState(null);
   const [comentario, setComentario] = useState("");
-  const comentariosRef = useRef(null);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isNotFound, setIsNotFound] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [showComments, setShowComments] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -55,11 +45,15 @@ export default function Post() {
         const loggedUserId = await AsyncStorage.getItem("userId");
         setPost(data);
         setIsOwner(String(loggedUserId) === String(data.user.id));
+        //  Setea el título del header
+        navigation.setOptions({
+          title: `Post - ${data.user.name}`,
+        });
       } catch (error) {
         const status = error.response?.status || error.status;
         if (status === 401) setIsUnauthorized(true);
         else if (status === 404) setIsNotFound(true);
-        else setIsError(true);;
+        else setIsError(true);
       } finally {
         setLoading(false);
       }
@@ -114,7 +108,7 @@ export default function Post() {
     }
   };
 
-  if (isError) return <ErrorScreen/>;
+  if (isError) return <ErrorScreen />;
   if (isUnauthorized) return <Redirect href="/login" />;
   if (isNotFound) return <NotFoundScreen />;
   if (loading)
@@ -133,43 +127,26 @@ export default function Post() {
   ];
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      style={{ flex: 1 }}
-    >
-      <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {post.image && (
-            <Image source={{ uri: post.image }} style={styles.image} />
-          )}
-
-          <HeaderPost
-            user={post.user}
-            date={post.date}
-            isOwner={isOwner}
-            onEditClick={handleEdit}
-            onDeleteClick={handleDelete}
-          />
-
-          <View style={styles.separator} />
-
-          <CommentList
-            todosLosComentarios={todosLosComentarios}
-            handleNavigateToUser={(userId) => router.push(`/user/${userId}`)}
-          />
-
-          <View style={styles.separator} />
-
-          <Info post={post} postId={id} onUpdatePost={handleUpdatePost} />
-
-          <CommentForm
-            comentario={comentario}
-            setComentario={setComentario}
-            handleSubmit={handleSubmit}
-          />
-        </ScrollView>
-      </View>
-    </KeyboardAvoidingView>
+    <View style={styles.container}>
+      <HeaderPost
+        user={post.user}
+        date={post.date}
+        isOwner={isOwner}
+        onEditClick={handleEdit}
+        onDeleteClick={handleDelete}
+      />
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {post.image && (
+          <Image source={{ uri: post.image }} style={styles.image} />
+        )}
+        <Info
+          post={post}
+          postId={id}
+          onUpdatePost={handleUpdatePost}
+          onShowComments={() => router.push(`/comments/${post.id}`)}
+        />
+      </ScrollView>
+    </View>
   );
 }
 

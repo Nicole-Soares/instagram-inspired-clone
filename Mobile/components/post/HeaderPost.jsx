@@ -1,12 +1,6 @@
-import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
-import {
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { formateoFecha } from "../../utils/formateoFecha";
 
 export default function HeaderPost({
@@ -17,43 +11,23 @@ export default function HeaderPost({
   onDeleteClick,
   handleNavigateToUser,
 }) {
-  const handleUserClick = () => {
-    if (user?.id) handleNavigateToUser(user.id);
-  };
-
   return (
-    <View style={styles.headerContainer}>
-      {/* 🧑 Info del usuario */}
-      <TouchableOpacity
-        onPress={handleUserClick}
-        style={styles.infoPrincipal}
-        activeOpacity={0.7}
-      >
-        <Image
-          source={{ uri: user?.image }}
-          style={styles.imagenUsuario}
-          resizeMode="cover"
-        />
-
-        <View style={styles.datosUsuarioPost}>
-          <Text style={styles.nombreUsuario}>
-            {user?.name || "Usuario desconocido"}
-          </Text>
-          <Text style={styles.fechaPost}>
-            {formateoFecha ? formateoFecha(date) : date}
-          </Text>
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.left} onPress={() => handleNavigateToUser(user.id)}>
+        <Image source={{ uri: user.image }} style={styles.avatar} />
+        <View>
+          <Text style={styles.username}>{user.name}</Text>
+          <Text style={styles.date}>{formateoFecha(date)}</Text>
         </View>
       </TouchableOpacity>
 
-      {/* 🗑️✏️ Acciones si es dueño */}
       {isOwner && (
-        <View style={styles.postActions}>
-          <TouchableOpacity onPress={onDeleteClick} style={styles.actionBtn}>
-            <Ionicons name="trash-outline" size={22} color="#333" />
+        <View style={styles.actions}>
+          <TouchableOpacity onPress={onDeleteClick}>
+            <MaterialIcons name="delete-outline" size={22} color="#444" />
           </TouchableOpacity>
-
-          <TouchableOpacity onPress={onEditClick} style={styles.actionBtn}>
-            <Ionicons name="pencil-outline" size={22} color="#333" />
+          <TouchableOpacity onPress={onEditClick} style={{ marginLeft: 10 }}>
+            <MaterialIcons name="edit" size={22} color="#444" />
           </TouchableOpacity>
         </View>
       )}
@@ -62,41 +36,39 @@ export default function HeaderPost({
 }
 
 const styles = StyleSheet.create({
-  headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 8,
-  },
-  infoPrincipal: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  imagenUsuario: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
-  },
-  datosUsuarioPost: {
-    flexDirection: "column",
-  },
-  nombreUsuario: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: "#222",
-  },
-  fechaPost: {
-    fontSize: 12,
-    color: "#888",
-  },
-  postActions: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  actionBtn: {
-    marginLeft: 10,
-    padding: 4,
-  },
-});
+    container: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingHorizontal: 10,
+      paddingVertical: 6,
+      backgroundColor: "#fff",
+    },
+    left: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10, // 🔥 más prolijo que usar marginRight manual
+    },
+    avatar: {
+      width: 46,
+      height: 46,
+      borderRadius: 23,
+    },
+    username: {
+      fontWeight: "600",
+      color: "#111",
+      fontSize: 15,
+      lineHeight: 18,
+    },
+    date: {
+      fontSize: 12,
+      color: "#888",
+      marginTop: 2,
+    },
+    actions: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+    },
+  });
+  
