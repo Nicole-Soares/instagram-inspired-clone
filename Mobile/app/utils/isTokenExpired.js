@@ -1,6 +1,6 @@
 import jwt_decode from "jwt-decode";
 
-export const isTokenExpired = (token) => {
+const isTokenExpired = (token) => {
   if (!token) return true;
 
   try {
@@ -14,3 +14,5 @@ export const isTokenExpired = (token) => {
     return false;
   }
 };
+
+export default isTokenExpired;
