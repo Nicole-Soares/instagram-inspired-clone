@@ -77,26 +77,25 @@ class UserController {
         }
     };
 
- //PUT /users/{userId}/follow
- followUser = (req, res) => {
-    const userId = req.params.userId; 
-    const currentUser = req.user; 
+    //PUT /users/{userId}/follow
+    followUser = (req, res) => {
+        const userId = req.params.userId; 
+        const currentUser = req.user; 
 
-    if (currentUser.id === userId) {
-        res.status(400).send({error:"No puede seguirse a si mismo."});
-        return;
-    }
+        if (currentUser.id === userId) {
+            res.status(400).send({error:"No puede seguirse a si mismo."});
+            return;
+        }
     
-    try {
-        const userToFollow = this.system.getUser(userId);
-        const newCurrentUser = this.system.updateFollower(currentUser.id, userId);
-        res.json({ ...transformUser(newCurrentUser), posts: this.system.getPostByUserId(newCurrentUser.id).map(transformTimeline) }); 
-    }
-    catch (error) {
-        res.status(404).send({error:"El usuario que intenta seguir no existe."});
-    }   
-};
-
+        try {
+            const userToFollow = this.system.getUser(userId);
+            const newCurrentUser = this.system.updateFollower(currentUser.id, userId);
+            res.json({ ...transformUser(newCurrentUser), posts: this.system.getPostByUserId(newCurrentUser.id).map(transformTimeline) }); 
+        }
+        catch (error) {
+            res.status(404).send({error:"El usuario que intenta seguir no existe."});
+        }   
+    };
 }    
 
 export default UserController;
