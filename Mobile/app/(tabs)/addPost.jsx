@@ -11,7 +11,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import InstagramSpinner from "../../components/InstagramSpinner";
@@ -23,8 +23,8 @@ export default function AgregarPost() {
   const [descripcion, setDescripcion] = useState("");
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isError, setIsError] = useState(false) 
-  const [errDesc, setErrDesc] = useState('')
+  const [isError, setIsError] = useState(false);
+  const [errDesc, setErrDesc] = useState("");
   const router = useRouter();
 
   //verifica token
@@ -48,7 +48,7 @@ export default function AgregarPost() {
   const isValidUrl = (string) => {
     return /^https?:\/\/.+/i.test(string);
   };
-  
+
   //crea el post
   const handleSubmit = async () => {
     if (!url.trim()) {
@@ -60,16 +60,19 @@ export default function AgregarPost() {
     try {
       setLoading(true);
       const nuevoPost = await createPost(url, descripcion);
-      router.push(`/post/${nuevoPost.id}`);
+      router.replace(`/post/${nuevoPost.id}?from=add`);
       setUrl("");
       setDescripcion("");
+      setIsError("");
     } catch (error) {
       const status = error.response?.status || error.status;
       if (status === 401) {
         setIsUnauthorized(true);
       } else {
-        setIsError(true); 
-        setErrDesc("Error al crear la publicacion: Solo se permiten URLs del tipo http o https.");
+        setIsError(true);
+        setErrDesc(
+          "Error al crear la publicacion: Solo se permiten URLs del tipo http o https."
+        );
       }
     } finally {
       setLoading(false);
@@ -100,7 +103,7 @@ export default function AgregarPost() {
           <Text style={styles.headerTitle}>Crear publicación</Text>
         </View>
 
-        {/* Input de URL */}
+        {/* Input de URL de la imagen */}
         <TextInput
           style={styles.input}
           placeholder="URL de la imagen"
@@ -109,19 +112,18 @@ export default function AgregarPost() {
           placeholderTextColor="#999"
         />
 
-        {/* Preview / Placeholder */}
-  
-  <View  style={styles.imageBox}>
-  {isValidUrl(url) ? (
-    <Image source={{ uri: url }} style={styles.image} />
-  ) : (
-    <View style={styles.placeholder}>
-      <MaterialIcons name="add-a-photo" size={70} color="#666" />
-      <Text style={styles.placeholderText}>Agregar imagen</Text>
-    </View>
-  )}
+        {/* Preview de la imagen*/}
 
-</View>
+        <View style={styles.imageBox}>
+          {isValidUrl(url) ? (
+            <Image source={{ uri: url }} style={styles.image} />
+          ) : (
+            <View style={styles.placeholder}>
+              <MaterialIcons name="add-a-photo" size={70} color="#666" />
+              <Text style={styles.placeholderText}>Agregar imagen</Text>
+            </View>
+          )}
+        </View>
         {/* Input de descripción */}
         <TextInput
           style={[styles.input, styles.textarea]}
@@ -132,27 +134,26 @@ export default function AgregarPost() {
           placeholderTextColor="#999"
         />
 
-  
-<Pressable
-  onPress={handleSubmit}
-  disabled={loading}
-  style={({ pressed }) => [
-    styles.button,
-    pressed  && styles.buttonActive, 
-    loading && { opacity: 0.6 },
-  ]}
->
-  <Text style={styles.buttonText}>Publicar</Text>
-</Pressable>
-{isError && (
-  <View style={styles.errorBox}>
-    <Text style={styles.errorText}>
-      {errDesc ? `⚠️ ${errDesc}` : "Ocurrió un error inesperado."}
-    </Text>
-  </View>
-)}
-
-
+        {/*boton publicar*/}
+        <Pressable
+          onPress={handleSubmit}
+          disabled={loading}
+          style={({ pressed }) => [
+            styles.button,
+            pressed && styles.buttonActive,
+            loading && { opacity: 0.6 },
+          ]}
+        >
+          <Text style={styles.buttonText}>Publicar</Text>
+        </Pressable>
+        {/*mensaje de error*/}
+        {isError && (
+          <View style={styles.errorBox}>
+            <Text style={styles.errorText}>
+              {errDesc ? `⚠️ ${errDesc}` : "Ocurrió un error inesperado."}
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -161,7 +162,7 @@ export default function AgregarPost() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: "#f9f9f9", // fondo claro general
+    backgroundColor: "#f9f9f9",
   },
   container: {
     paddingHorizontal: 20,
@@ -226,15 +227,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   button: {
-    backgroundColor: "#7F8CFF", // color normal
+    backgroundColor: "#7F8CFF", 
     borderRadius: 8,
     paddingVertical: 14,
     alignItems: "center",
     marginTop: 8,
-    transition: "background-color 0.2s", // suave en web
+    transition: "background-color 0.2s", 
   },
   buttonActive: {
-    backgroundColor: "#6E79E6", // más oscuro al tocar o hover
+    backgroundColor: "#6E79E6", 
   },
   buttonText: {
     color: "#fff",
@@ -242,7 +243,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   errorBox: {
-    backgroundColor: "#fdecea",      // rojo muy suave
+    backgroundColor: "#fdecea", 
     borderWidth: 1,
     borderColor: "#f5c6cb",
     borderRadius: 8,
@@ -252,10 +253,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   errorText: {
-    color: "#a94442",                // rojo más oscuro, legible
+    color: "#a94442", 
     fontSize: 14,
     fontWeight: "500",
     textAlign: "center",
   },
-  
 });

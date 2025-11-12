@@ -54,8 +54,17 @@ export const getPostById = async (postId) => {
 };
 export const updatePost   = (postId, image, description) => api.put(`/posts/${postId}`, { image, description });
 export const deletePost   = (postId) => api.delete(`/posts/${postId}`);
-export const toggleLike   = (postId) => api.put(`/posts/${postId}/like`);
-export const addComment   = (postId, comment) => api.post(`/posts/${postId}/comment`, { comment });
+
+export const likePost = async (postId) => {
+  const { data } = await api.put(`/posts/${postId}/like`);
+  return data;
+};
+
+export const addComment = async (postId, body) => {
+  const response = await api.post(`/posts/${postId}/comment`, { body });
+  return response.data; 
+};
+
 
 // ===== SEARCH ===== CHEQUEAR
 export const search = (query) => api.get(`/search?query=${encodeURIComponent(query)}`);
