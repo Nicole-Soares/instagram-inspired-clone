@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList, Alert } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList, Alert, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 
@@ -51,11 +51,21 @@ const ViewProfile = ({ user, setToken }) => {
         numColumns={3}
         data={user.posts || []}
         keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
-          <Image
-            source={{ uri: item.image }}
-            style={styles.postImage}
-          />
+          <Pressable style={({ hovered, pressed }) => [
+                styles.postTouchable,
+                hovered && { opacity: 0.85 },
+                pressed && { opacity: 0.9 } 
+            ]}
+            onPress={() => {
+                router.push(`/post/${item.id}`); 
+            }} >
+            <Image
+                source={{ uri: item.image }}
+                style={styles.postImage}
+            />
+          </Pressable>
         )}
         ListEmptyComponent={
           <Text style={styles.noPosts}>Aún no hay publicaciones</Text>
@@ -125,13 +135,17 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     fontSize: 14
   },
+
+  postTouchable: {
+    width: "33.3333%", 
+    aspectRatio: 0.6,
+    borderWidth: 1.5, 
+    borderColor: '#fff',
+  },
   
   postImage: { 
-    width: "33.33%",
-    height: 120, 
-    aspectRatio: 0.6, 
-    borderWidth: 1, 
-    borderColor: '#fff' 
+    width: '100%',
+    height: '100%'
   },
 
   noPosts: { 
