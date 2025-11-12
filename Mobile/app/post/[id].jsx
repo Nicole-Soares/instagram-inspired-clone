@@ -35,7 +35,7 @@ export default function Post() {
     }
   }, [updatedPost]);
 
-  // carga el post 
+  // carga el post
   useEffect(() => {
     const fetchPost = async () => {
       const token = await AsyncStorage.getItem("token");
@@ -73,30 +73,9 @@ export default function Post() {
   const handleEdit = () => router.push(`/post/edit/${id}`);
 
   //borrar el post
- /* const handleDelete = () => {
-    Alert.alert("Eliminar post", "¿Seguro que querés eliminar este post?", [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Eliminar",
-        style: "destructive",
-        onPress: confirmDelete,
-      },
-    ]);
-  };
-
-  const confirmDelete = async () => {
-    try {
-      await deletePost(id);
-      Alert.alert("Éxito", "Post eliminado exitosamente.");
-      router.push("/home");
-    } catch (error) {
-      Alert.alert("Error", "Error al borrar el post.");
-    }
-  };*/
-
   const handleDelete = () => {
     setShowDeleteModal(true);
-  }
+  };
 
   if (isError) return <ErrorScreen />;
   if (isUnauthorized) return <Redirect href="/login" />;
@@ -118,14 +97,16 @@ export default function Post() {
         onEditClick={handleEdit}
         onDeleteClick={handleDelete}
       />
-{showDeleteModal && (
-    <DeletePostModal
-      visible={showDeleteModal}
-      onClose={() => setShowDeleteModal(false)}
-      postId={id}
-    />
-  )}
-      {post.image && <Image source={{ uri: post.image }} style={styles.image} />}
+      {showDeleteModal && (
+        <DeletePostModal
+          visible={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          postId={id}
+        />
+      )}
+      {post.image && (
+        <Image source={{ uri: post.image }} style={styles.image} />
+      )}
 
       <Info
         post={post}

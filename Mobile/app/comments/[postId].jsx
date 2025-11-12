@@ -9,7 +9,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  View
+  View,
 } from "react-native";
 import InstagramSpinner from "../../components/InstagramSpinner";
 import { addComment } from "../../service/Api";
@@ -21,7 +21,7 @@ export default function CommentsModal() {
   const [isLoading, setIsLoading] = useState(false);
   const [post, setPost] = useState(postParam ? JSON.parse(postParam) : null);
 
-  const scrollViewRef = useRef(null); // 👈 referencia al scroll
+  const scrollViewRef = useRef(null);
 
   if (!post) {
     return (
@@ -61,7 +61,10 @@ export default function CommentsModal() {
         scrollViewRef.current?.scrollToEnd({ animated: true });
       }, 300);
     } catch (error) {
-      console.error("Error al publicar comentario:", error.response?.data || error);
+      console.error(
+        "Error al publicar comentario:",
+        error.response?.data || error
+      );
       setError(
         error.response?.data?.message || "No se pudo publicar el comentario."
       );
@@ -93,9 +96,7 @@ export default function CommentsModal() {
               <Image source={{ uri: item.user.image }} style={styles.avatar} />
               <View style={styles.commentBody}>
                 <Text style={styles.commentUser}>{item.user.name}</Text>
-                <Text
-                  style={i === 0 ? styles.description : styles.commentText}
-                >
+                <Text style={i === 0 ? styles.description : styles.commentText}>
                   {item.body}
                 </Text>
               </View>
@@ -111,10 +112,7 @@ export default function CommentsModal() {
             <TextInput
               placeholderTextColor="#8A8FA3"
               placeholder="Agrega un comentario"
-              style={[
-                styles.input,
-                error ? { borderColor: "#e74c3c" } : {},
-              ]}
+              style={[styles.input, error ? { borderColor: "#e74c3c" } : {}]}
               value={comment}
               onChangeText={(text) => {
                 setComment(text);
@@ -131,7 +129,7 @@ export default function CommentsModal() {
               disabled={isLoading}
             >
               {isLoading ? (
-                <InstagramSpinner/>
+                <InstagramSpinner />
               ) : (
                 <Text style={styles.buttonText}>Publicar</Text>
               )}

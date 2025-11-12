@@ -1,4 +1,4 @@
-import { View, TextInput, Button, StyleSheet } from "react-native";
+import { Button, StyleSheet, TextInput, View } from "react-native";
 
 export default function FormularioPost({
   url,

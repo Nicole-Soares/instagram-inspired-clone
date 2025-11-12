@@ -227,15 +227,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   button: {
-    backgroundColor: "#7F8CFF", 
+    backgroundColor: "#7F8CFF",
     borderRadius: 8,
     paddingVertical: 14,
     alignItems: "center",
     marginTop: 8,
-    transition: "background-color 0.2s", 
+    transition: "background-color 0.2s",
   },
   buttonActive: {
-    backgroundColor: "#6E79E6", 
+    backgroundColor: "#6E79E6",
   },
   buttonText: {
     color: "#fff",
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   errorBox: {
-    backgroundColor: "#fdecea", 
+    backgroundColor: "#fdecea",
     borderWidth: 1,
     borderColor: "#f5c6cb",
     borderRadius: 8,
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   errorText: {
-    color: "#a94442", 
+    color: "#a94442",
     fontSize: 14,
     fontWeight: "500",
     textAlign: "center",

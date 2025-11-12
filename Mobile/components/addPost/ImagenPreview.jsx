@@ -1,11 +1,15 @@
-import { View, Image, Text, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Image, StyleSheet, Text, View } from "react-native";
 
 export default function ImagenPreview({ imagen }) {
   return (
     <View style={styles.preview}>
       {imagen ? (
-        <Image source={{ uri: imagen }} style={styles.image} resizeMode="cover" />
+        <Image
+          source={{ uri: imagen }}
+          style={styles.image}
+          resizeMode="cover"
+        />
       ) : (
         <View style={styles.placeholder}>
           <MaterialIcons name="add-a-photo" size={60} color="#aaa" />
