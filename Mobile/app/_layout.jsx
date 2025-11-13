@@ -1,19 +1,22 @@
-// app/_layout.jsx  (asegurate que el archivo se llame _layout.jsx con guión bajo)
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-export const unstable_settings = { anchor: '(tabs)' };
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
   return (
     <>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="post" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="post" />
+        <Stack.Screen name="(auth)" />
+
+        {/* 🔥 ESTO HACE QUE /modal/... SE REGISTRE */}
+        <Stack.Screen
+          name="(modal)"
+          options={{ presentation: "transparentModal", headerShown: false }}
+        />
       </Stack>
-      <StatusBar style="auto" />
+
+      <StatusBar style="dark" backgroundColor="#fff" />
     </>
   );
 }
