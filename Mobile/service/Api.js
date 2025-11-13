@@ -34,10 +34,10 @@ export const register = async (name, email, password, image) => {
   return data;
 };
 
-// ===== USERS =====
+// ===== USER AND USERS =====
 export const getUser = () => api.get('/user');                 // perfil/timeline del logueado
 export const getUserById = (userId) => api.get(`/user/${userId}`);
-export const followUser = (userId) => api.put(`/users/${userId}/follow`);
+export const toggleFollow = (userId) => api.put(`/users/${userId}/follow`);
 
 // ===== POSTS =====
 export const createPost   = (image, description) => api.post('/posts', { image, description });

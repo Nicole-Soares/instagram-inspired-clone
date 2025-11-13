@@ -1,19 +1,27 @@
-// app/_layout.jsx  (asegurate que el archivo se llame _layout.jsx con guión bajo)
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
+import { FollowProvider } from '../hooks/followContext';
 
 export const unstable_settings = { anchor: '(tabs)' };
 
 export default function RootLayout() {
   return (
-    <>
-      <Stack>
+    <FollowProvider>
+      <Stack
+         screenOptions={{
+          headerTitleAlign: 'left',
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: '#fff' },
+          headerTintColor: '#111827'
+        }}
+      >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="users" options={{ headerShown: false }} />
         <Stack.Screen name="post" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       </Stack>
-      <StatusBar style="auto" />
-    </>
+      <StatusBar style="dark" />
+    </FollowProvider>
   );
 }

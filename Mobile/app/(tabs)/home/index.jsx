@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, FlatList, RefreshControl, Alert } from "react-native";
 import { Redirect } from "expo-router";
@@ -8,9 +8,21 @@ import { isTokenExpired } from "../../../utils/isTokenExpired";
 import useFetchDataEffect from "../../../hooks/useFetchDataEffect";
 import InstagramSpinner from "../../../components/InstagramSpinner";
 import TimelinePost from "../../../components/home/TimelinePost";
+import { useFollow } from "../../../hooks/followContext";
+
+const cleanId = (v) => String(v ?? "").replace(/^user_/, "");
+const getAuthorId = (p) =>
+  cleanId(
+    p?.user?.id ??
+    p?.author?.id ??
+    p?.userId ??
+    p?.authorId ??
+    ""
+  );
 
 export default function Home() {
   const [unauthorized, setUnauthorized] = useState(false);
+  const { isFollowing, toggleFollow, pendingIds } = useFollow();
 
   const fetchTimeline = async () => {
     const token = await AsyncStorage.getItem("token");
@@ -87,7 +99,20 @@ export default function Home() {
       <FlatList
         data={posts}
         keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => <TimelinePost post={item} />}
+        renderItem={({ item }) => {
+          const authorId = getAuthorId(item);
+          const following = isFollowing(authorId);
+          const pending = pendingIds.has(authorId);
+          
+          return (
+            <TimelinePost
+              post = {item}
+              following = {following}
+              pending = {pending}
+              onToggleFollow = {() => toggleFollow(authorId)}
+            />
+          );
+        }}
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={reloadScreen} />
         }

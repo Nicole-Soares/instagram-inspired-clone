@@ -1,10 +1,9 @@
-// app/components/TimelinePost.jsx
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { View, Text, Image, Pressable, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { toggleLike } from "../../service/Api"; 
 
-export default function TimelinePost({ post, onUpdatePost }) {
+export default function TimelinePost({ post, onUpdatePost, following=false, pending=false, onToggleFollow, }) {
   const user      = post?.user ?? {};
   const postDate  = post?.date || post?.createdAt || "";
   const imageUri  = post?.image;
@@ -79,11 +78,26 @@ export default function TimelinePost({ post, onUpdatePost }) {
           </View>
         </Pressable>
 
-        {isOwner ? (
-          <View style={styles.ownerBadge}>
-            <Text style={styles.ownerText}>Owner</Text>
-          </View>
-        ) : null}
+        {isOwner && (
+          <TouchableOpacity
+            onPress={onToggleFollow}
+            disabled={pending}
+            style={[
+              styles.followBtn,
+              following ? styles.followBtnOutline : styles.followBtnPrimary,
+              pending && styles.followBtnDisabled,
+            ]}
+          >
+            <Text
+              style={[
+                styles.followBtnText,
+                following && styles.followBtnTextOutline,
+              ]}
+            >
+              {pending ? "..." : following ? "Dejar de seguir" : "Seguir"}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Imagen del post */}
@@ -160,15 +174,29 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#777",
   },
-  ownerBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    backgroundColor: "#f3f3f3",
+  followBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
   },
-  ownerText: {
-    fontSize: 12,
-    color: "#444",
+  followBtnPrimary: {
+    backgroundColor: "#1a57ff",
+    borderColor: "#1a57ff",
+  },
+  followBtnOutline: {
+    backgroundColor: "#fff",
+    borderColor: "#e5e7eb",
+  },
+  followBtnDisabled: {
+    opacity: 0.6,
+  },
+  followBtnText: {
+    fontWeight: "600",
+    color: "#fff",
+  },
+  followBtnTextOutline: {
+    color: "#111827",
   },
   imageWrap: {
     marginTop: 6,
