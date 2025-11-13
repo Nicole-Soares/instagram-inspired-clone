@@ -2,9 +2,12 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import ProfileTabImage from "../../components/ProfileTabImage";
+import useProfileImage from "../../hooks/useProfileImage";
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
+  const userImage = useProfileImage();
 
   return (
     <Tabs
@@ -58,11 +61,10 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <MaterialCommunityIcons
-              name={focused ? "account" : "account-outline"}
-              size={size + 4}
-              color={color}
+          tabBarIcon: ({ focused }) => ( 
+            <ProfileTabImage 
+              focused={focused} 
+              userImage={userImage} 
             />
           ),
         }}
