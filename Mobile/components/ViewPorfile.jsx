@@ -1,26 +1,12 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList, Alert, Pressable } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import { router } from 'expo-router';
+import useLogout from "../hooks/useLogout"; 
 
 const ViewProfile = ({ user, setToken }) => {
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    Alert.alert("Cerrar sesión", "¿Querés salir de tu cuenta?", [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Salir",
-        style: "destructive",
-        onPress: async () => {
-          await AsyncStorage.removeItem("token");
-          setToken("");
-          router.replace("/login");
-        },
-      },
-    ]);
-  };
-
+  const handleLogout = useLogout(setToken);
   if (!user) return null;
+  const posts = user.posts || [];
+  const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
 
   return (
     <View>
@@ -49,7 +35,7 @@ const ViewProfile = ({ user, setToken }) => {
 
       <FlatList
         numColumns={3}
-        data={user.posts || []}
+        data={sortedPosts || []}
         keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
@@ -77,25 +63,27 @@ const ViewProfile = ({ user, setToken }) => {
 
 const styles = StyleSheet.create({
   header: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  paddingHorizontal: 12,
-  paddingTop: 12,
-  paddingBottom: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    paddingBottom: 40,
   },
 
   leftBlock: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  flexShrink: 1,            
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexShrink: 1,            
   },
 
   avatar: { 
-    width: 84, 
-    height: 84,
+    width: 75, 
+    height: 75,
     borderRadius: 64,
-    marginRight: 20 
+    marginRight: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(226, 222, 226, 0.93)'
   },
 
   infoColumn: {
@@ -128,12 +116,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a57ffff',
     borderWidth: 1,
     borderColor: '#e5e7eb',
+    alignSelf: 'flex-start',
   },
 
   logoutButtonText: {
     color: "#fff", 
     fontWeight: "500",
-    fontSize: 14
+    fontSize: 13
   },
 
   postTouchable: {
