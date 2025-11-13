@@ -2,18 +2,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Redirect,
   useLocalSearchParams,
+  useNavigation,
   useRouter,
 } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Image,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
-
 import ErrorScreen from "../../components/ErrorScreen";
 import Info from "../../components/Info";
 import InstagramSpinner from "../../components/InstagramSpinner";
@@ -30,8 +29,9 @@ export const options = {
 };
 
 export default function Post() {
-  const { id } = useLocalSearchParams();
+  const { id, updatedPost } = useLocalSearchParams();
   const router = useRouter();
+  const navigation = useNavigation();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [post, setPost] = useState(null);
@@ -41,7 +41,7 @@ export default function Post() {
   const [isNotFound, setIsNotFound] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  // Cargar el post
+  
   const fetchPost = async () => {
     const token = await AsyncStorage.getItem("token");
 
@@ -69,12 +69,12 @@ export default function Post() {
     }
   };
 
-  // Primera carga
+  // carga del post
   useEffect(() => {
     fetchPost();
   }, [id]);
 
-  // Cuando volvés del modal, recarga comentarios
+  // cuando se cierra el modal de los comentarios
   useFocusEffect(
     useCallback(() => {
       fetchPost();
@@ -99,9 +99,7 @@ export default function Post() {
     );
 
   return (
-    <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-
         <HeaderPost
           user={post.user}
           date={post.date}
@@ -120,13 +118,12 @@ export default function Post() {
           onUpdatePost={handleUpdatePost}
           onShowComments={() =>
             router.push({
-              pathname: "/(modal)/comments/[id]",
-              params: {
-                id: post.id,
-                post: JSON.stringify(post),
-              },
+              pathname: "/(modal)/comments/[postId]",
+              params: { postId: post.id, post: JSON.stringify(post) }
             })
+            
           }
+          
         />
 
         {showDeleteModal && (
@@ -136,9 +133,7 @@ export default function Post() {
             postId={id}
           />
         )}
-
       </ScrollView>
-    </SafeAreaView>
   );
 }
 
