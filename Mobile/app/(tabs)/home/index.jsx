@@ -1,5 +1,4 @@
-import { useState, useMemo } from "react";
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, FlatList, RefreshControl, TouchableOpacity } from "react-native";
 import { Redirect } from "expo-router";
@@ -101,8 +100,8 @@ export default function Home() {
   }
 
   const handleUpdatePost = (updatedPost) => {
-    setPosts((prevPosts) =>
-      prevPosts.map((p) => (p.id === updatedPost.id ? updatedPost : p))
+    setPosts((prev) =>
+      prev.map((p) => (String(p.id) === String(updatedPost.id) ? updatedPost : p))
     );
   };
 

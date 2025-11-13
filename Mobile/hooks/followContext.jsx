@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Api from "../service/Api";
 
-// helper para normalizar ids (tu API a veces trae "user_123")
 const cleanId = (v) => String((typeof v === "object" ? (v?.id ?? v?._id ?? v?.userId) : v) ?? "")
   .replace(/^user_/, "");
 
@@ -22,8 +21,11 @@ export function FollowProvider({ children }) {
         const meData = meRes?.data ?? meRes;
         setMe(meData);
 
-        const seguidosArray = Array.isArray(meData?.followers) ? meData.followers : []; 
-        setFollowingSet(new Set(seguidosArray.map(cleanId)));
+        const arr =
+          (Array.isArray(meData?.following) && meData.following) ||
+          (Array.isArray(meData?.followers) && meData.followers) ||
+          [];
+        setFollowingSet(new Set(arr.map(cleanId)));
       } catch (_) {}
     })();
   }, []);
@@ -35,6 +37,7 @@ export function FollowProvider({ children }) {
     if (pendingIds.has(id)) return;
 
     setPendingIds((p) => new Set(p).add(id));
+
     const next = !isFollowing(id);
 
     setFollowingSet((prev) => {

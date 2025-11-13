@@ -4,20 +4,37 @@ import { ActivityIndicator, Image, Text, View, StyleSheet, TouchableOpacity, Fla
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Api from "../../service/Api.js";
 import useUserHeader from "../../hooks/useUserHeader.jsx";
+import { useFollow } from "../../hooks/followContext.jsx";
+import styles from "./styles.jsx";
+
+const cleanId = (v) => String(v ?? "").replace(/^user_/, "")
 
 export default function PublicUserPage() {
-  const { id } = useLocalSearchParams();
+  const params = useLocalSearchParams();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+  const followedParam = Array.isArray(params.followed) ? params.followed[0] : params.followed;
+
   const navigation = useNavigation();
-  const userId = Array.isArray(id) ? id[0] : id;
+  const userId = id;
+
+  const { isFollowing: isFollowingCtx, toggleFollow, pendingIds } = useFollow();
+
+  const hint =
+    typeof followedParam !== "undefined" &&
+    ["1", "true", "yes"].includes(String(followedParam).toLowerCase());
 
   const [loading, setLoading] = useState(true);
   const [me, setMe] = useState(null);     //usuario logueado
-  const [user, setUser] = useState(null);     //usuario visitado
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [user, setUser] = useState(null); //usuario visitado     
+  const [isFollowingUI, setIsFollowingUI] = useState(hint)
   const [error, setError] = useState("");
-  const [followPending, setFollowPending] = useState(false);
 
   useUserHeader(user?.name, { align: "left", backTitle: "Back" });
+
+  const followingCtx = isFollowingCtx ? isFollowingCtx(userId) : false;
+  useEffect(() => {
+    setIsFollowingUI(followingCtx);
+  }, [followingCtx, userId]);
   
   useEffect(() => {
     let cancelled = false;
@@ -43,23 +60,8 @@ export default function PublicUserPage() {
         const res = await Api.getUserById(userId);
         const visited = res?.data ?? res;
 
-        if (!visited || !visited.id) {
-          throw new Error("Respuesta de API vacía o inválida.");
-        }
-
-        if (!cancelled) {
-          setUser(visited);
-
-          if (meData) {
-            const visitedNumericId = Number(String(visited.id).replace("user_", ""));
-            const isFollow = meData.following?.some((f) => 
-              Number(typeof f === 'object' ? f.id : f) === visitedNumericId
-            );
-            setIsFollowing(!!isFollow);
-          } else {
-            setIsFollowing(false);
-          }
-        }
+        if (!visited || !visited.id) throw new Error("Respuesta de API vacía o inválida.");
+        if (!cancelled) setUser(visited);
       } catch {
         if (!cancelled) setError("No se encontró el usuario");
       } finally {
@@ -89,45 +91,27 @@ export default function PublicUserPage() {
   };
 
   const handleToggleFollow = async () => {
-  await requireAuth(async () => {
-    if (!user) return;
-
-    try {
-      setFollowPending(true);
-      const next = !isFollowing;
-      setIsFollowing(next);
-
-      setUser((prevUser) => {
-        if (!prevUser) return prevUser;
-        const list = Array.isArray(prevUser.followers) ? prevUser.followers : [];
-        const myId = me?.id ?? "me";
-        const newFollowers = next
-          ? [...list, { id: myId }]
-          : list.slice(0, Math.max(0, list.length - 1));
-        return { ...prevUser, followers: newFollowers };
+    await requireAuth(async () => {
+      // optimista local + disparo al contexto (global)
+      setIsFollowingUI(prev => {
+        const now = !prev;
+        setUser(prevUser => {
+          if (!prevUser) return prevUser;
+          const list = Array.isArray(prevUser.followers) ? prevUser.followers : [];
+          const nextFollowers = now
+            ? [...list, { id: me?.id ?? "me" }]
+            : list.slice(0, Math.max(0, list.length - 1));
+          return { ...prevUser, followers: nextFollowers };
+        });
+        return now;
       });
-
-      await Api.toggleFollow(user.id);
-    } catch (e) {
-      
-      setIsFollowing((prev) => !prev);
-      setUser((prevUser) => {
-        if (!prevUser) return prevUser;
-        const list = Array.isArray(prevUser.followers) ? prevUser.followers : [];
-        const myId = me?.id ?? "me";
-        
-        return isFollowing
-          ? { ...prevUser, followers: [...list, { id: myId }] }
-          : { ...prevUser, followers: list.slice(0, Math.max(0, list.length - 1)) };
-      });
-      console.error("Error al cambiar el estado de seguimiento:", e);
-    } finally {
-      setFollowPending(false);
-    }
-  });};
+      toggleFollow(user.id);
+    });
+  };
 
   const posts = user.posts || [];
   const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const pending = pendingIds?.has(cleanId(userId));
 
   return (
     <View style={styles.container}>
@@ -150,12 +134,21 @@ export default function PublicUserPage() {
         </View>
         
         <TouchableOpacity
-          style={[styles.logoutButton, isFollowing && { backgroundColor: '#f3f4f6', borderColor: '#e5e7eb' }]}
+          disabled={pending}
           onPress={handleToggleFollow}
-          disabled={followPending}
+          style={[
+            styles.followButton,
+            isFollowingUI ? styles.followOutline : styles.followPrimary,
+            pending && { opacity: 0.2 }
+          ]}
         >
-          <Text style={[styles.logoutButtonText, isFollowing && { color: '#111827' }]}>
-            {followPending ? "..." : (isFollowing ? "Dejar de seguir" : "Seguir")}
+          <Text
+            style={[
+              styles.followButtonText,
+              isFollowingUI && styles.followButtonTextOutline
+            ]}
+          >
+            {isFollowingUI ? "Dejar de seguir" : "Seguir"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -187,94 +180,3 @@ export default function PublicUserPage() {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#fff",
-    flex: 1,
-    paddingHorizontal: 10,
-    paddingTop: 10
-  },
-
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 12,
-    paddingTop: 12,
-    paddingBottom: 40,
-  },
-
-  leftBlock: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexShrink: 1,            
-  },
-
-  avatar: { 
-    width: 75, 
-    height: 75,
-    borderRadius: 64,
-    marginRight: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(226, 222, 226, 0.93)'
-  },
-
-  infoColumn: {
-    flexShrink: 1 
-  },
-
-  name: { 
-    fontSize: 24, 
-    fontWeight: '700'
-  },
-
-  statsColumn: {
-    marginTop: 10
-  },
-
-  statLine: {
-    color: '#6b7280',
-    marginTop: 8
-  },
-
-  statNumber: {
-    fontWeight: '700',
-    color: '#111827'
-  },
-
-  logoutButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 6,
-    borderRadius: 8,
-    backgroundColor: '#1a57ffff',
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-    alignSelf: 'flex-start',
-  },
-
-  logoutButtonText: {
-    color: "#fff", 
-    fontWeight: "500",
-    fontSize: 13
-  },
-
-  postTouchable: {
-    width: "33.3333%", 
-    aspectRatio: 0.6,
-    borderWidth: 1.5, 
-    borderColor: '#fff',
-  },
-  
-  postImage: { 
-    width: '100%',
-    height: '100%'
-  },
-
-  noPosts: { 
-    textAlign: "center", 
-    color: "#888", 
-    marginTop: 40 
-  }
-
-});

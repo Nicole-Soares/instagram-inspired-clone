@@ -1,27 +1,45 @@
 import { useMemo, useState } from "react";
-import { View, Text, Image, Pressable, StyleSheet } from "react-native";
+import { View, Text, Image, Pressable } from "react-native";
 import { router } from "expo-router";
 import Info from "../Info";
 import { formateoFecha } from "../../utils/formateoFecha";
 import styles from "./styles";
+import { useFollow } from "../../hooks/followContext";
 
-export default function TimelinePost({ post, onUpdatePost, following=false, pending=false, onToggleFollow, }) {
+const cleanId = (v) => String(v ?? "").replace(/^user_/, "");
+
+export default function TimelinePost({ post, onUpdatePost }) {
   const user      = post?.user ?? {};
   const postDate  = post?.date || post?.createdAt || "";
   const imageUri  = post?.image;
 
   const [liked, setLiked] = useState(!!(post?.liked ?? post?.isLiked));
-  const [likesCount, setLikesCount] = useState(
-    Number(post?.likesCount ?? post?.likes ?? 0)
-  );
+
+  const initialLikes = (() => {
+    const n = Number(post?.likesCount);
+    if (Number.isFinite(n)) return n;
+    if (Array.isArray(post?.likes)) return post.likes.length;
+    return Number(post?.likes ?? 0) || 0;
+  })();
+  const [likesCount, setLikesCount] = useState(initialLikes);
 
   const commentsCount = useMemo(
-    () => Number(post?.commentsCount ?? post?.comments?.length ?? 0),
+    () =>
+      Number(post?.commentsCount ?? post?.comments?.length ?? 0) +
+      (post?.description?.trim() ? 1 : 0),
     [post]
   );
 
+  const { isFollowing } = useFollow();
+  const authorId = cleanId(user?.id ?? post?.userId);
+  const alreadyFollowing = isFollowing ? isFollowing(authorId) : false;
+
   const handleNavigateToUser = () => {
-    if (user?.id != null) router.push(`/users/${user.id}`);
+    if (!user?.id) return;
+    router.push({
+      pathname: `/users/${user.id}`,
+      params: { followed: alreadyFollowing ? "1" : "0" },
+    });
   };
 
   const handleRedirectToPost = () => {
@@ -32,6 +50,19 @@ export default function TimelinePost({ post, onUpdatePost, following=false, pend
     router.push({
       pathname: `/comments/${post.id}`,
       params: { post: JSON.stringify(post) },
+    });
+  };
+
+  const handleLocalLike = (nextLiked) => {
+    setLiked(nextLiked);
+    setLikesCount((prev) => {
+      const nextCount = nextLiked ? prev + 1 : Math.max(0, prev - 1);
+      if (onUpdatePost) {
+        requestAnimationFrame(() => {
+          onUpdatePost({ ...post, liked: nextLiked, likesCount: nextCount });
+        });
+      }
+      return nextCount;
     });
   };
 
@@ -53,26 +84,6 @@ export default function TimelinePost({ post, onUpdatePost, following=false, pend
             {!!postDate && <Text style={styles.dateText}>{formateoFecha(postDate)}</Text>}
           </View>
         </Pressable>
-        {isOwner && (
-          <TouchableOpacity
-            onPress={onToggleFollow}
-            disabled={pending}
-            style={[
-              styles.followBtn,
-              following ? styles.followBtnOutline : styles.followBtnPrimary,
-              pending && styles.followBtnDisabled,
-            ]}
-          >
-            <Text
-              style={[
-                styles.followBtnText,
-                following && styles.followBtnTextOutline,
-              ]}
-            >
-              {pending ? "..." : following ? "Dejar de seguir" : "Seguir"}
-            </Text>
-          </TouchableOpacity>
-        )}
       </View>
 
       <Pressable onPress={handleRedirectToPost} style={styles.imageWrap}>
@@ -88,107 +99,13 @@ export default function TimelinePost({ post, onUpdatePost, following=false, pend
       <View style={{ marginTop: 8 }}>
         <Info
           post={post}
-          postId={post.id}
-          onUpdatePost={onUpdatePost}
+          liked={liked}
+          likesCount={likesCount}
+          commentsCount={commentsCount}
+          onToggleLike={handleLocalLike}
           onShowComments={handleShowComments}
         />
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    padding: 12,
-    gap: 8,
-    borderTopWidth: 1,
-    borderColor: "#eee",
-    backgroundColor: "#fff",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  userBlock: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    flex: 1,
-  },
-  avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#eaeaea",
-  },
-  avatarFallback: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  avatarInitial: {
-    fontWeight: "700",
-    color: "#555",
-  },
-  userName: {
-    fontWeight: "700",
-    fontSize: 16,
-  },
-  dateText: {
-    fontSize: 12,
-    color: "#777",
-  },
-  followBtn: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    borderWidth: 1,
-  },
-  followBtnPrimary: {
-    backgroundColor: "#1a57ff",
-    borderColor: "#1a57ff",
-  },
-  followBtnOutline: {
-    backgroundColor: "#fff",
-    borderColor: "#e5e7eb",
-  },
-  followBtnDisabled: {
-    opacity: 0.6,
-  },
-  followBtnText: {
-    fontWeight: "600",
-    color: "#fff",
-  },
-  followBtnTextOutline: {
-    color: "#111827",
-  },
-  imageWrap: {
-    marginTop: 6,
-  },
-  image: {
-    width: "100%",
-    height: 300,
-    borderRadius: 12,
-    backgroundColor: "#eee",
-  },
-  imagePlaceholder: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  actionsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
-    paddingTop: 4,
-  },
-  actionText: {
-    fontSize: 16,
-    color: "#333",
-  },
-  liked: {
-    color: "#FE2C55",
-    fontWeight: "700",
-  },
-  description: {
-    marginTop: 4,
-  },
-});
