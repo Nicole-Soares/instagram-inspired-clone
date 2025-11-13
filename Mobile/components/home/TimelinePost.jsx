@@ -1,29 +1,19 @@
-// app/components/TimelinePost.jsx
-import React, { useMemo, useState } from "react";
-import { View, Text, Image, Pressable, StyleSheet } from "react-native";
+import React, { useMemo } from "react";
+import { View, Text, Image, Pressable } from "react-native";
 import { router } from "expo-router";
-import { toggleLike } from "../../service/Api"; 
+import Info from "../Info";
+import { formateoFecha } from "../../utils/formateoFecha";
+import styles from "./styles";
 
 export default function TimelinePost({ post, onUpdatePost }) {
-  const user      = post?.user ?? {};
-  const postDate  = post?.date || post?.createdAt || "";
-  const imageUri  = post?.image;
-
-  const [liked, setLiked] = useState(!!(post?.liked ?? post?.isLiked));
-  const [likesCount, setLikesCount] = useState(
-    Number(post?.likesCount ?? post?.likes ?? 0)
-  );
+  const user = post?.user ?? {};
+  const postDate = post?.date || post?.createdAt || "";
+  const imageUri = post?.image;
 
   const commentsCount = useMemo(
     () => Number(post?.commentsCount ?? post?.comments?.length ?? 0),
     [post]
   );
-
-  const isOwner = useMemo(() => {
-    // si necesitás comparar con el user logueado, podés inyectarlo por prop o AsyncStorage
-    // acá dejamos solo la firma
-    return false;
-  }, []);
 
   const handleNavigateToUser = () => {
     if (user?.id != null) router.push(`/users/${user.id}`);
@@ -33,35 +23,15 @@ export default function TimelinePost({ post, onUpdatePost }) {
     router.push(`/post/${post.id}`);
   };
 
-  const handleToggleLike = async () => {
-    try {
-      // optimista
-      setLiked((prev) => !prev);
-      setLikesCount((c) => (liked ? c - 1 : c + 1));
-
-      await toggleLike(post.id);
-
-      // notifico al padre si quiere sincronizar
-      onUpdatePost?.({
-        ...post,
-        liked: !liked,
-        likesCount: liked ? likesCount - 1 : likesCount + 1,
-      });
-    } catch (e) {
-      // rollback si falla
-      setLiked((prev) => !prev);
-      setLikesCount((c) => (liked ? c + 1 : c - 1));
-      console.error("toggleLike error:", e);
-    }
-  };
-
-  const handleOpenComments = () => {
-    router.push(`/home/comments/${post.id}`);
+  const handleShowComments = () => {
+    router.push({
+      pathname: `/comments/${post.id}`,
+      params: { post: JSON.stringify(post) },
+    });
   };
 
   return (
     <View style={styles.card}>
-      {/* Header */}
       <View style={styles.header}>
         <Pressable style={styles.userBlock} onPress={handleNavigateToUser}>
           {user?.image ? (
@@ -75,18 +45,11 @@ export default function TimelinePost({ post, onUpdatePost }) {
           )}
           <View>
             <Text style={styles.userName}>{user?.name ?? "Usuario"}</Text>
-            {!!postDate && <Text style={styles.dateText}>{postDate}</Text>}
+            {!!postDate && <Text style={styles.dateText}>{formateoFecha(postDate)}</Text>}
           </View>
         </Pressable>
-
-        {isOwner ? (
-          <View style={styles.ownerBadge}>
-            <Text style={styles.ownerText}>Owner</Text>
-          </View>
-        ) : null}
       </View>
 
-      {/* Imagen del post */}
       <Pressable onPress={handleRedirectToPost} style={styles.imageWrap}>
         {imageUri ? (
           <Image source={{ uri: imageUri }} style={styles.image} />
@@ -97,107 +60,15 @@ export default function TimelinePost({ post, onUpdatePost }) {
         )}
       </Pressable>
 
-      {/* Acciones + info */}
-      <View style={styles.actionsRow}>
-        <Pressable onPress={handleToggleLike} hitSlop={10}>
-          <Text style={[styles.actionText, liked && styles.liked]}>
-            {liked ? "♥" : "♡"} {likesCount}
-          </Text>
-        </Pressable>
-
-        <Pressable onPress={handleOpenComments} hitSlop={10}>
-          <Text style={styles.actionText}>💬 {commentsCount}</Text>
-        </Pressable>
+      <View style={{ marginTop: 8 }}>
+        <Info
+          post={post}
+          postId={post.id}
+          onUpdatePost={onUpdatePost}
+          onShowComments={handleShowComments}
+        />
       </View>
-
-      {/* Descripción */}
-      {post?.description ? (
-        <View style={styles.description}>
-          <Text>{post.description}</Text>
-        </View>
-      ) : null}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    padding: 12,
-    gap: 8,
-    borderTopWidth: 1,
-    borderColor: "#eee",
-    backgroundColor: "#fff",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  userBlock: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    flex: 1,
-  },
-  avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#eaeaea",
-  },
-  avatarFallback: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  avatarInitial: {
-    fontWeight: "700",
-    color: "#555",
-  },
-  userName: {
-    fontWeight: "700",
-    fontSize: 16,
-  },
-  dateText: {
-    fontSize: 12,
-    color: "#777",
-  },
-  ownerBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    backgroundColor: "#f3f3f3",
-  },
-  ownerText: {
-    fontSize: 12,
-    color: "#444",
-  },
-  imageWrap: {
-    marginTop: 6,
-  },
-  image: {
-    width: "100%",
-    height: 300,
-    borderRadius: 12,
-    backgroundColor: "#eee",
-  },
-  imagePlaceholder: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  actionsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
-    paddingTop: 4,
-  },
-  actionText: {
-    fontSize: 16,
-    color: "#333",
-  },
-  liked: {
-    color: "#FE2C55",
-    fontWeight: "700",
-  },
-  description: {
-    marginTop: 4,
-  },
-});

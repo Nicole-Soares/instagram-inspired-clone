@@ -6,13 +6,14 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
 import InstagramSpinner from "../../components/InstagramSpinner";
 import { addComment } from "../../service/Api";
+import { formateoFecha } from "../../utils/formateoFecha";
+import styles from "./styles";
 
 export default function CommentsModal() {
   const { post: postParam } = useLocalSearchParams();
@@ -56,7 +57,6 @@ export default function CommentsModal() {
       setComment("");
       setError("");
 
-      // scroll automático al final (último comentario)
       setTimeout(() => {
         scrollViewRef.current?.scrollToEnd({ animated: true });
       }, 300);
@@ -80,12 +80,27 @@ export default function CommentsModal() {
     });
   };
 
+
   return (
     <Pressable style={styles.overlay} onPress={handleClose}>
       <Pressable style={styles.sheet} onPress={(e) => e.stopPropagation()}>
         <View style={styles.handle} />
-        <Text style={styles.header}>Comentarios de {post.user.name}</Text>
 
+        <View style={styles.headerContainer}>
+          {post.user?.image ? (
+            <Image source={{ uri: post.user.image }} style={styles.headerAvatar} />
+          ) : (
+            <View style={[styles.headerAvatar, styles.headerAvatarFallback]}>
+              <Text style={styles.headerAvatarInitial}>
+                {(post.user?.name?.[0] ?? "U").toUpperCase()}
+              </Text>
+            </View>
+          )}
+          <View style={styles.headerTextBlock}>
+            <Text style={styles.headerUserName}>{post.user?.name}</Text>
+            {!!post.date && <Text style={styles.headerDateText}>{formateoFecha(post.date)}</Text>}
+          </View>
+        </View>
         <ScrollView
           ref={scrollViewRef}
           contentContainerStyle={styles.scroll}
@@ -141,109 +156,3 @@ export default function CommentsModal() {
   );
 }
 
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.4)",
-    justifyContent: "flex-end",
-  },
-  sheet: {
-    height: "75%",
-    backgroundColor: "#fff",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    overflow: "hidden",
-  },
-  handle: {
-    alignSelf: "center",
-    width: 44,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: "#ddd",
-    marginTop: 10,
-    marginBottom: 8,
-  },
-  header: {
-    fontWeight: "700",
-    fontSize: 16,
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: "#e5e5e5",
-  },
-  scroll: {
-    padding: 16,
-    flexGrow: 1,
-  },
-  commentRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 14,
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
-  },
-  commentBody: {
-    flex: 1,
-  },
-  commentUser: {
-    fontWeight: "700",
-    marginBottom: 2,
-  },
-  description: {
-    fontSize: 15,
-    color: "#222",
-  },
-  commentText: {
-    fontSize: 14,
-    color: "#444",
-  },
-  containerInputButton: {
-    flexDirection: "column",
-    alignItems: "stretch",
-    gap: 8,
-    padding: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: "#e5e5e5",
-    backgroundColor: "#fff",
-  },
-  input: {
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingTop: 10,
-    paddingBottom: 14,
-    height: 90,
-    backgroundColor: "#fafafa",
-    fontSize: 14,
-    textAlignVertical: "top",
-    color: "#222",
-  },
-  errorText: {
-    color: "#e74c3c",
-    fontSize: 13,
-    marginTop: -4,
-    marginBottom: 4,
-  },
-  button: {
-    alignSelf: "center",
-    width: "100%",
-    backgroundColor: "#7F8CFF",
-    paddingVertical: 12,
-    borderRadius: 5,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonDisabled: {
-    opacity: 0.7,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-});
