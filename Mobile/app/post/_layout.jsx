@@ -1,8 +1,19 @@
-import { Stack } from 'expo-router';
+import { Stack } from "expo-router";
+
 export default function PostLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="[id]" options={{ title:'Post' }} />
+    <Stack
+      screenOptions={{
+        headerShown: true,
+        headerTitle: "Post",
+      }}
+    >
+      <Stack.Screen
+        name="[id]"
+        options={{
+          headerBackTitleVisible: false,
+        }}
+      />
     </Stack>
   );
 }

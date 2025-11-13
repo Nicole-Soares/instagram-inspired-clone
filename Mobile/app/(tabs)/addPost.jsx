@@ -2,7 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { Redirect, useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Image,
   Pressable,
@@ -26,8 +26,9 @@ export default function AgregarPost() {
   const [isError, setIsError] = useState(false);
   const [errDesc, setErrDesc] = useState("");
   const router = useRouter();
+  const scrollRef = useRef(null); 
 
-  //verifica token
+  //  Verifica token
   useEffect(() => {
     const checkAuth = async () => {
       const token = await AsyncStorage.getItem("token");
@@ -36,24 +37,32 @@ export default function AgregarPost() {
     checkAuth();
   }, []);
 
-  //Limpia al volver a la pantalla
+  //  Limpia al volver a la pantalla
   useFocusEffect(
     useCallback(() => {
       setIsError(false);
       setErrDesc("");
       setUrl("");
+      setDescripcion("");
     }, [])
   );
 
-  const isValidUrl = (string) => {
-    return /^https?:\/\/.+/i.test(string);
-  };
+  //  Auto-scroll cuando aparece un error
+  useEffect(() => {
+    if (isError && scrollRef.current) {
+      setTimeout(() => {
+        scrollRef.current.scrollToEnd({ animated: true });
+      }, 200);
+    }
+  }, [isError]);
 
-  //crea el post
+  const isValidUrl = (string) => /^https?:\/\/.+/i.test(string);
+
+  // Crear post nuevo
   const handleSubmit = async () => {
     if (!url.trim()) {
       setIsError(true);
-      setErrDesc("Tiene que agregar una url");
+      setErrDesc("Tiene que agregar una URL");
       return;
     }
 
@@ -63,7 +72,8 @@ export default function AgregarPost() {
       router.replace(`/post/${nuevoPost.id}?from=add`);
       setUrl("");
       setDescripcion("");
-      setIsError("");
+      setIsError(false);
+      setErrDesc("");
     } catch (error) {
       const status = error.response?.status || error.status;
       if (status === 401) {
@@ -71,7 +81,7 @@ export default function AgregarPost() {
       } else {
         setIsError(true);
         setErrDesc(
-          "Error al crear la publicacion: Solo se permiten URLs del tipo http o https."
+          "Error al crear la publicación: solo se permiten URLs del tipo http o https."
         );
       }
     } finally {
@@ -79,9 +89,7 @@ export default function AgregarPost() {
     }
   };
 
-  if (isUnauthorized) {
-    return <Redirect href="/login" />;
-  }
+  if (isUnauthorized) return <Redirect href="/login" />;
 
   if (loading) {
     return (
@@ -94,7 +102,7 @@ export default function AgregarPost() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.container}>
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()}>
@@ -103,17 +111,25 @@ export default function AgregarPost() {
           <Text style={styles.headerTitle}>Crear publicación</Text>
         </View>
 
-        {/* Input de URL de la imagen */}
+        {/* Input URL imagen */}
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            isError && !url.trim() ? { borderColor: "#f5c6cb" } : {},
+          ]}
           placeholder="URL de la imagen"
           value={url}
-          onChangeText={setUrl}
+          onChangeText={(text) => {
+            setUrl(text);
+            if (isError) {
+              setIsError(false);
+              setErrDesc("");
+            }
+          }}
           placeholderTextColor="#999"
         />
 
-        {/* Preview de la imagen*/}
-
+        {/* Preview */}
         <View style={styles.imageBox}>
           {isValidUrl(url) ? (
             <Image source={{ uri: url }} style={styles.image} />
@@ -124,7 +140,8 @@ export default function AgregarPost() {
             </View>
           )}
         </View>
-        {/* Input de descripción */}
+
+        {/* Descripción */}
         <TextInput
           style={[styles.input, styles.textarea]}
           placeholder="Agrega un comentario"
@@ -134,7 +151,7 @@ export default function AgregarPost() {
           placeholderTextColor="#999"
         />
 
-        {/*boton publicar*/}
+        {/* Botón publicar */}
         <Pressable
           onPress={handleSubmit}
           disabled={loading}
@@ -146,7 +163,8 @@ export default function AgregarPost() {
         >
           <Text style={styles.buttonText}>Publicar</Text>
         </Pressable>
-        {/*mensaje de error*/}
+
+        {/* Mensaje de error */}
         {isError && (
           <View style={styles.errorBox}>
             <Text style={styles.errorText}>
@@ -167,6 +185,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
     paddingTop: 20,
+    paddingBottom: 60,
   },
   header: {
     flexDirection: "row",
@@ -178,12 +197,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginLeft: 4,
     color: "#333",
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#555",
-    marginBottom: 8,
   },
   imageBox: {
     width: "100%",
@@ -232,7 +245,6 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     alignItems: "center",
     marginTop: 8,
-    transition: "background-color 0.2s",
   },
   buttonActive: {
     backgroundColor: "#6E79E6",
