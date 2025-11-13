@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import { View, Text, Image, Pressable, StyleSheet } from "react-native";
 import { router } from "expo-router";
-import { toggleLike } from "../../service/Api"; 
+import Info from "../Info";
+import { formateoFecha } from "../../utils/formateoFecha";
+import styles from "./styles";
 
 export default function TimelinePost({ post, onUpdatePost, following=false, pending=false, onToggleFollow, }) {
   const user      = post?.user ?? {};
@@ -18,12 +20,6 @@ export default function TimelinePost({ post, onUpdatePost, following=false, pend
     [post]
   );
 
-  const isOwner = useMemo(() => {
-    // si necesitás comparar con el user logueado, podés inyectarlo por prop o AsyncStorage
-    // acá dejamos solo la firma
-    return false;
-  }, []);
-
   const handleNavigateToUser = () => {
     if (user?.id != null) router.push(`/users/${user.id}`);
   };
@@ -32,35 +28,15 @@ export default function TimelinePost({ post, onUpdatePost, following=false, pend
     router.push(`/post/${post.id}`);
   };
 
-  const handleToggleLike = async () => {
-    try {
-      // optimista
-      setLiked((prev) => !prev);
-      setLikesCount((c) => (liked ? c - 1 : c + 1));
-
-      await toggleLike(post.id);
-
-      // notifico al padre si quiere sincronizar
-      onUpdatePost?.({
-        ...post,
-        liked: !liked,
-        likesCount: liked ? likesCount - 1 : likesCount + 1,
-      });
-    } catch (e) {
-      // rollback si falla
-      setLiked((prev) => !prev);
-      setLikesCount((c) => (liked ? c + 1 : c - 1));
-      console.error("toggleLike error:", e);
-    }
-  };
-
-  const handleOpenComments = () => {
-    router.push(`/home/comments/${post.id}`);
+  const handleShowComments = () => {
+    router.push({
+      pathname: `/comments/${post.id}`,
+      params: { post: JSON.stringify(post) },
+    });
   };
 
   return (
     <View style={styles.card}>
-      {/* Header */}
       <View style={styles.header}>
         <Pressable style={styles.userBlock} onPress={handleNavigateToUser}>
           {user?.image ? (
@@ -74,10 +50,9 @@ export default function TimelinePost({ post, onUpdatePost, following=false, pend
           )}
           <View>
             <Text style={styles.userName}>{user?.name ?? "Usuario"}</Text>
-            {!!postDate && <Text style={styles.dateText}>{postDate}</Text>}
+            {!!postDate && <Text style={styles.dateText}>{formateoFecha(postDate)}</Text>}
           </View>
         </Pressable>
-
         {isOwner && (
           <TouchableOpacity
             onPress={onToggleFollow}
@@ -100,7 +75,6 @@ export default function TimelinePost({ post, onUpdatePost, following=false, pend
         )}
       </View>
 
-      {/* Imagen del post */}
       <Pressable onPress={handleRedirectToPost} style={styles.imageWrap}>
         {imageUri ? (
           <Image source={{ uri: imageUri }} style={styles.image} />
@@ -111,25 +85,14 @@ export default function TimelinePost({ post, onUpdatePost, following=false, pend
         )}
       </Pressable>
 
-      {/* Acciones + info */}
-      <View style={styles.actionsRow}>
-        <Pressable onPress={handleToggleLike} hitSlop={10}>
-          <Text style={[styles.actionText, liked && styles.liked]}>
-            {liked ? "♥" : "♡"} {likesCount}
-          </Text>
-        </Pressable>
-
-        <Pressable onPress={handleOpenComments} hitSlop={10}>
-          <Text style={styles.actionText}>💬 {commentsCount}</Text>
-        </Pressable>
+      <View style={{ marginTop: 8 }}>
+        <Info
+          post={post}
+          postId={post.id}
+          onUpdatePost={onUpdatePost}
+          onShowComments={handleShowComments}
+        />
       </View>
-
-      {/* Descripción */}
-      {post?.description ? (
-        <View style={styles.description}>
-          <Text>{post.description}</Text>
-        </View>
-      ) : null}
     </View>
   );
 }

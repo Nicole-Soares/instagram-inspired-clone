@@ -1,6 +1,6 @@
 // service/Api.js
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 //cliente axios
 const api = axios.create({
@@ -22,8 +22,11 @@ api.interceptors.request.use(async (config) => {
 export const login = async (email, password) => {
   const { data, headers } = await api.post('/login', { email, password });
   const token = data?.token ?? headers?.authorization ?? headers?.Authorization;
+  const userId = data.id;
   if (!token) throw new Error('La API no devolvió token');
+  if (!userId) throw new Error("No se encontró el ID del usuario en la respuesta");
   await AsyncStorage.setItem('token', token);
+  await AsyncStorage.setItem("userId", String(userId));
   return data;
 };
 
@@ -40,12 +43,28 @@ export const getUserById = (userId) => api.get(`/user/${userId}`);
 export const toggleFollow = (userId) => api.put(`/users/${userId}/follow`);
 
 // ===== POSTS =====
-export const createPost   = (image, description) => api.post('/posts', { image, description });
-export const getPostById  = (postId) => api.get(`/posts/${postId}`);
+export const createPost = async (image, description) => {
+  const { data } = await api.post('/posts', { image, description });
+  return data; 
+};
+
+export const getPostById = async (postId) => {
+  const { data } = await api.get(`/posts/${postId}`);
+  return data; 
+};
 export const updatePost   = (postId, image, description) => api.put(`/posts/${postId}`, { image, description });
 export const deletePost   = (postId) => api.delete(`/posts/${postId}`);
-export const toggleLike   = (postId) => api.put(`/posts/${postId}/like`);
-export const addComment   = (postId, comment) => api.post(`/posts/${postId}/comment`, { comment });
+
+export const likePost = async (postId) => {
+  const { data } = await api.put(`/posts/${postId}/like`);
+  return data;
+};
+
+export const addComment = async (postId, body) => {
+  const response = await api.post(`/posts/${postId}/comment`, { body });
+  return response.data; 
+};
+
 
 // ===== SEARCH ===== CHEQUEAR
 export const search = (query) => api.get(`/search?query=${encodeURIComponent(query)}`);

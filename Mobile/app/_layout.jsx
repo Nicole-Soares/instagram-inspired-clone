@@ -12,16 +12,21 @@ export default function RootLayout() {
          screenOptions={{
           headerTitleAlign: 'left',
           headerShadowVisible: false,
+          headerShown: false,
           headerStyle: { backgroundColor: '#fff' },
           headerTintColor: '#111827'
         }}
       >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="users" options={{ headerShown: false }} />
-        <Stack.Screen name="post" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="users" />
+        <Stack.Screen name="post" />
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen
+          name="(modal)"
+          options={{ presentation: "transparentModal", headerShown: false }}
+        />
       </Stack>
-      <StatusBar style="dark" />
+       <StatusBar style="dark" backgroundColor="#fff" />
     </FollowProvider>
   );
 }

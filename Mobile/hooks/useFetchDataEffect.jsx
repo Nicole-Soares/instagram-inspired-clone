@@ -1,13 +1,28 @@
+// hooks/useFetchDataEffect.js
 import { useEffect, useState } from "react";
 
-const useFetchDataEffect = (fetchData, initialize, dependencies = [], handlerError = () => {}) => {
-  const [isLoading, setIsLoading] = useState(true); // cargando
-  const [isError, setIsError] = useState(false); //error
+/**
+ * Hook genérico para manejar fetchs de datos con estados controlados.
+ * Ideal para usar con axios o cualquier promesa.
+ *
+ * @param {Function} fetchData - Función async que obtiene los datos.
+ * @param {*} initialize - Valor inicial del estado.
+ * @param {Array} dependencies - Dependencias del useEffect.
+ * @param {Function} handlerError - Callback opcional para manejar errores específicos (ej: 401).
+ */
+const useFetchDataEffect = (
+  fetchData,
+  initialize,
+  dependencies = [],
+  handlerError = () => {}
+) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [dataState, setDataState] = useState(initialize); //respuesta
+  const [dataState, setDataState] = useState(initialize);
 
-  //pedir los datos sin tener que desmontar el componente
-  const reloadScreen = () => setRefreshing(prev => !prev);
+  const reloadScreen = () => setRefreshing((prev) => !prev);
 
   useEffect(() => {
     let mounted = true;
@@ -16,19 +31,29 @@ const useFetchDataEffect = (fetchData, initialize, dependencies = [], handlerErr
       try {
         setIsLoading(true);
         setIsError(false);
+        setIsEmpty(false);
 
         const response = await fetchData();
-
-        // Si axios devuelve { data }, lo usamos; si no, el valor directo
         const result = response?.data ?? response;
 
-        if (mounted) {
-          setDataState(result);
+        // Si viene vacío, lo marcamos como empty
+        if (!result || (Array.isArray(result) && result.length === 0)) {
+          if (mounted) setIsEmpty(true);
+          return;
         }
+
+        if (mounted) setDataState(result);
       } catch (err) {
         console.error("useFetchDataEffect error:", err);
-        handlerError(err);
-        if (mounted) setIsError(true);
+        const status = err?.response?.status || err?.status;
+
+        if (status === 401) {
+          handlerError(err, "unauthorized");
+        } else if (status === 404) {
+          setIsEmpty(true);
+        } else {
+          setIsError(true);
+        }
       } finally {
         if (mounted) setIsLoading(false);
       }
@@ -37,11 +62,11 @@ const useFetchDataEffect = (fetchData, initialize, dependencies = [], handlerErr
     loadData();
 
     return () => {
-      mounted = false; // cleanup: evita setState si el componente se desmonta
+      mounted = false;
     };
   }, [...dependencies, refreshing]);
 
-  return { isLoading, isError, reloadScreen, dataState };
+  return { isLoading, isError, isEmpty, reloadScreen, dataState };
 };
 
 export default useFetchDataEffect;
