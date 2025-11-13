@@ -5,7 +5,6 @@ export default function PostLayout() {
     <Stack
       screenOptions={{
         headerShown: true,
-        headerTitle: "Post",
       }}
     >
       <Stack.Screen

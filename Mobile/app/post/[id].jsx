@@ -41,7 +41,7 @@ export default function Post() {
   const [isNotFound, setIsNotFound] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  
+
   const fetchPost = async () => {
     const token = await AsyncStorage.getItem("token");
 
@@ -59,6 +59,11 @@ export default function Post() {
 
       setPost(data);
       setIsOwner(String(loggedUserId) === String(data.user.id));
+
+      navigation.setOptions({
+        title: `Post - ${data.user.name}`, 
+      });
+
     } catch (error) {
       const status = error.response?.status || error.status;
       if (status === 401) setIsUnauthorized(true);
@@ -99,41 +104,41 @@ export default function Post() {
     );
 
   return (
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <HeaderPost
-          user={post.user}
-          date={post.date}
-          isOwner={isOwner}
-          onEditClick={handleEdit}
-          onDeleteClick={handleDelete}
-        />
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <HeaderPost
+        user={post.user}
+        date={post.date}
+        isOwner={isOwner}
+        onEditClick={handleEdit}
+        onDeleteClick={handleDelete}
+      />
 
-        {post.image && (
-          <Image source={{ uri: post.image }} style={styles.image} />
-        )}
+      {post.image && (
+        <Image source={{ uri: post.image }} style={styles.image} />
+      )}
 
-        <Info
-          post={post}
+      <Info
+        post={post}
+        postId={id}
+        onUpdatePost={handleUpdatePost}
+        onShowComments={() =>
+          router.push({
+            pathname: "/(modal)/comments/[postId]",
+            params: { postId: post.id, post: JSON.stringify(post) }
+          })
+
+        }
+
+      />
+
+      {showDeleteModal && (
+        <DeletePostModal
+          visible={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
           postId={id}
-          onUpdatePost={handleUpdatePost}
-          onShowComments={() =>
-            router.push({
-              pathname: "/(modal)/comments/[postId]",
-              params: { postId: post.id, post: JSON.stringify(post) }
-            })
-            
-          }
-          
         />
-
-        {showDeleteModal && (
-          <DeletePostModal
-            visible={showDeleteModal}
-            onClose={() => setShowDeleteModal(false)}
-            postId={id}
-          />
-        )}
-      </ScrollView>
+      )}
+    </ScrollView>
   );
 }
 
