@@ -4,6 +4,7 @@ import { search } from '../../service/Api';
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import InstagramSpinner from '../../components/InstagramSpinner';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Search() {
   const router = useRouter();
@@ -37,18 +38,19 @@ export default function Search() {
     <View style={styles.container}>
       
       {/* INPUT */}
-      <View style={styles.inputContainer}>
+      <SafeAreaView style={styles.inputContainer}>
       <TextInput
         style={styles.input}
         placeholder="Buscar..."
         value={query}
         onChangeText={setQuery}
+        onSubmitEditing={handleSearch}
       />
 
       <Pressable style={styles.iconButton} onPress={handleSearch}>
         <MaterialCommunityIcons name="magnify" size={22} color="#666" />
       </Pressable>
-    </View>
+    </SafeAreaView>
 
       {/* LOADING */}
       {loading && (
@@ -140,6 +142,7 @@ const styles = StyleSheet.create({
   iconButton: {
     position: "absolute",
     right: 24,
+    bottom: 26,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -151,7 +154,7 @@ const styles = StyleSheet.create({
 
   userListContent: {
     gap: 10,
-    paddingHorizontal: 6,
+    paddingHorizontal: 10,
   },
 
   user: {
@@ -168,8 +171,8 @@ const styles = StyleSheet.create({
   },
 
   postImage: {
-    width: 124,
-    height: 170,
+    width: 127,
+    height: 173,
     margin: 2,
   },
 

@@ -39,7 +39,8 @@ export default function Login() {
       const target = typeof returnTo === 'string' && returnTo.startsWith('/') ? returnTo : '/home';
       router.replace(target);
     } catch (e) {
-      const msg = e?.response?.data?.message || e?.message || 'No se pudo iniciar sesión';
+      const errorData = e?.response?.data;
+      const msg = errorData?.error || errorData?.message || e?.message || 'No se pudo iniciar sesión';
       Alert.alert('Error de login', msg);
     } finally {
       setSubmitting(false);
@@ -65,7 +66,7 @@ export default function Login() {
         placeholder="Correo Electrónico"
         placeholderTextColor= "#919191ff"
         autoCapitalize="none"
-        keyboardType="email-address"
+        keyboardType="email-address"   
         value={email}
         onChangeText={setEmail}
         style={styles.input}

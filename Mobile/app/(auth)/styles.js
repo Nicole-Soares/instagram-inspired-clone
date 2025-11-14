@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 12,
   },
   input: {
     backgroundColor: '#FAFAFA',
@@ -43,8 +43,9 @@ export const styles = StyleSheet.create({
     borderColor: '#CCCCCC',
     borderRadius: 4,
     height: 31,
-    gap: 10,
     padding: 8,
+    fontSize: 12,
+    paddingVertical: 0, 
   },
   link: {
     color: '#4f6cf0',
@@ -52,7 +53,7 @@ export const styles = StyleSheet.create({
   text: {
     color: '#4E4E4E',
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: 12,
     fontBold: '400',
   },
   textTitle: {

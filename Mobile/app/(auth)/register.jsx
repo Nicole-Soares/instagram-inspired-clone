@@ -31,7 +31,7 @@ export default function Register() {
       const target = typeof returnTo === 'string' && returnTo.startsWith('/')? returnTo: '/home';
       router.replace(target);
     } catch (e) {
-      Alert.alert('Error', e?.message ?? 'No se pudo registrar');
+      Alert.alert('Error', e?.response?.data?.error || e?.response?.data?.message || e?.message || 'No se pudo registrar');
     } finally {
       setSubmitting(false);
     }
