@@ -13,6 +13,7 @@ import {
   Text,
   View
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import ErrorScreen from "../../components/ErrorScreen";
 import Info from "../../components/Info";
 import InstagramSpinner from "../../components/InstagramSpinner";
@@ -109,6 +110,7 @@ export default function Post() {
     );
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <HeaderPost
         user={post.user}
@@ -145,6 +147,7 @@ export default function Post() {
         />
       )}
     </ScrollView>
+    </SafeAreaView>
   );
 }
 

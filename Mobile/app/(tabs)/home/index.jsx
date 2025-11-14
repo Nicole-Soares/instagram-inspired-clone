@@ -1,17 +1,17 @@
-import { useState, useCallback, useEffect } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, FlatList, RefreshControl, TouchableOpacity } from "react-native";
-import { Redirect } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import { Redirect } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
+import { FlatList, RefreshControl, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import styles from "./styles"; 
-import { getUser } from "../../../service/Api";
-import { isTokenExpired } from "../../../utils/isTokenExpired";
-import useFetchDataEffect from "../../../hooks/useFetchDataEffect";
 import InstagramSpinner from "../../../components/InstagramSpinner";
 import TimelinePost from "../../../components/home/TimelinePost";
 import { useFollow } from "../../../hooks/followContext";
+import useFetchDataEffect from "../../../hooks/useFetchDataEffect";
+import { getUser } from "../../../service/Api";
+import { isTokenExpired } from "../../../utils/isTokenExpired";
+import styles from "./styles";
 
 const cleanId = (v) => String(v ?? "").replace(/^user_/, "");
 const getAuthorId = (p) =>
@@ -28,32 +28,48 @@ export default function Home() {
   const { isFollowing, toggleFollow, pendingIds } = useFollow();
   const [isError, setIsError] = useState(false);
   const [errDesc, setErrDesc] = useState("");
-  const [posts, setPosts] = useState([]); 
+  const [posts, setPosts] = useState([]);
 
-  // Función que pide el timeline
   const fetchTimeline = async () => {
     const token = await AsyncStorage.getItem("token");
 
-    if (!token || isTokenExpired(token)) {
-      const error = new Error("UNAUTHORIZED");
-      error.status = 401;
-      throw error;
+   
+    if (!token) {
+      const err = new Error("UNAUTHORIZED");
+      err.status = 401;
+      throw err;
+    }
+
+    if (isTokenExpired(token)) {
+      console.log("Token expirado → limpiando y redirigiendo");
+      await AsyncStorage.removeItem("token");
+
+      const err = new Error("UNAUTHORIZED");
+      err.status = 401;
+      throw err;
     }
 
     setIsError(false);
     setErrDesc("");
 
+   
     const { data } = await getUser();
     return data;
   };
 
+ 
   const {
     isLoading,
     dataState: data,
     reloadScreen,
   } = useFetchDataEffect(fetchTimeline, {}, [], (error) => {
-    const status = error?.response?.status || error?.status;
+    const status =
+      error?.status ??
+      error?.response?.status ??
+      (error?.message === "UNAUTHORIZED" ? 401 : 0);
+
     if (status === 401) {
+      console.log("Redirigiendo a login por 401");
       setUnauthorized(true);
     } else {
       console.error("Error timeline:", error);
@@ -62,14 +78,13 @@ export default function Home() {
     }
   });
 
-  // Actualiza los posts locales cuando cambian los datos del backend
+
   useEffect(() => {
     if (data?.timeline || data?.posts) {
       setPosts(data.timeline ?? data.posts);
     }
   }, [data]);
 
-  // Solo recarga los datos cuando la pestaña Home está activa
   useFocusEffect(
     useCallback(() => {
       reloadScreen();
@@ -99,12 +114,6 @@ export default function Home() {
     );
   }
 
-  const handleUpdatePost = (updatedPost) => {
-    setPosts((prev) =>
-      prev.map((p) => (String(p.id) === String(updatedPost.id) ? updatedPost : p))
-    );
-  };
-
   if (!posts || posts.length === 0) {
     return (
       <SafeAreaView style={styles.centered}>
@@ -117,6 +126,12 @@ export default function Home() {
     );
   }
 
+  const handleUpdatePost = (updatedPost) => {
+    setPosts((prev) =>
+      prev.map((p) => (String(p.id) === String(updatedPost.id) ? updatedPost : p))
+    );
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <FlatList
@@ -126,14 +141,14 @@ export default function Home() {
           const authorId = getAuthorId(item);
           const following = isFollowing(authorId);
           const pending = pendingIds.has(authorId);
-          
+
           return (
             <TimelinePost
-              post = {item}
+              post={item}
               onUpdatePost={handleUpdatePost}
-              following = {following}
-              pending = {pending}
-              onToggleFollow = {() => toggleFollow(authorId)}
+              following={following}
+              pending={pending}
+              onToggleFollow={() => toggleFollow(authorId)}
             />
           );
         }}
