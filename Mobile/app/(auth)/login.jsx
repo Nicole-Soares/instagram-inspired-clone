@@ -16,7 +16,6 @@ export default function Login() {
 
   useEffect(() => {
     (async () => {
-      AsyncStorage.removeItem('token');
       const t = await AsyncStorage.getItem('token');
       if (t) return router.replace('/home');
       setChecking(false);
