@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, Alert, ActivityIndicator } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { SafeAreaView } from "react-native-safe-area-context";
+import { View, Text, TextInput, Pressable, Alert, ActivityIndicator, Image} from 'react-native';
+import { router, useLocalSearchParams, Link} from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { login } from '../../service/Api';
+import { styles} from './styles';
+import InstagramSpinner from '../../components/InstagramSpinner';
 
 export default function Login() {
   const { returnTo } = useLocalSearchParams();
@@ -36,28 +39,74 @@ export default function Login() {
       const target = typeof returnTo === 'string' && returnTo.startsWith('/') ? returnTo : '/home';
       router.replace(target);
     } catch (e) {
-      const msg = e?.response?.data?.message || e?.message || 'No se pudo iniciar sesión';
+      const errorData = e?.response?.data;
+      const msg = errorData?.error || errorData?.message || e?.message || 'No se pudo iniciar sesión';
       Alert.alert('Error de login', msg);
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (checking) return <ActivityIndicator style={{ marginTop: 40 }} />;
+  if (checking)  return (
+        <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: '#fff' }}>
+          <InstagramSpinner />
+          <Text style={{ marginTop: 8, color: "#666" }}>Cargando...</Text>
+        </SafeAreaView>
+      );
 
   return (
-    <View style={{ flex:1, justifyContent:'center', padding:20, gap:12 }}>
-      <Text style={{ fontSize:36, textAlign:'center', marginBottom:8 }}>Instagram</Text>
-      <TextInput placeholder="Correo" autoCapitalize="none" keyboardType="email-address"
-        value={email} onChangeText={setEmail}
-        style={{ borderWidth:1, borderColor:'#ddd', padding:10, borderRadius:8 }} />
-      <TextInput placeholder="Contraseña" secureTextEntry
-        value={pass} onChangeText={setPass}
-        style={{ borderWidth:1, borderColor:'#ddd', padding:10, borderRadius:8 }} />
-      {submitting ? <ActivityIndicator/> : <Button title="Iniciar sesión" onPress={onSubmit} />}
-      <Text style={{ textAlign:'center', marginTop:10, color:'#4f6cf0' }} onPress={() => router.replace('/register')}>
-        ¿No tenés cuenta? Registrate
+    <View style={styles.container}>
+      <Image
+        source={require('../../assets/images/InstagramIcon.png')}
+        style={styles.logo}
+      />
+
+    <View style={styles.formContainer}>
+      <TextInput
+        placeholder="Correo Electrónico"
+        placeholderTextColor= "#919191ff"
+        autoCapitalize="none"
+        keyboardType="email-address"   
+        value={email}
+        onChangeText={setEmail}
+        style={styles.input}
+      />
+
+      <TextInput
+        placeholder="Contraseña"
+        placeholderTextColor= "#919191ff"
+        secureTextEntry
+        value={pass}
+        onChangeText={setPass}
+        style={styles.input}
+      />
+  
+        <Pressable
+          onPress={submitting ? null : onSubmit} // Deshabilita si está cargando
+          disabled={submitting} // Agrega disabled
+          style={({ pressed }) => [
+            styles.button,
+            pressed && !submitting && { transform: [{ scale: 0.97 }], opacity: 0.8 },
+            submitting && { opacity: 0.6 } // Opacidad cuando está cargando
+          ]}
+        >
+          {submitting ? (
+            <ActivityIndicator color="#fff" /> // Color del spinner
+          ) : (
+            <Text style={styles.buttonText}>Iniciar sesión</Text>
+          )}
+        </Pressable>
+      </View>
+
+      <View style={styles.divider} />
+
+      <Text style={styles.text}>
+        ¿No tienes una cuenta?{' '}
+        <Link href="/register" style={styles.link}>
+          Regístrate
+        </Link>
       </Text>
     </View>
   );
 }
+
