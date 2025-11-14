@@ -18,7 +18,8 @@ const port = 7070;
 app.use(cors({
   origin:[ 'http://localhost:5173',
             'http://localhost:8081',
-             '192.168.1.40:7070'
+             '192.168.1.40:7070',
+             'http://192.168.0.118:7070'
          ], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
