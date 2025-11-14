@@ -18,8 +18,11 @@ const port = 7070;
 app.use(cors({
   origin:[ 'http://localhost:5173',
             'http://localhost:8081',
-             '192.168.1.40:7070',
-             'http://192.168.0.118:7070'
+            '192.168.176.1:7070',
+            '192.168.1.40:7070',
+            '192.168.68.102:7070',
+            '192.168.0.225:7070',
+            '192.168.0.118:7070'
          ], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
@@ -40,6 +43,6 @@ app.use("/user", createUserRouter(userController, tokenController));
 app.use("/search", createSearchRouter(searchController));
 app.use("/users", createUsersRouter(userController, tokenController));
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     console.log(`Server is running on http://localhost:${port}`); 
 });

@@ -2,11 +2,17 @@ import { Stack } from "expo-router";
 
 export default function UsersLayout() {
   return (
-    <Stack>
-      {/* listado de usuarios */}
-      <Stack.Screen name="index" options={{ title: "Users", headerShown: false }} />
-      {/* detalle público */}
-      <Stack.Screen name="[id]" options={{ title: "Usuario" }} />
+    <Stack
+      screenOptions={{
+        headerTitleAlign: 'left', 
+        headerShadowVisible: false,
+        headerStyle: { backgroundColor: '#fff' },
+        headerTintColor: '#111827',
+        headerBackTitle: ' ',
+        headerBackTitleVisible: false
+      }}
+    >
+      <Stack.Screen name="[id]" options={{ title: "" }} />
     </Stack>
   );
 }

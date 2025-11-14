@@ -1,45 +1,67 @@
 import { useEffect, useState } from "react";
 import { useLocalSearchParams, useNavigation, router } from "expo-router";
-import { ActivityIndicator, Button, Image, Text, View } from "react-native";
+import { ActivityIndicator, Image, Text, View, StyleSheet, TouchableOpacity, FlatList, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Api from "../../service/Api";
+import * as Api from "../../service/Api.js";
+import useUserHeader from "../../hooks/useUserHeader.jsx";
+import { useFollow } from "../../hooks/followContext.jsx";
+import styles from "./styles.jsx";
+
+const cleanId = (v) => String(v ?? "").replace(/^user_/, "")
 
 export default function PublicUserPage() {
-  const { id } = useLocalSearchParams();
+  const params = useLocalSearchParams();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+  const followedParam = Array.isArray(params.followed) ? params.followed[0] : params.followed;
+
   const navigation = useNavigation();
-  const userId = Array.isArray(id) ? Number(id[0]) : Number(id);
+  const userId = id;
+
+  const { isFollowing: isFollowingCtx, toggleFollow, pendingIds } = useFollow();
+
+  const hint =
+    typeof followedParam !== "undefined" &&
+    ["1", "true", "yes"].includes(String(followedParam).toLowerCase());
 
   const [loading, setLoading] = useState(true);
-  const [me, setMe] = useState(null);     // usuario logueado (si hay token)
-  const [user, setUser] = useState(null); // usuario visitado
+  const [me, setMe] = useState(null);     //usuario logueado
+  const [user, setUser] = useState(null); //usuario visitado     
+  const [isFollowingUI, setIsFollowingUI] = useState(hint)
   const [error, setError] = useState("");
 
+  useUserHeader(user?.name, { align: "left", backTitle: "Back" });
+
+  const followingCtx = isFollowingCtx ? isFollowingCtx(userId) : false;
+  useEffect(() => {
+    setIsFollowingUI(followingCtx);
+  }, [followingCtx, userId]);
+  
   useEffect(() => {
     let cancelled = false;
 
     (async () => {
+      setError(""); 
+      setLoading(true);
+      let meData = null;
+
       try {
-        // 1) si hay token, intento obtener “me”
         const token = await AsyncStorage.getItem("token");
+
         if (token) {
           try {
-            // Soporta ambas APIs: Api.getMe() o Api.getUser() sin id
-            const meRes = Api.getMe ? await Api.getMe() : await Api.getUser();
-            const meData = meRes?.data ?? meRes;
+            const meRes = await Api.getUser();
+            meData = meRes?.data ?? meRes;
             if (!cancelled) setMe(meData);
           } catch {
-            // si falla, no bloquea el público
             await AsyncStorage.removeItem("token");
           }
         }
 
-        // 2) obtengo el usuario visitado
-        const res = await Api.getUser(userId); // en tu profe: Api.getUser(Number(id))
+        const res = await Api.getUserById(userId);
         const visited = res?.data ?? res;
-        if (!cancelled) {
-          setUser(visited);
-          navigation.setOptions({ title: visited?.name ?? "Usuario" });
-        }
+
+        if (!visited || !visited.id) throw new Error("Respuesta de API vacía o inválida.");
+        if (!cancelled) setUser(visited);
       } catch {
         if (!cancelled) setError("No se encontró el usuario");
       } finally {
@@ -48,16 +70,16 @@ export default function PublicUserPage() {
     })();
 
     return () => { cancelled = true; };
-  }, [userId, navigation]);
+  }, [userId]);
 
-  // Si estoy mirando MI propio perfil, redirijo al tab de perfil
   if (!loading && me?.id && user?.id && Number(me.id) === Number(user.id)) {
     router.replace("/profile");
     return null;
   }
 
   if (loading) return <ActivityIndicator style={{ marginTop: 40 }} />;
-  if (error)   return <Text style={{ padding: 16 }}>{error}</Text>;
+  if (error) return <Text style={{ padding: 16 }}>{error}</Text>;
+  if (!user) return <Text style={{ padding: 16 }}>No se encontraron datos del usuario.</Text>;
 
   const requireAuth = async (ok) => {
     const t = await AsyncStorage.getItem("token");
@@ -68,32 +90,93 @@ export default function PublicUserPage() {
     ok();
   };
 
-  return (
-    <View style={{ padding: 16, gap: 12 }}>
-      <Text style={{ fontSize: 18, fontWeight: "700" }}>{user?.name}</Text>
-      <Text>{user?.email}</Text>
-      {!!user?.image && (
-        <Image
-          source={{ uri: user.image }}
-          style={{ width: 120, height: 120, borderRadius: 60, backgroundColor: "#eee" }}
-        />
-      )}
+  const handleToggleFollow = async () => {
+    await requireAuth(async () => {
+      // optimista local + disparo al contexto (global)
+      setIsFollowingUI(prev => {
+        const now = !prev;
+        setUser(prevUser => {
+          if (!prevUser) return prevUser;
+          const list = Array.isArray(prevUser.followers) ? prevUser.followers : [];
+          const nextFollowers = now
+            ? [...list, { id: me?.id ?? "me" }]
+            : list.slice(0, Math.max(0, list.length - 1));
+          return { ...prevUser, followers: nextFollowers };
+        });
+        return now;
+      });
+      toggleFollow(user.id);
+    });
+  };
 
-      {/* Seguir / Dejar de seguir — protegido */}
-      <Button
-        title="Seguir / Dejar de seguir"
-        onPress={() =>
-          requireAuth(async () => {
-            // TODO: llamá a tu endpoint real de follow/unfollow con userId
-            // await Api.toggleFollow(userId)
-          })
+  const posts = user.posts || [];
+  const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const pending = pendingIds?.has(cleanId(userId));
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.leftBlock}>
+          <Image source={{ uri: user.image }} style={styles.avatar} />
+
+          <View style={styles.infoColumn}>
+            <Text style={styles.name} numberOfLines={1}>{user.name}</Text>
+
+            <View style={styles.statsColumn}>
+              <Text style={styles.statLine}>
+                <Text style={styles.statNumber}>{user.posts?.length || 0}</Text> Publicaciones
+              </Text>
+              <Text style={styles.statLine}>
+                <Text style={styles.statNumber}>{user.followers?.length || 0}</Text> Seguidos
+              </Text>
+            </View>
+          </View>
+        </View>
+        
+        <TouchableOpacity
+          disabled={pending}
+          onPress={handleToggleFollow}
+          style={[
+            styles.followButton,
+            isFollowingUI ? styles.followOutline : styles.followPrimary,
+            pending && { opacity: 0.2 }
+          ]}
+        >
+          <Text
+            style={[
+              styles.followButtonText,
+              isFollowingUI && styles.followButtonTextOutline
+            ]}
+          >
+            {isFollowingUI ? "Dejar de seguir" : "Seguir"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <FlatList
+        numColumns={3}
+        data={sortedPosts || []}
+        keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <Pressable style={({ hovered, pressed }) => [
+                styles.postTouchable,
+                hovered && { opacity: 0.85 },
+                pressed && { opacity: 0.9 } 
+            ]}
+            onPress={() => {
+                router.push(`/post/${item.id}`); 
+            }} >
+            <Image
+                source={{ uri: item.image }}
+                style={styles.postImage}
+            />
+          </Pressable>
+        )}
+        ListEmptyComponent={
+          <Text style={styles.noPosts}>Aún no hay publicaciones</Text>
         }
       />
-
-      <View style={{ marginTop: 12 }}>
-        <Text style={{ fontWeight: "700" }}>Posts</Text>
-        {/* TODO: renderizá user.posts si tu API lo trae */}
-      </View>
     </View>
   );
-}
+};

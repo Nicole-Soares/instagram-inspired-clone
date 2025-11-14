@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from "react";
-import { View, Animated, Easing, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import React, { useEffect, useRef } from "react";
+import { Animated, Easing, StyleSheet, View } from "react-native";
 
 export default function InstagramSpinner({ size = 80, strokeWidth = 8 }) {
   const rotateAnim = useRef(new Animated.Value(0)).current;
