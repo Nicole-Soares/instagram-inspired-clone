@@ -90,6 +90,11 @@ export default function Post() {
 
   const handleEdit = () => router.push(`/post/edit/${id}`);
   const handleDelete = () => setShowDeleteModal(true);
+  const handleNavigateToUser = (userId) => {
+    router.push(`/users/${userId}`);
+  };
+  
+  
 
   if (isError) return <ErrorScreen />;
   if (isUnauthorized) return <Redirect href="/login" />;
@@ -111,6 +116,7 @@ export default function Post() {
         isOwner={isOwner}
         onEditClick={handleEdit}
         onDeleteClick={handleDelete}
+        handleNavigateToUser={handleNavigateToUser}
       />
 
       {post.image && (
