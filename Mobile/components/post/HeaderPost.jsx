@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     left: {
       flexDirection: "row",
       alignItems: "center",
-      gap: 10, // 🔥 más prolijo que usar marginRight manual
+      gap: 10, 
     },
     avatar: {
       width: 46,

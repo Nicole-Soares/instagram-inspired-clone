@@ -1,40 +1,57 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import React from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { likePost } from "../service/Api";
 
-export default function Info({
-  post,
-  liked = false,
-  likesCount = 0,
-  commentsCount,
-  onToggleLike,
-  onShowComments,
-}) {
-  const safeLikes =
-    Number.isFinite(likesCount)
-      ? likesCount
-      : Number(post?.likesCount ?? post?.likes?.length ?? 0) || 0;
+export default function Info({ post, postId, onUpdatePost, onShowComments }) {
+  const [loggedUserId, setLoggedUserId] = useState(null);
+  const [userHasLiked, setUserHasLiked] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [errDesc, setErrDesc] = useState("");
 
-  const safeComments =
-    typeof commentsCount === "number"
-      ? commentsCount
-      : Number(post?.commentsCount ?? post?.comments?.length ?? 0) +
-        (post?.description?.trim() ? 1 : 0);
+  useEffect(() => {
+    // Cargar el ID del usuario logueado
+    const fetchUserId = async () => {
+      const id = await AsyncStorage.getItem("userId");
+      setLoggedUserId(id);
+    };
+    fetchUserId();
+  }, []);
+
+  useEffect(() => {
+    if (post && loggedUserId) {
+      const hasLiked = post.likes?.some((like) => like.id === loggedUserId);
+      setUserHasLiked(hasLiked);
+    }
+  }, [post, loggedUserId]);
+
+  const handleLike = async () => {
+    try {
+      const updatedPost = await likePost(postId);
+      const hasLikedNow = updatedPost.likes?.some(
+        (like) => like.id === loggedUserId
+      );
+      setUserHasLiked(hasLikedNow);
+      if (onUpdatePost) onUpdatePost(updatedPost);
+    } catch (error) {
+      setIsError(true);
+      setErrDesc("Error al dar like al post.");
+    }
+  };
 
   return (
     <View style={styles.container}>
+      {/* ---- LIKE Y COMENTAR ---- */}
       <View style={styles.actionsRow}>
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={() => onToggleLike?.(!liked)}
-        >
+        <TouchableOpacity style={styles.iconButton} onPress={handleLike}>
           <MaterialIcons
-            name={liked ? "favorite" : "favorite-border"}
+            name={userHasLiked ? "favorite" : "favorite-border"}
             size={22}
-            color={liked ? "red" : "#444"}
+            color={userHasLiked ? "red" : "#444"}
             style={styles.icon}
           />
-          <Text style={styles.iconText}>{safeLikes}</Text>
+          <Text style={styles.iconText}>{post.likes?.length || 0}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.iconButton} onPress={onShowComments}>
@@ -44,22 +61,65 @@ export default function Info({
             color="#444"
             style={styles.icon}
           />
-          <Text style={styles.iconText}>{safeComments}</Text>
+          <Text style={styles.iconText}>
+            {(post.comments?.length || 0) + (post.description?.trim() ? 1 : 0)}
+          </Text>
         </TouchableOpacity>
       </View>
 
-      {post?.description ? (
+      {/* ---- DESCRIPCIÓN ---- */}
+      {post.description ? (
         <Text style={styles.description}>{post.description}</Text>
       ) : null}
+
+      {/*mensaje de error*/}
+      {isError && (
+        <View style={styles.errorBox}>
+          <Text style={styles.errorText}>
+            {errDesc ? `⚠️ ${errDesc}` : "Ocurrió un error inesperado."}
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { marginTop: 8, marginHorizontal: 12 },
-  actionsRow: { flexDirection: "row", alignItems: "center", marginBottom: 6 },
-  iconButton: { flexDirection: "row", alignItems: "center", marginRight: 16 },
-  icon: { marginRight: 4 },
-  iconText: { fontSize: 15, color: "#444" },
-  description: { fontSize: 15, color: "#222", marginTop: 6, lineHeight: 20 },
+  container: {
+    marginTop: 8,
+    marginHorizontal: 12,
+  },
+  actionsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 6,
+  },
+  iconButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 16,
+  },
+  icon: {
+    marginRight: 4,
+  },
+  iconText: {
+    fontSize: 15,
+    color: "#444",
+  },
+  description: {
+    fontSize: 15,
+    color: "#222",
+    marginTop: 6,
+    lineHeight: 20,
+  },
+  errorBox: {
+    backgroundColor: "#ffe6e6",
+    borderRadius: 6,
+    padding: 8,
+    marginTop: 8,
+  },
+  errorText: {
+    color: "#b00020",
+    fontSize: 14,
+  },
 });
