@@ -9,23 +9,16 @@ import ErrorScreen from "../../../components/ErrorScreen";
 import styles from "./styles";
 
 export default function PostEdit() {
-    const { id } = useLocalSearchParams(); // Obtiene el ID del post desde la URL
-
-    // Estados de datos
+    const { id } = useLocalSearchParams();
     const [imageUrl, setImageUrl] = useState("");
     const [caption, setCaption] = useState("");
-
-    // Estados de UI y control
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
-
-    // Estados de errores y permisos
     const [isUnauthorized, setIsUnauthorized] = useState(false);
     const [isForbidden, setIsForbidden] = useState(false); 
     const [isNotFound, setIsNotFound] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
-    // --- LÓGICA DE CARGA Y VERIFICACIÓN ---
     const fetchPost = useCallback(async () => {
         const token = await AsyncStorage.getItem("token");
 
@@ -68,16 +61,12 @@ export default function PostEdit() {
         try {
             setSubmitting(true);
 
-            // Lógica de validación básica
             if (!imageUrl.trim()) {
                 setErrorMessage("La URL de la imagen no puede estar vacía.");
                 return;
             }
 
-            // 1. Llamada a la API para la edición (PUT)
             await updatePost(id, imageUrl, caption);
-
-            // 2. Redireccionar al post actualizado
             router.replace(`/post/${id}`);
 
         } catch (error) {
@@ -87,8 +76,6 @@ export default function PostEdit() {
             setSubmitting(false);
         }
     };
-
-    // --- RENDERIZADO CONDICIONAL DE ERRORES/PERMISOS ---
 
     if (isUnauthorized) return <Redirect href="/login" />;
     if (isForbidden) return <ErrorScreen title="Acceso Denegado" message="No tienes permiso para editar este post." />;
@@ -103,8 +90,6 @@ export default function PostEdit() {
     }
 
 
-
-    // --- RENDERIZADO DEL FORMULARIO ---
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <Text style={styles.header}>Editar Publicación</Text>
