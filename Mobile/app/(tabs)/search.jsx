@@ -38,19 +38,21 @@ export default function Search() {
     <View style={styles.container}>
       
       {/* INPUT */}
-      <SafeAreaView style={styles.inputContainer}>
-      <TextInput
-        style={styles.input}
-        placeholder="Buscar..."
-        value={query}
-        onChangeText={setQuery}
-        onSubmitEditing={handleSearch}
-      />
+      <SafeAreaView style={styles.inputContainer} edges={['top', 'left', 'right']}>
+        <View style={styles.searchWrapper}>
+          <TextInput
+            style={styles.input}
+            placeholder="Buscar..."
+            value={query}
+            onChangeText={setQuery}
+            onSubmitEditing={handleSearch}
+          />
 
-      <Pressable style={styles.iconButton} onPress={handleSearch}>
-        <MaterialCommunityIcons name="magnify" size={22} color="#666" />
-      </Pressable>
-    </SafeAreaView>
+          <Pressable onPress={handleSearch}>
+            <MaterialCommunityIcons name="magnify" size={22} color="#666" />
+          </Pressable>
+        </View>
+      </SafeAreaView>
 
       {/* LOADING */}
       {loading && (
@@ -124,27 +126,26 @@ const styles = StyleSheet.create({
     },
 
   inputContainer: {
-    position: "relative",
     width: "100%",
-    justifyContent: "center",
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    },
+
+  searchWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FAFAFA",
+    borderWidth: 1,
+    borderColor: "#CCCCCC",
+    borderRadius: 4,
+    height: 42,
+    paddingHorizontal: 8, 
   },
 
   input: {
-    backgroundColor: '#FAFAFA',
-    borderWidth: 1,
-    borderColor: '#CCCCCC',
-    borderRadius: 4,
-    height: 42,
-    padding: 8,
-  },
-
-  iconButton: {
-    position: "absolute",
-    right: 24,
-    bottom: 26,
-    justifyContent: "center",
-    alignItems: "center",
+    flex: 1,
+    fontSize: 16,
+    padding: 0,
   },
 
   userList: {
