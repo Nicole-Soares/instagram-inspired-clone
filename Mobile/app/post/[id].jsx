@@ -30,7 +30,6 @@ export default function Post() {
   const { id, updatedPost } = useLocalSearchParams();
   const router = useRouter();
   const navigation = useNavigation();
-
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [post, setPost] = useState(null);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
