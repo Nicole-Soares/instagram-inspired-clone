@@ -2,40 +2,59 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-//cliente axios
+// Cliente axios
 const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL || 'http://localhost:7070',
 });
 
-// Interceptor: siempre agrega Authorization con el token guardado (SIN Bearer)
+// Interceptor: agrega token en lowercase, como lo espera tu backend
 api.interceptors.request.use(async (config) => {
   const token = await AsyncStorage.getItem('token');
+
   if (token) {
-    config.headers.Authorization = token;   
+    // 🔥 TU BACKEND espera EXACTAMENTE "authorization" en minúsculas
+    config.headers['authorization'] = token;
   } else {
-    delete config.headers.Authorization;
+    delete config.headers['authorization'];
   }
+
   return config;
 });
 
 // ===== AUTH =====
 export const login = async (email, password) => {
-  const { data, headers } = await api.post('/login', { email, password });
-  const token = data?.token ?? headers?.authorization ?? headers?.Authorization;
-  const userId = data.id;
+  const response = await api.post('/login', { email, password });
+
+  // el backend manda el token en header "authorization"
+  const token =
+    response.data?.token ??
+    response.headers['authorization'];
+
+  const userId = response.data.id;
+
   if (!token) throw new Error('La API no devolvió token');
   if (!userId) throw new Error("No se encontró el ID del usuario en la respuesta");
+
   await AsyncStorage.setItem('token', token);
   await AsyncStorage.setItem("userId", String(userId));
-  return data;
+
+  return response.data;
 };
 
 export const register = async (name, email, password, image) => {
-  const { data, headers } = await api.post('/register', { name, email, password, image });
-  const token = data?.token ?? headers?.authorization ?? headers?.Authorization;
-  if (token) await AsyncStorage.setItem('token', token);
-  return data;
+  const response = await api.post('/register', { name, email, password, image });
+  
+  const token =
+    response.data?.token ??
+    response.headers['authorization'];
+
+  if (token) {
+    await AsyncStorage.setItem("token", token);
+  }
+
+  return response.data;
 };
+
 
 // ===== USER AND USERS =====
 export const getUser = () => api.get('/user');                 // perfil/timeline del logueado
