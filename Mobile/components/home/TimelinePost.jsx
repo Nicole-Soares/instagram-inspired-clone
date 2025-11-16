@@ -1,41 +1,27 @@
-import { useMemo, useState } from "react";
-import { View, Text, Image, Pressable } from "react-native";
 import { router } from "expo-router";
-import Info from "../Info";
-import { formateoFecha } from "../../utils/formateoFecha";
-import styles from "./styles";
+import { useState } from "react";
+import { Image, Pressable, Text, View } from "react-native";
 import { useFollow } from "../../hooks/followContext";
-
-const cleanId = (v) => String(v ?? "").replace(/^user_/, "");
+import { formateoFecha } from "../../utils/formateoFecha";
+import Info from "../Info";
+import styles from "./styles";
 
 export default function TimelinePost({ post, onUpdatePost }) {
-  const user      = post?.user ?? {};
-  const postDate  = post?.date || post?.createdAt || "";
-  const imageUri  = post?.image;
+  const user = post.user;
+  const imageUri = post.image;
 
-  const [liked, setLiked] = useState(!!(post?.liked ?? post?.isLiked));
-
-  const initialLikes = (() => {
-    const n = Number(post?.likesCount);
-    if (Number.isFinite(n)) return n;
-    if (Array.isArray(post?.likes)) return post.likes.length;
-    return Number(post?.likes ?? 0) || 0;
-  })();
-  const [likesCount, setLikesCount] = useState(initialLikes);
-
-  const commentsCount = useMemo(
-    () =>
-      Number(post?.commentsCount ?? post?.comments?.length ?? 0) +
-      (post?.description?.trim() ? 1 : 0),
-    [post]
+  // likes
+  const [liked, setLiked] = useState(post.liked);
+  const [likesCount, setLikesCount] = useState(
+    post.likesCount ?? post.likes?.length ?? 0
   );
 
+  // follow info
   const { isFollowing } = useFollow();
-  const authorId = cleanId(user?.id ?? post?.userId);
-  const alreadyFollowing = isFollowing ? isFollowing(authorId) : false;
+  const alreadyFollowing = isFollowing(user.id);
 
+  // navigate
   const handleNavigateToUser = () => {
-    if (!user?.id) return;
     router.push({
       pathname: `/users/${user.id}`,
       params: { followed: alreadyFollowing ? "1" : "0" },
@@ -48,44 +34,44 @@ export default function TimelinePost({ post, onUpdatePost }) {
 
   const handleShowComments = () => {
     router.push({
-      pathname: `/comments/${post.id}`,
-      params: { post: JSON.stringify(post) },
-    });
+      pathname: "/(modal)/comments/[id]",
+      params: { id: post.id, post: JSON.stringify(post) },
+    });    
   };
 
+  // optimistically update
   const handleLocalLike = (nextLiked) => {
     setLiked(nextLiked);
     setLikesCount((prev) => {
-      const nextCount = nextLiked ? prev + 1 : Math.max(0, prev - 1);
-      if (onUpdatePost) {
-        requestAnimationFrame(() => {
-          onUpdatePost({ ...post, liked: nextLiked, likesCount: nextCount });
-        });
-      }
-      return nextCount;
+      const newCount = nextLiked ? prev + 1 : Math.max(prev - 1, 0);
+      requestAnimationFrame(() => {
+        onUpdatePost?.({ ...post, liked: nextLiked, likesCount: newCount });
+      });
+      return newCount;
     });
+  };
+
+  const handleLikeError = () => {
+    handleLocalLike(!liked); // revert
   };
 
   return (
     <View style={styles.card}>
+      {/* HEADER */}
       <View style={styles.header}>
         <Pressable style={styles.userBlock} onPress={handleNavigateToUser}>
-          {user?.image ? (
-            <Image source={{ uri: user.image }} style={styles.avatar} />
-          ) : (
-            <View style={[styles.avatar, styles.avatarFallback]}>
-              <Text style={styles.avatarInitial}>
-                {(user?.name?.[0] ?? "U").toUpperCase()}
-              </Text>
-            </View>
-          )}
+          <Image
+            source={{ uri: user.image }}
+            style={styles.avatar}
+          />
           <View>
-            <Text style={styles.userName}>{user?.name ?? "Usuario"}</Text>
-            {!!postDate && <Text style={styles.dateText}>{formateoFecha(postDate)}</Text>}
+            <Text style={styles.userName}>{user.name}</Text>
+            <Text style={styles.dateText}>{formateoFecha(post.date)}</Text>
           </View>
         </Pressable>
       </View>
 
+      {/* IMAGE */}
       <Pressable onPress={handleRedirectToPost} style={styles.imageWrap}>
         {imageUri ? (
           <Image source={{ uri: imageUri }} style={styles.image} />
@@ -96,14 +82,17 @@ export default function TimelinePost({ post, onUpdatePost }) {
         )}
       </Pressable>
 
+      {/* INFO */}
       <View style={{ marginTop: 8 }}>
         <Info
           post={post}
+          postId={post.id}
+          onUpdatePost={onUpdatePost}
+          onShowComments={handleShowComments}
+          onToggleLike={handleLocalLike}
+          onLikeError={handleLikeError}
           liked={liked}
           likesCount={likesCount}
-          commentsCount={commentsCount}
-          onToggleLike={handleLocalLike}
-          onShowComments={handleShowComments}
         />
       </View>
     </View>

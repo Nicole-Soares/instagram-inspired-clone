@@ -6,6 +6,10 @@ export default function ModalLayout() {
       screenOptions={{
         presentation: "transparentModal",
         headerShown: false,
+        animation: "slide_from_bottom",
+        contentStyle: {
+          backgroundColor: "transparent",
+        },
       }}
     />
   );

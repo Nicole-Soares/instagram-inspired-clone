@@ -25,9 +25,6 @@ import { isTokenExpired } from "../../utils/isTokenExpired";
 
 import { useFocusEffect } from "@react-navigation/native";
 
-export const options = {
-  headerShown: false,
-};
 
 export default function Post() {
   const { id, updatedPost } = useLocalSearchParams();

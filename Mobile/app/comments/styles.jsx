@@ -3,19 +3,24 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.35)",
     justifyContent: "flex-end",
+    position: "relative",
+  },
+
+  blurOverlay: {
+    ...StyleSheet.absoluteFillObject,
   },
 
   sheet: {
     backgroundColor: "#fff",
     width: "100%",
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    borderTopLeftRadius: 26,
+    borderTopRightRadius: 26,
     paddingHorizontal: 18,
     paddingTop: 10,
     paddingBottom: 20,
-    maxHeight: "80%", 
+    maxHeight: "68%",
+    overflow: "hidden",
   },
 
   handle: {

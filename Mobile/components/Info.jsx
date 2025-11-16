@@ -4,11 +4,16 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { likePost } from "../service/Api";
 
-export default function Info({ post, postId, onUpdatePost, onShowComments }) {
+export default function Info({
+  post,
+  postId,
+  onUpdatePost,
+  onShowComments,
+  onLikeError,
+}) {
   const [loggedUserId, setLoggedUserId] = useState(null);
   const [userHasLiked, setUserHasLiked] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [errDesc, setErrDesc] = useState("");
+
 
   useEffect(() => {
     // Cargar el ID del usuario logueado
@@ -29,14 +34,9 @@ export default function Info({ post, postId, onUpdatePost, onShowComments }) {
   const handleLike = async () => {
     try {
       const updatedPost = await likePost(postId);
-      const hasLikedNow = updatedPost.likes?.some(
-        (like) => like.id === loggedUserId
-      );
-      setUserHasLiked(hasLikedNow);
       if (onUpdatePost) onUpdatePost(updatedPost);
     } catch (error) {
-      setIsError(true);
-      setErrDesc("Error al dar like al post.");
+      if (onLikeError) onLikeError(); 
     }
   };
 
@@ -71,15 +71,6 @@ export default function Info({ post, postId, onUpdatePost, onShowComments }) {
       {post.description ? (
         <Text style={styles.description}>{post.description}</Text>
       ) : null}
-
-      {/*mensaje de error*/}
-      {isError && (
-        <View style={styles.errorBox}>
-          <Text style={styles.errorText}>
-            {errDesc ? `⚠️ ${errDesc}` : "Ocurrió un error inesperado."}
-          </Text>
-        </View>
-      )}
     </View>
   );
 }
