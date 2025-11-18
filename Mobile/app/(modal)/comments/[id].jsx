@@ -27,10 +27,16 @@ import { addComment } from "../../../service/Api";
 import { formateoFecha } from "../../../utils/formateoFecha";
 import styles from "./styles";
 
+// =========================
+//   IMPORTA LA FUNCIÓN
+// =========================
+import { navigateToUser } from "../../../utils/navigateToUser";
+
 export default function CommentsModal() {
   const { id, post: postParam } = useLocalSearchParams();
   const [post, setPost] = useState(JSON.parse(postParam));
   const [comment, setComment] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
 
@@ -42,7 +48,7 @@ export default function CommentsModal() {
   const closeModal = () => router.back();
 
   // ========= BOTTOM SHEET ANIMATION ==========
-  const translateY = useSharedValue(600); // empieza abajo del todo
+  const translateY = useSharedValue(600);
 
   React.useEffect(() => {
     translateY.value = withSpring(0, { damping: 15, stiffness: 120 });
@@ -52,7 +58,7 @@ export default function CommentsModal() {
     transform: [{ translateY: translateY.value }],
   }));
 
-  // Gesture para bajar el modal
+  // Gesture para cerrar hacia abajo
   const pan = Gesture.Pan()
     .onUpdate((e) => {
       if (e.translationY > 0) {
@@ -69,10 +75,16 @@ export default function CommentsModal() {
       }
     });
 
-  // ========= COMENTAR ==========
+  // ========= PUBLICAR COMENTARIO ==========
   const publish = async () => {
     const text = comment.trim();
-    if (!text) return;
+
+    if (!text) {
+      setError("No podés enviar un comentario vacío");
+      return;
+    }
+
+    setError("");
 
     try {
       setLoading(true);
@@ -90,11 +102,8 @@ export default function CommentsModal() {
 
   return (
     <View style={{ flex: 1, justifyContent: "flex-end" }}>
-      {/* BLUR BACKGROUND IG STYLE */}
-      <Pressable
-        onPress={closeModal}
-        style={StyleSheet.absoluteFillObject}
-      >
+      {/* FONDO OSCURO */}
+      <Pressable onPress={closeModal} style={StyleSheet.absoluteFillObject}>
         <BlurView
           intensity={25}
           tint="dark"
@@ -102,44 +111,62 @@ export default function CommentsModal() {
         />
       </Pressable>
 
-      {/* BOTTOM SHEET + PAN GESTURE */}
       <GestureDetector gesture={pan}>
         <Animated.View style={[styles.sheet, animatedSheet]}>
           <View style={styles.handle} />
 
-          {/* HEADER */}
-          <View style={styles.headerContainer}>
+          {/* HEADER CLICKABLE */}
+          <Pressable
+            style={styles.headerContainer}
+            onPress={() => navigateToUser(post.user.id)}
+          >
             <Image source={{ uri: post.user.image }} style={styles.headerAvatar} />
+
             <View style={{ flex: 1 }}>
               <Text style={styles.headerUserName}>{post.user.name}</Text>
-              <Text style={styles.headerDateText}>{formateoFecha(post.date)}</Text>
+              <Text style={styles.headerDateText}>
+                {formateoFecha(post.date)}
+              </Text>
             </View>
-          </View>
+          </Pressable>
 
           <View style={styles.separator} />
 
-          {/* COMMENTS */}
+          {/* SCROLL DE COMENTARIOS */}
           <ScrollView
             ref={scrollRef}
             style={{ maxHeight: "60%" }}
             showsVerticalScrollIndicator={false}
+            pointerEvents="box-none"
           >
             {comentarios.map((c, i) => (
               <View key={i} style={styles.commentRow}>
-                <Image source={{ uri: c.user.image }} style={styles.avatar} />
+
+                {/* Imagen clickeable */}
+                <Pressable onPress={() => navigateToUser(c.user.id)}>
+                  <Image
+                    source={{ uri: c.user.image }}
+                    style={styles.avatar}
+                  />
+                </Pressable>
+
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.commentUser}>{c.user.name}</Text>
-                  <Text
-                    style={i === 0 ? styles.description : styles.commentText}
-                  >
+                  {/* Nombre clickeable */}
+                  <Pressable onPress={() => navigateToUser(c.user.id)}>
+                    <Text style={styles.commentUser}>{c.user.name}</Text>
+                  </Pressable>
+
+                  {/* Texto no clickeable */}
+                  <Text style={i === 0 ? styles.description : styles.commentText}>
                     {c.body}
                   </Text>
                 </View>
+
               </View>
             ))}
           </ScrollView>
 
-          {/* INPUT */}
+          {/* INPUT + ERROR + BOTÓN */}
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : undefined}
           >
@@ -148,14 +175,19 @@ export default function CommentsModal() {
                 placeholder="Agrega un comentario"
                 placeholderTextColor="#999"
                 value={comment}
-                onChangeText={setComment}
+                onChangeText={(t) => {
+                  setComment(t);
+                  if (error) setError("");
+                }}
                 multiline
                 style={styles.input}
               />
 
+              {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
               <Pressable
                 onPress={publish}
-                style={[styles.button, loading && { opacity: 0.6 }]}
+                style={[styles.button, loading && styles.buttonDisabled]}
               >
                 <Text style={styles.buttonText}>
                   {loading ? "Publicando..." : "Publicar"}
@@ -163,6 +195,7 @@ export default function CommentsModal() {
               </Pressable>
             </View>
           </KeyboardAvoidingView>
+
         </Animated.View>
       </GestureDetector>
     </View>

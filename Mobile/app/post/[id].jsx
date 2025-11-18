@@ -1,11 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   Redirect,
   useLocalSearchParams,
   useNavigation,
   useRouter,
 } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Image,
   ScrollView,
@@ -23,11 +24,11 @@ import HeaderPost from "../../components/post/HeaderPost";
 import { getPostById } from "../../service/Api";
 import { isTokenExpired } from "../../utils/isTokenExpired";
 
-import { useFocusEffect } from "@react-navigation/native";
-
+// 👉 IMPORTANTE: importar la función global
+import { navigateToUser } from "../../utils/navigateToUser";
 
 export default function Post() {
-  const { id, updatedPost } = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
   const router = useRouter();
   const navigation = useNavigation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -37,7 +38,6 @@ export default function Post() {
   const [loading, setLoading] = useState(true);
   const [isNotFound, setIsNotFound] = useState(false);
   const [isError, setIsError] = useState(false);
-
 
   const fetchPost = async () => {
     const token = await AsyncStorage.getItem("token");
@@ -58,7 +58,7 @@ export default function Post() {
       setIsOwner(String(loggedUserId) === String(data.user.id));
 
       navigation.setOptions({
-        title: `Post - ${data.user.name}`, 
+        title: `Post - ${data.user.name}`,
       });
 
     } catch (error) {
@@ -71,12 +71,6 @@ export default function Post() {
     }
   };
 
-  // carga del post
-  useEffect(() => {
-    fetchPost();
-  }, [id]);
-
-  // cuando se cierra el modal de los comentarios
   useFocusEffect(
     useCallback(() => {
       fetchPost();
@@ -87,11 +81,9 @@ export default function Post() {
 
   const handleEdit = () => router.push(`/post/edit/${id}`);
   const handleDelete = () => setShowDeleteModal(true);
-  const handleNavigateToUser = (userId) => {
-    router.push(`/users/${userId}`);
-  };
-  
-  
+
+  // 👉 REEMPLAZADO POR navigateToUser
+  const handleNavigateToUser = (userId) => navigateToUser(userId);
 
   if (isError) return <ErrorScreen />;
   if (isUnauthorized) return <Redirect href="/login" />;
@@ -107,51 +99,45 @@ export default function Post() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <HeaderPost
-        user={post.user}
-        date={post.date}
-        isOwner={isOwner}
-        onEditClick={handleEdit}
-        onDeleteClick={handleDelete}
-        handleNavigateToUser={handleNavigateToUser}
-      />
-
-      {post.image && (
-        <Image source={{ uri: post.image }} style={styles.image} />
-      )}
-
-      <Info
-        post={post}
-        postId={id}
-        onUpdatePost={handleUpdatePost}
-        onShowComments={() =>
-          router.push({
-            pathname: "/(modal)/comments/[postId]",
-            params: { postId: post.id, post: JSON.stringify(post) }
-          })
-
-        }
-
-      />
-
-      {showDeleteModal && (
-        <DeletePostModal
-          visible={showDeleteModal}
-          onClose={() => setShowDeleteModal(false)}
-          postId={id}
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <HeaderPost
+          user={post.user}
+          date={post.date}
+          isOwner={isOwner}
+          onEditClick={handleEdit}
+          onDeleteClick={handleDelete}
+          handleNavigateToUser={handleNavigateToUser}
         />
-      )}
-    </ScrollView>
+
+        {post.image && (
+          <Image source={{ uri: post.image }} style={styles.image} />
+        )}
+
+        <Info
+          post={post}
+          postId={id}
+          onUpdatePost={handleUpdatePost}
+          onShowComments={() =>
+            router.push({
+              pathname: "/(modal)/comments/[postId]",
+              params: { postId: post.id, post: JSON.stringify(post) }
+            })
+          }
+        />
+
+        {showDeleteModal && (
+          <DeletePostModal
+            visible={showDeleteModal}
+            onClose={() => setShowDeleteModal(false)}
+            postId={id}
+          />
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
   scrollContainer: {
     paddingHorizontal: 12,
     paddingBottom: 50,

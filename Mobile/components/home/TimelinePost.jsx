@@ -6,6 +6,9 @@ import { formateoFecha } from "../../utils/formateoFecha";
 import Info from "../Info";
 import styles from "./styles";
 
+// 👉 IMPORTANTE
+import { navigateToUser } from "../../utils/navigateToUser";
+
 export default function TimelinePost({ post, onUpdatePost }) {
   const user = post.user;
   const imageUri = post.image;
@@ -20,12 +23,9 @@ export default function TimelinePost({ post, onUpdatePost }) {
   const { isFollowing } = useFollow();
   const alreadyFollowing = isFollowing(user.id);
 
-  // navigate
+  // 👉 Usamos LA FUNCIÓN GLOBAL
   const handleNavigateToUser = () => {
-    router.push({
-      pathname: `/users/${user.id}`,
-      params: { followed: alreadyFollowing ? "1" : "0" },
-    });
+    navigateToUser(user.id);
   };
 
   const handleRedirectToPost = () => {
@@ -36,7 +36,7 @@ export default function TimelinePost({ post, onUpdatePost }) {
     router.push({
       pathname: "/(modal)/comments/[id]",
       params: { id: post.id, post: JSON.stringify(post) },
-    });    
+    });
   };
 
   // optimistically update
