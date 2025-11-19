@@ -25,12 +25,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { addComment } from "../../../service/Api";
 import { formateoFecha } from "../../../utils/formateoFecha";
-import styles from "./styles";
-
-// =========================
-//   IMPORTA LA FUNCIÓN
-// =========================
 import { navigateToUser } from "../../../utils/navigateToUser";
+import styles from "./styles";
 
 export default function CommentsModal() {
   const { id, post: postParam } = useLocalSearchParams();
@@ -102,7 +98,6 @@ export default function CommentsModal() {
 
   return (
     <View style={{ flex: 1, justifyContent: "flex-end" }}>
-      {/* FONDO OSCURO */}
       <Pressable onPress={closeModal} style={StyleSheet.absoluteFillObject}>
         <BlurView
           intensity={25}
@@ -110,12 +105,10 @@ export default function CommentsModal() {
           style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.25)" }}
         />
       </Pressable>
-
       <GestureDetector gesture={pan}>
         <Animated.View style={[styles.sheet, animatedSheet]}>
           <View style={styles.handle} />
-
-          {/* HEADER CLICKABLE */}
+          {/* HEADER DEL DUEÑO DEL POST*/}
           <Pressable
             style={styles.headerContainer}
             onPress={() => navigateToUser(post.user.id)}
@@ -141,8 +134,6 @@ export default function CommentsModal() {
           >
             {comentarios.map((c, i) => (
               <View key={i} style={styles.commentRow}>
-
-                {/* Imagen clickeable */}
                 <Pressable onPress={() => navigateToUser(c.user.id)}>
                   <Image
                     source={{ uri: c.user.image }}
@@ -151,12 +142,9 @@ export default function CommentsModal() {
                 </Pressable>
 
                 <View style={{ flex: 1 }}>
-                  {/* Nombre clickeable */}
                   <Pressable onPress={() => navigateToUser(c.user.id)}>
                     <Text style={styles.commentUser}>{c.user.name}</Text>
                   </Pressable>
-
-                  {/* Texto no clickeable */}
                   <Text style={i === 0 ? styles.description : styles.commentText}>
                     {c.body}
                   </Text>

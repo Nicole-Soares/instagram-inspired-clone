@@ -1,12 +1,9 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { Platform } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ProfileTabImage from "../../components/ProfileTabImage";
 import useProfileImage from "../../hooks/useProfileImage";
 
 export default function TabsLayout() {
-  const insets = useSafeAreaInsets();
   const userImage = useProfileImage();
 
   return (
@@ -20,9 +17,7 @@ export default function TabsLayout() {
           backgroundColor: "#fff",
           borderTopWidth: 0.3,
           borderTopColor: "#dcdcdc",
-          height: 58,
-          // ✅ Solo aplicamos padding extra si es iPhone (Android ya lo maneja)
-          paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
+          height: 58
         },
       }}
     >

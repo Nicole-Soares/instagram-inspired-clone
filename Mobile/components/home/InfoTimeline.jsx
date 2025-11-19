@@ -62,13 +62,9 @@ export default function InfoTimeline({ post, onUpdatePost }) {
 
         {/* Comentarios */}
         <TouchableOpacity style={styles.iconButton} onPress={openComments}>
-          <MaterialIcons
-            name="chat-bubble-outline"
-            size={22}
-            color="#444"
-          />
+          <MaterialIcons name="chat-bubble-outline" size={22} color="#444" />
           <Text style={styles.iconText}>
-            {post.comments?.length || 0}
+            {(post.comments?.length || 0) + (post.description ? 1 : 0)}
           </Text>
         </TouchableOpacity>
       </View>

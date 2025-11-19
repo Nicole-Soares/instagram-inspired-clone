@@ -4,9 +4,9 @@ import { Redirect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, RefreshControl, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import InstagramSpinner from "../../../components/InstagramSpinner";
 import TimelinePost from "../../../components/home/TimelinePost";
+import { useTimelineRefresh } from "../../../context/TimelineRefreshContext";
 import { useFollow } from "../../../hooks/followContext";
 import useFetchDataEffect from "../../../hooks/useFetchDataEffect";
 import { getUser } from "../../../service/Api";
@@ -24,6 +24,7 @@ const getAuthorId = (p) =>
   );
 
 export default function Home() {
+  const { refreshFlag } = useTimelineRefresh();   
   const [unauthorized, setUnauthorized] = useState(false);
   const { isFollowing, toggleFollow, pendingIds } = useFollow();
   const [isError, setIsError] = useState(false);
@@ -33,7 +34,6 @@ export default function Home() {
   const fetchTimeline = async () => {
     const token = await AsyncStorage.getItem("token");
 
-   
     if (!token) {
       const err = new Error("UNAUTHORIZED");
       err.status = 401;
@@ -52,32 +52,26 @@ export default function Home() {
     setIsError(false);
     setErrDesc("");
 
-   
     const { data } = await getUser();
     return data;
   };
 
- 
-  const {
-    isLoading,
-    dataState: data,
-    reloadScreen,
-  } = useFetchDataEffect(fetchTimeline, {}, [], (error) => {
-    const status =
-      error?.status ??
-      error?.response?.status ??
-      (error?.message === "UNAUTHORIZED" ? 401 : 0);
+  const { isLoading, dataState: data, reloadScreen } =
+    useFetchDataEffect(fetchTimeline, {}, [], (error) => {
+      const status =
+        error?.status ??
+        error?.response?.status ??
+        (error?.message === "UNAUTHORIZED" ? 401 : 0);
 
-    if (status === 401) {
-      console.log("Redirigiendo a login por 401");
-      setUnauthorized(true);
-    } else {
-      console.error("Error timeline:", error);
-      setIsError(true);
-      setErrDesc("Hubo un fallo en la conexión. Intenta de nuevo.");
-    }
-  });
-
+      if (status === 401) {
+        console.log("Redirigiendo a login por 401");
+        setUnauthorized(true);
+      } else {
+        console.error("Error timeline:", error);
+        setIsError(true);
+        setErrDesc("Hubo un fallo en la conexión. Intenta de nuevo.");
+      }
+    });
 
   useEffect(() => {
     if (data?.timeline || data?.posts) {
@@ -85,11 +79,17 @@ export default function Home() {
     }
   }, [data]);
 
+  //  para cuando se cierra el modal de comentarios
   useFocusEffect(
     useCallback(() => {
       reloadScreen();
     }, [])
   );
+
+  // para que si se hace un comentario en el post, como es stack tenemos que volver a cargar para ver el comentario
+  useEffect(() => {
+    reloadScreen(); // recargar timeline
+  }, [refreshFlag]);
 
   if (unauthorized) return <Redirect href="/login" />;
 

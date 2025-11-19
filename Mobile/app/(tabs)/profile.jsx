@@ -1,11 +1,11 @@
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Redirect } from "expo-router";
+import { useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import InstagramSpinner from "../../components/InstagramSpinner";
 import ViewProfile from "../../components/ViewPorfile";
 import { getUserById } from "../../service/Api";
-import InstagramSpinner from "../../components/InstagramSpinner";
 
 export default function Profile() {
   const [token, setToken] = useState("");

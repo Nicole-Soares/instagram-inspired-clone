@@ -9,6 +9,7 @@ import DeletePostModal from "../../components/post/DeletePostModal";
 import HeaderPost from "../../components/post/HeaderPost";
 import Info from "../../components/post/Info";
 import { PostProvider, usePost } from "../../context/PostContext";
+import { useTimelineRefresh } from "../../context/TimelineRefreshContext";
 
 //encapsula la screen dentro del contexto
 export default function Wrapper() {
@@ -23,6 +24,7 @@ export default function Wrapper() {
 }
 
 function PostScreen() {
+  const { triggerRefresh } = useTimelineRefresh();
   const { post, loading, isNotFound, isError, reloadPost } = usePost();
   const navigation = useNavigation();
   const [showDelete, setShowDelete] = useState(false);
@@ -43,6 +45,13 @@ function PostScreen() {
     }, [])
   );
 
+  //para que el home se entere del cambio
+  useEffect(() => {
+    if (post) {
+      triggerRefresh();
+    }
+  }, [post]);
+  
   if (isError) return <ErrorScreen />;
   if (isNotFound) return <NotFoundScreen />;
 
