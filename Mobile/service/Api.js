@@ -1,4 +1,3 @@
-// service/Api.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
@@ -7,12 +6,10 @@ const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL || 'http://localhost:7070',
 });
 
-// Interceptor: agrega token en lowercase, como lo espera tu backend
 api.interceptors.request.use(async (config) => {
   const token = await AsyncStorage.getItem('token');
 
   if (token) {
-    // 🔥 TU BACKEND espera EXACTAMENTE "authorization" en minúsculas
     config.headers['authorization'] = token;
   } else {
     delete config.headers['authorization'];
@@ -42,18 +39,13 @@ export const login = async (email, password) => {
 };
 
 export const register = async (name, email, password, image) => {
-  const response = await api.post('/register', { name, email, password, image });
-  
-  const token =
-    response.data?.token ??
-    response.headers['authorization'];
+  const response = await api.post('/register', {
+    name, email, password, image
+  });
 
-  if (token) {
-    await AsyncStorage.setItem("token", token);
-  }
-
-  return response.data;
+  return response.data; 
 };
+
 
 
 // ===== USER AND USERS =====
@@ -84,7 +76,6 @@ export const addComment = async (postId, body) => {
   return response.data; 
 };
 
-
-// ===== SEARCH ===== CHEQUEAR
+// ===== SEARCH ===== 
 export const search = (query) => api.get(`/search?query=${encodeURIComponent(query)}`);
 

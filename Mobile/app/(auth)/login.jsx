@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
-import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, TextInput, Pressable, Alert, ActivityIndicator, Image} from 'react-native';
-import { router, useLocalSearchParams, Link} from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { login } from '../../service/Api';
-import { styles} from './styles';
+import { Link, router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, Image, Pressable, Text, TextInput, View } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
 import InstagramSpinner from '../../components/InstagramSpinner';
+import { login } from '../../service/Api';
+import { styles } from './styles';
 
 export default function Login() {
   const { returnTo } = useLocalSearchParams();
@@ -109,4 +109,3 @@ export default function Login() {
     </View>
   );
 }
-
