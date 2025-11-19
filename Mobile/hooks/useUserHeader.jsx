@@ -1,5 +1,5 @@
+import { router, useNavigation } from "expo-router";
 import { useLayoutEffect } from "react";
-import { useNavigation } from "expo-router";
 import { Platform, Pressable, Text, View } from "react-native";
 
 export default function useUserHeader(name) {

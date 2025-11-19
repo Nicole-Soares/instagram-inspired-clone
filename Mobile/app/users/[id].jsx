@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { useLocalSearchParams, useNavigation, router } from "expo-router";
-import { ActivityIndicator, Image, Text, View, StyleSheet, TouchableOpacity, FlatList, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Api from "../../service/Api.js";
-import useUserHeader from "../../hooks/useUserHeader.jsx";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, FlatList, Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useFollow } from "../../hooks/followContext.jsx";
+import useUserHeader from "../../hooks/useUserHeader.jsx";
+import * as Api from "../../service/Api.js";
 import styles from "./styles.jsx";
 
 const cleanId = (v) => String(v ?? "").replace(/^user_/, "")

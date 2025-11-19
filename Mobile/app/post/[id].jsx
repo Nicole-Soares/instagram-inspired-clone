@@ -1,95 +1,52 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import {
-  Redirect,
-  useLocalSearchParams,
-  useNavigation,
-  useRouter,
-} from "expo-router";
-import React, { useCallback, useState } from "react";
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useLocalSearchParams, useNavigation } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import ErrorScreen from "../../components/ErrorScreen";
-import Info from "../../components/Info";
 import InstagramSpinner from "../../components/InstagramSpinner";
 import NotFoundScreen from "../../components/NotFoundScreen";
 import DeletePostModal from "../../components/post/DeletePostModal";
 import HeaderPost from "../../components/post/HeaderPost";
-import { getPostById } from "../../service/Api";
-import { isTokenExpired } from "../../utils/isTokenExpired";
+import Info from "../../components/post/Info";
+import { PostProvider, usePost } from "../../context/PostContext";
 
-// 👉 IMPORTANTE: importar la función global
-import { navigateToUser } from "../../utils/navigateToUser";
-
-export default function Post() {
+//encapsula la screen dentro del contexto
+export default function Wrapper() {
   const { id } = useLocalSearchParams();
-  const router = useRouter();
+
+  //postProvider ya se encarga de hacer el fetch del post y cargar todos los estados
+  return (
+    <PostProvider postId={id}>
+      <PostScreen />
+    </PostProvider>
+  );
+}
+
+function PostScreen() {
+  const { post, loading, isNotFound, isError, reloadPost } = usePost();
   const navigation = useNavigation();
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [post, setPost] = useState(null);
-  const [isUnauthorized, setIsUnauthorized] = useState(false);
-  const [isOwner, setIsOwner] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [isNotFound, setIsNotFound] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
 
-  const fetchPost = async () => {
-    const token = await AsyncStorage.getItem("token");
-
-    if (!token || isTokenExpired(token)) {
-      setIsUnauthorized(true);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const data = await getPostById(id);
-      const loggedUserId = await AsyncStorage.getItem("userId");
-
-      setPost(data);
-      setIsOwner(String(loggedUserId) === String(data.user.id));
-
+   // titulo del post
+   useEffect(() => {
+    if (post) {
       navigation.setOptions({
-        title: `Post - ${data.user.name}`,
+        title: `Post - ${post.user?.name ?? ""}`,
       });
-
-    } catch (error) {
-      const status = error.response?.status || error.status;
-      if (status === 401) setIsUnauthorized(true);
-      else if (status === 404) setIsNotFound(true);
-      else setIsError(true);
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [post])
 
+  //cuando la pantalla vuelve a estar en foco, lo vuelve a cargar, sirve para cuando el modal de los comentarios se cierra
   useFocusEffect(
     useCallback(() => {
-      fetchPost();
-    }, [id])
+      reloadPost();
+    }, [])
   );
 
-  const handleUpdatePost = (updated) => setPost(updated);
-
-  const handleEdit = () => router.push(`/post/edit/${id}`);
-  const handleDelete = () => setShowDeleteModal(true);
-
-  // 👉 REEMPLAZADO POR navigateToUser
-  const handleNavigateToUser = (userId) => navigateToUser(userId);
-
   if (isError) return <ErrorScreen />;
-  if (isUnauthorized) return <Redirect href="/login" />;
   if (isNotFound) return <NotFoundScreen />;
 
-  if (loading)
+  if (loading || !post)
     return (
       <View style={styles.centered}>
         <InstagramSpinner size="large" />
@@ -100,38 +57,10 @@ export default function Post() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <HeaderPost
-          user={post.user}
-          date={post.date}
-          isOwner={isOwner}
-          onEditClick={handleEdit}
-          onDeleteClick={handleDelete}
-          handleNavigateToUser={handleNavigateToUser}
-        />
-
-        {post.image && (
-          <Image source={{ uri: post.image }} style={styles.image} />
-        )}
-
-        <Info
-          post={post}
-          postId={id}
-          onUpdatePost={handleUpdatePost}
-          onShowComments={() =>
-            router.push({
-              pathname: "/(modal)/comments/[postId]",
-              params: { postId: post.id, post: JSON.stringify(post) }
-            })
-          }
-        />
-
-        {showDeleteModal && (
-          <DeletePostModal
-            visible={showDeleteModal}
-            onClose={() => setShowDeleteModal(false)}
-            postId={id}
-          />
-        )}
+        <HeaderPost />
+        {post.image && <Image source={{ uri: post.image }} style={styles.image} />}
+        <Info />
+        <DeletePostModal visible={showDelete} onClose={() => setShowDelete(false)} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -144,8 +73,8 @@ const styles = StyleSheet.create({
   },
   centered: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
+    justifyContent: "center",
   },
   image: {
     width: "100%",

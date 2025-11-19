@@ -1,68 +1,74 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { likePost } from "../service/Api";
+import { likePost } from "../../service/Api";
 
-export default function Info({
-  post,
-  postId,
-  onUpdatePost,
-  onShowComments,
-  onLikeError,
-}) {
+export default function InfoTimeline({ post, onUpdatePost }) {
+  const router = useRouter();
+
   const [loggedUserId, setLoggedUserId] = useState(null);
   const [userHasLiked, setUserHasLiked] = useState(false);
 
-
+  // cargar id de usuario
   useEffect(() => {
-    // Cargar el ID del usuario logueado
-    const fetchUserId = async () => {
+    const fetchUser = async () => {
       const id = await AsyncStorage.getItem("userId");
       setLoggedUserId(id);
     };
-    fetchUserId();
+    fetchUser();
   }, []);
 
+  // saber si ya dio like
   useEffect(() => {
     if (post && loggedUserId) {
-      const hasLiked = post.likes?.some((like) => like.id === loggedUserId);
-      setUserHasLiked(hasLiked);
+      setUserHasLiked(post.likes?.some((like) => like.id === loggedUserId));
     }
   }, [post, loggedUserId]);
 
+  // like
   const handleLike = async () => {
     try {
-      const updatedPost = await likePost(postId);
-      if (onUpdatePost) onUpdatePost(updatedPost);
-    } catch (error) {
-      if (onLikeError) onLikeError(); 
-    }
+      const updated = await likePost(post.id);
+      onUpdatePost?.(updated);
+    } catch (e) {}
+  };
+
+  // abrir modal de comentarios
+  const openComments = () => {
+    router.push({
+      pathname: "/(modal)/comments/[postId]",
+      params: {
+        postId: post.id,
+        post: JSON.stringify(post),
+      },
+    });
   };
 
   return (
     <View style={styles.container}>
-      {/* ---- LIKE Y COMENTAR ---- */}
+      {/* ---- LIKE Y COMENTARIOS ---- */}
       <View style={styles.actionsRow}>
+        {/* Like */}
         <TouchableOpacity style={styles.iconButton} onPress={handleLike}>
           <MaterialIcons
             name={userHasLiked ? "favorite" : "favorite-border"}
             size={22}
             color={userHasLiked ? "red" : "#444"}
-            style={styles.icon}
           />
           <Text style={styles.iconText}>{post.likes?.length || 0}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.iconButton} onPress={onShowComments}>
+        {/* Comentarios */}
+        <TouchableOpacity style={styles.iconButton} onPress={openComments}>
           <MaterialIcons
             name="chat-bubble-outline"
             size={22}
             color="#444"
-            style={styles.icon}
           />
           <Text style={styles.iconText}>
-            {(post.comments?.length || 0) + (post.description?.trim() ? 1 : 0)}
+            {post.comments?.length || 0}
           </Text>
         </TouchableOpacity>
       </View>
@@ -90,10 +96,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 16,
   },
-  icon: {
-    marginRight: 4,
-  },
   iconText: {
+    marginLeft: 4,
     fontSize: 15,
     color: "#444",
   },
@@ -102,15 +106,5 @@ const styles = StyleSheet.create({
     color: "#222",
     marginTop: 6,
     lineHeight: 20,
-  },
-  errorBox: {
-    backgroundColor: "#ffe6e6",
-    borderRadius: 6,
-    padding: 8,
-    marginTop: 8,
-  },
-  errorText: {
-    color: "#b00020",
-    fontSize: 14,
   },
 });

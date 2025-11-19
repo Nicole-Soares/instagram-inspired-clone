@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { useFollow } from "../../hooks/followContext";
 import { formateoFecha } from "../../utils/formateoFecha";
-import Info from "../Info";
+import InfoTimeline from "./InfoTimeline";
 import styles from "./styles";
 
 // 👉 IMPORTANTE
@@ -84,16 +84,7 @@ export default function TimelinePost({ post, onUpdatePost }) {
 
       {/* INFO */}
       <View style={{ marginTop: 8 }}>
-        <Info
-          post={post}
-          postId={post.id}
-          onUpdatePost={onUpdatePost}
-          onShowComments={handleShowComments}
-          onToggleLike={handleLocalLike}
-          onLikeError={handleLikeError}
-          liked={liked}
-          likesCount={likesCount}
-        />
+      <InfoTimeline post={post} onUpdatePost={onUpdatePost} />
       </View>
     </View>
   );
