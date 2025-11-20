@@ -15,8 +15,9 @@ export default StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 10,
     paddingBottom: 20,
-    maxHeight: "80%", 
+    height: "80%",   
   },
+  
 
   handle: {
     width: 60,

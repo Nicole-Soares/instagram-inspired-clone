@@ -3,8 +3,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
   Image,
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -23,6 +21,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { addComment } from "../../../service/Api";
 import { formateoFecha } from "../../../utils/formateoFecha";
 import { navigateToUser } from "../../../utils/navigateToUser";
@@ -35,6 +34,7 @@ export default function CommentsModal() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
+  const insets = useSafeAreaInsets();
 
   const comentarios = [
     ...(post.description ? [{ body: post.description, user: post.user }] : []),
@@ -43,7 +43,6 @@ export default function CommentsModal() {
 
   const closeModal = () => router.back();
 
-  // ========= BOTTOM SHEET ANIMATION ==========
   const translateY = useSharedValue(600);
 
   React.useEffect(() => {
@@ -54,7 +53,6 @@ export default function CommentsModal() {
     transform: [{ translateY: translateY.value }],
   }));
 
-  // Gesture para cerrar hacia abajo
   const pan = Gesture.Pan()
     .onUpdate((e) => {
       if (e.translationY > 0) {
@@ -71,7 +69,6 @@ export default function CommentsModal() {
       }
     });
 
-  // ========= PUBLICAR COMENTARIO ==========
   const publish = async () => {
     const text = comment.trim();
 
@@ -90,7 +87,7 @@ export default function CommentsModal() {
 
       setTimeout(() => {
         scrollRef.current?.scrollToEnd({ animated: true });
-      }, 200);
+      }, 250);
     } finally {
       setLoading(false);
     }
@@ -105,87 +102,91 @@ export default function CommentsModal() {
           style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.25)" }}
         />
       </Pressable>
-      <GestureDetector gesture={pan}>
-        <Animated.View style={[styles.sheet, animatedSheet]}>
+      <Animated.View style={[styles.sheet, animatedSheet]}>
+        {/* Handle */}
+        <GestureDetector gesture={pan}>
           <View style={styles.handle} />
-          {/* HEADER DEL DUEÑO DEL POST*/}
-          <Pressable
-            style={styles.headerContainer}
-            onPress={() => navigateToUser(post.user.id)}
-          >
-            <Image source={{ uri: post.user.image }} style={styles.headerAvatar} />
+        </GestureDetector>
 
-            <View style={{ flex: 1 }}>
-              <Text style={styles.headerUserName}>{post.user.name}</Text>
-              <Text style={styles.headerDateText}>
-                {formateoFecha(post.date)}
-              </Text>
-            </View>
-          </Pressable>
+        {/* Header */}
+        <Pressable
+          style={styles.headerContainer}
+          onPress={() => navigateToUser(post.user.id)}
+        >
+          <Image source={{ uri: post.user.image }} style={styles.headerAvatar} />
 
-          <View style={styles.separator} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.headerUserName}>{post.user.name}</Text>
+            <Text style={styles.headerDateText}>
+              {formateoFecha(post.date)}
+            </Text>
+          </View>
+        </Pressable>
 
-          {/* SCROLL DE COMENTARIOS */}
+        <View style={styles.separator} />
+
+        {/* SCROLL + INPUT */}
+        <View style={{ flex: 1, justifyContent: "space-between" }}>
+          {/* SCROLL */}
           <ScrollView
             ref={scrollRef}
-            style={{ maxHeight: "60%" }}
             showsVerticalScrollIndicator={false}
-            pointerEvents="box-none"
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ paddingBottom: 16 }}
           >
             {comentarios.map((c, i) => (
               <View key={i} style={styles.commentRow}>
                 <Pressable onPress={() => navigateToUser(c.user.id)}>
-                  <Image
-                    source={{ uri: c.user.image }}
-                    style={styles.avatar}
-                  />
+                  <Image source={{ uri: c.user.image }} style={styles.avatar} />
                 </Pressable>
 
                 <View style={{ flex: 1 }}>
                   <Pressable onPress={() => navigateToUser(c.user.id)}>
                     <Text style={styles.commentUser}>{c.user.name}</Text>
                   </Pressable>
-                  <Text style={i === 0 ? styles.description : styles.commentText}>
+
+                  <Text
+                    style={i === 0 ? styles.description : styles.commentText}
+                  >
                     {c.body}
                   </Text>
                 </View>
-
               </View>
             ))}
           </ScrollView>
 
-          {/* INPUT + ERROR + BOTÓN */}
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
+          {/* INPUT + BOTÓN */}
+          <View
+            style={[
+              styles.inputContainer,
+              { paddingBottom: insets.bottom + 12 },
+            ]}
           >
-            <View style={styles.inputContainer}>
-              <TextInput
-                placeholder="Agrega un comentario"
-                placeholderTextColor="#999"
-                value={comment}
-                onChangeText={(t) => {
-                  setComment(t);
-                  if (error) setError("");
-                }}
-                multiline
-                style={styles.input}
-              />
+            <TextInput
+              placeholder="Agrega un comentario"
+              placeholderTextColor="#999"
+              value={comment}
+              onChangeText={(t) => {
+                setComment(t);
+                if (error) setError("");
+              }}
+              multiline
+              style={styles.input}
+            />
 
-              {error ? <Text style={styles.errorText}>{error}</Text> : null}
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-              <Pressable
-                onPress={publish}
-                style={[styles.button, loading && styles.buttonDisabled]}
-              >
-                <Text style={styles.buttonText}>
-                  {loading ? "Publicando..." : "Publicar"}
-                </Text>
-              </Pressable>
-            </View>
-          </KeyboardAvoidingView>
-
-        </Animated.View>
-      </GestureDetector>
+            <Pressable
+              onPress={publish}
+              style={[styles.button, loading && styles.buttonDisabled]}
+            >
+              <Text style={styles.buttonText}>
+                {loading ? "Publicando..." : "Publicar"}
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </Animated.View>
     </View>
   );
 }
