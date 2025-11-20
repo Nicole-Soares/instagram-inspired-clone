@@ -33,8 +33,8 @@ export default function PublicUserPage() {
     ["1", "true", "yes"].includes(String(followedParam).toLowerCase());
 
   const [loading, setLoading] = useState(true);
-  const [me, setMe] = useState(null); //usuario logueado
-  const [user, setUser] = useState(null); //usuario visitado
+  const [me, setMe] = useState(null); 
+  const [user, setUser] = useState(null); 
   const [isFollowingUI, setIsFollowingUI] = useState(hint);
   const [error, setError] = useState("");
 

@@ -11,7 +11,7 @@ export default function Index() {
   useEffect(() => {
     (async () => {
       const t = await AsyncStorage.getItem('token'); 
-      setHasToken(!!t); //guarda un booleano
+      setHasToken(!!t);
       setLoading(false);
     })();
   }, []);

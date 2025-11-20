@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import React, { createContext, useCallback, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 import { deletePost, getPostById, likePost } from "../service/Api";
 import { isTokenExpired } from "../utils/isTokenExpired";
 
@@ -18,11 +18,9 @@ export function PostProvider({ postId, children }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // abrir/cerrar desde cualquier componente
   const openDeleteModal = () => setShowDeleteModal(true);
   const closeDeleteModal = () => setShowDeleteModal(false);
 
-  // =============== FETCH POST =====================
   const reloadPost = useCallback(async () => {
     const token = await AsyncStorage.getItem("token");
 
@@ -51,7 +49,6 @@ export function PostProvider({ postId, children }) {
     }
   }, [postId]);
 
-  // =============== LIKE ============================
   const toggleLike = async () => {
     if (!post?.id) return;
 
@@ -63,7 +60,6 @@ export function PostProvider({ postId, children }) {
     }
   };
 
-  // =============== DELETE =============================
   const removePost = async () => {
     if (isDeleting) return;
 

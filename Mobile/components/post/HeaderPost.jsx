@@ -1,6 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { usePost } from "../../context/PostContext";
 import { formateoFecha } from "../../utils/formateoFecha";
@@ -14,7 +13,6 @@ export default function HeaderPost() {
 
   return (
     <View style={styles.container}>
-      {/* Usuario clickable */}
       <TouchableOpacity
         style={styles.left}
         onPress={() => navigateToUser(user.id)}
@@ -26,7 +24,6 @@ export default function HeaderPost() {
         </View>
       </TouchableOpacity>
 
-      {/* Acciones si es dueño */}
       {isOwner && (
         <View style={styles.actions}>
           <TouchableOpacity

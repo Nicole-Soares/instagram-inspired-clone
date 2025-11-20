@@ -79,16 +79,14 @@ export default function Home() {
     }
   }, [data]);
 
-  //  para cuando se cierra el modal de comentarios
   useFocusEffect(
     useCallback(() => {
       reloadScreen();
     }, [])
   );
 
-  // para que si se hace un comentario en el post, como es stack tenemos que volver a cargar para ver el comentario
   useEffect(() => {
-    reloadScreen(); // recargar timeline
+    reloadScreen(); 
   }, [refreshFlag]);
 
   if (unauthorized) return <Redirect href="/login" />;

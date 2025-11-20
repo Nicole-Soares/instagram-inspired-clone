@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Animated, Easing, StyleSheet, View } from "react-native";
 
 export default function InstagramSpinner({ size = 80, strokeWidth = 8 }) {
@@ -45,7 +45,7 @@ export default function InstagramSpinner({ size = 80, strokeWidth = 8 }) {
           end={{ x: 1, y: 1 }}
           style={[StyleSheet.absoluteFill, { borderRadius: radius }]}
         />
-        {/* Centro hueco */}
+        
         <View
           style={{
             width: innerSize,

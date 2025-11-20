@@ -7,12 +7,11 @@ import { usePost } from "../../context/PostContext";
 
 export default function Info() {
   const { post, toggleLike } = usePost();
-  const router = useRouter(); // ← ACA
+  const router = useRouter(); 
 
   const [loggedUserId, setLoggedUserId] = useState(null);
   const [userHasLiked, setUserHasLiked] = useState(false);
 
-  // Obtener el ID del usuario logueado
   useEffect(() => {
     const fetchUserId = async () => {
       const id = await AsyncStorage.getItem("userId");
@@ -21,7 +20,6 @@ export default function Info() {
     fetchUserId();
   }, []);
 
-  // Determinar si ya le dio like
   useEffect(() => {
     if (post && loggedUserId) {
       setUserHasLiked(post.likes?.some((like) => like.id === loggedUserId));
@@ -30,7 +28,6 @@ export default function Info() {
 
   return (
     <View style={styles.container}>
-      {/* ---- LIKE Y COMENTAR ---- */}
       <View style={styles.actionsRow}>
         <TouchableOpacity style={styles.iconButton} onPress={toggleLike}>
           <MaterialIcons
@@ -64,7 +61,6 @@ export default function Info() {
         </TouchableOpacity>
       </View>
 
-      {/* ---- DESCRIPCIÓN ---- */}
       {post.description ? (
         <Text style={styles.description}>{post.description}</Text>
       ) : null}

@@ -15,7 +15,6 @@ export function useTimeline() {
     try {
       setState((s) => ({ ...s, loading: true, error: false }));
 
-      // TOKEN
       const token = await AsyncStorage.getItem("token");
       if (!token || isTokenExpired(token)) {
         await AsyncStorage.removeItem("token");
@@ -27,7 +26,6 @@ export function useTimeline() {
         });
       }
 
-      // LLAMA A /user  ← ACÁ ESTÁ LA CLAVE
       const { data } = await getUser(); 
 
       setState({

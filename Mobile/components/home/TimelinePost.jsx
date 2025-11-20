@@ -21,7 +21,6 @@ export default function TimelinePost({ post, onUpdatePost }) {
 
   return (
     <View style={styles.card}>
-      {/* HEADER */}
       <View style={styles.header}>
         <Pressable style={styles.userBlock} onPress={handleNavigateToUser}>
           <Image source={{ uri: user.image }} style={styles.avatar} />
@@ -32,7 +31,6 @@ export default function TimelinePost({ post, onUpdatePost }) {
         </Pressable>
       </View>
 
-      {/* IMAGE */}
       <Pressable onPress={handleRedirectToPost} style={styles.imageWrap}>
         {imageUri ? (
           <Image source={{ uri: imageUri }} style={styles.image} />
@@ -43,7 +41,6 @@ export default function TimelinePost({ post, onUpdatePost }) {
         )}
       </Pressable>
 
-      {/* INFO */}
       <View style={{ marginTop: 8 }}>
         <InfoTimeline post={post} onUpdatePost={onUpdatePost} />
       </View>

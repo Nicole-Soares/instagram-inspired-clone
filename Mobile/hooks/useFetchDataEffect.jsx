@@ -1,15 +1,5 @@
-// hooks/useFetchDataEffect.js
 import { useEffect, useState } from "react";
 
-/**
- * Hook genérico para manejar fetchs de datos con estados controlados.
- * Ideal para usar con axios o cualquier promesa.
- *
- * @param {Function} fetchData - Función async que obtiene los datos.
- * @param {*} initialize - Valor inicial del estado.
- * @param {Array} dependencies - Dependencias del useEffect.
- * @param {Function} handlerError - Callback opcional para manejar errores específicos (ej: 401).
- */
 const useFetchDataEffect = (
   fetchData,
   initialize,
@@ -36,7 +26,6 @@ const useFetchDataEffect = (
         const response = await fetchData();
         const result = response?.data ?? response;
 
-        // Si viene vacío, lo marcamos como empty
         if (!result || (Array.isArray(result) && result.length === 0)) {
           if (mounted) setIsEmpty(true);
           return;

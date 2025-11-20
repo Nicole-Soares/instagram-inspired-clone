@@ -11,7 +11,6 @@ export default function InfoTimeline({ post, onUpdatePost }) {
   const [loggedUserId, setLoggedUserId] = useState(null);
   const [userHasLiked, setUserHasLiked] = useState(false);
 
-  // cargar id de usuario
   useEffect(() => {
     const fetchUser = async () => {
       const id = await AsyncStorage.getItem("userId");
@@ -20,14 +19,12 @@ export default function InfoTimeline({ post, onUpdatePost }) {
     fetchUser();
   }, []);
 
-  // saber si ya dio like
   useEffect(() => {
     if (post && loggedUserId) {
       setUserHasLiked(post.likes?.some((like) => like.id === loggedUserId));
     }
   }, [post, loggedUserId]);
 
-  // like
   const handleLike = async () => {
     try {
       const updated = await likePost(post.id);
@@ -35,7 +32,6 @@ export default function InfoTimeline({ post, onUpdatePost }) {
     } catch (e) {}
   };
 
-  // abrir modal de comentarios
   const openComments = () => {
     router.push({
       pathname: "/(modal)/comments/[postId]",
@@ -48,9 +44,7 @@ export default function InfoTimeline({ post, onUpdatePost }) {
 
   return (
     <View style={styles.container}>
-      {/* ---- LIKE Y COMENTARIOS ---- */}
       <View style={styles.actionsRow}>
-        {/* Like */}
         <TouchableOpacity style={styles.iconButton} onPress={handleLike}>
           <MaterialIcons
             name={userHasLiked ? "favorite" : "favorite-border"}
@@ -60,7 +54,6 @@ export default function InfoTimeline({ post, onUpdatePost }) {
           <Text style={styles.iconText}>{post.likes?.length || 0}</Text>
         </TouchableOpacity>
 
-        {/* Comentarios */}
         <TouchableOpacity style={styles.iconButton} onPress={openComments}>
           <MaterialIcons name="chat-bubble-outline" size={22} color="#444" />
           <Text style={styles.iconText}>
@@ -69,7 +62,6 @@ export default function InfoTimeline({ post, onUpdatePost }) {
         </TouchableOpacity>
       </View>
 
-      {/* ---- DESCRIPCIÓN ---- */}
       {post.description ? (
         <Text style={styles.description}>{post.description}</Text>
       ) : null}

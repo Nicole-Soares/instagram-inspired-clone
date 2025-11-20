@@ -82,16 +82,16 @@ export default function Login() {
       />
   
         <Pressable
-          onPress={submitting ? null : onSubmit} // Deshabilita si está cargando
-          disabled={submitting} // Agrega disabled
+          onPress={submitting ? null : onSubmit} 
+          disabled={submitting} 
           style={({ pressed }) => [
             styles.button,
             pressed && !submitting && { transform: [{ scale: 0.97 }], opacity: 0.8 },
-            submitting && { opacity: 0.6 } // Opacidad cuando está cargando
+            submitting && { opacity: 0.6 } 
           ]}
         >
           {submitting ? (
-            <ActivityIndicator color="#fff" /> // Color del spinner
+            <ActivityIndicator color="#fff" />
           ) : (
             <Text style={styles.buttonText}>Iniciar sesión</Text>
           )}

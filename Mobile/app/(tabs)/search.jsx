@@ -37,7 +37,6 @@ export default function Search() {
   return (
     <View style={styles.container}>
       
-      {/* INPUT */}
       <SafeAreaView style={styles.inputContainer} edges={['top', 'left', 'right']}>
         <View style={styles.searchWrapper}>
           <TextInput
@@ -54,7 +53,6 @@ export default function Search() {
         </View>
       </SafeAreaView>
 
-      {/* LOADING */}
       {loading && (
         <View  style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
             <InstagramSpinner />
@@ -62,14 +60,12 @@ export default function Search() {
           </View >
       )}
 
-    {/* NO RESULTS */}
     {hasSearched && !loading && results.users.length === 0 && results.posts.length === 0 && (
       <View style={{  height: '86%', justifyContent: 'center' }}>
         <Text style={styles.noResults}>No se encontraron resultados!</Text>
       </View>
     )}
 
-      {/* USERS */}
       {!loading && results.users.length > 0 && (
       <FlatList
         data={results.users}
@@ -91,7 +87,6 @@ export default function Search() {
       />
       )}
 
-      {/* POSTS */}
       {!loading && results.posts.length > 0 && (
         <FlatList
           data={results.posts}
@@ -123,14 +118,12 @@ const styles = StyleSheet.create({
      flex: 1,
      gap: 10,
      backgroundColor: '#fff',
-    },
-
+  },
   inputContainer: {
     width: "100%",
     paddingHorizontal: 16,
     paddingVertical: 16,
-    },
-
+  },
   searchWrapper: {
     flexDirection: "row",
     alignItems: "center",
@@ -141,23 +134,19 @@ const styles = StyleSheet.create({
     height: 42,
     paddingHorizontal: 8, 
   },
-
   input: {
     flex: 1,
     fontSize: 16,
     padding: 0,
   },
-
   userList: {
     height: 75,
     minHeight: 75, 
   },
-
   userListContent: {
     gap: 10,
     paddingHorizontal: 10,
   },
-
   user: {
     width: 75,
     height: 75,
@@ -165,18 +154,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#CCCCCC',
   },
-
   postsList: {
     paddingTop: 16,
     alignSelf: 'center',
   },
-
   postImage: {
     width: 127,
     height: 173,
     margin: 2,
   },
-
   noResults: {
     color: '#666',
     fontSize: 20,

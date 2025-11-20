@@ -23,7 +23,6 @@ export default function Register() {
   const [checking, setChecking] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // Si ya hay token → ir al home
   useEffect(() => {
     (async () => {
       const t = await AsyncStorage.getItem('token');
@@ -40,17 +39,13 @@ export default function Register() {
     try {
       setSubmitting(true);
 
-      // 1) Registrar usuario
       await register(name, email, pass, image);
 
-      // 2) Login automático → acá obtenemos token + userId correctos
       const data = await login(email, pass);
 
-      // 3) Guardar token + userId
       await AsyncStorage.setItem("token", data.token);
       await AsyncStorage.setItem("userId", String(data.id));
 
-      // 4) Ir al Home
       router.replace('/home');
 
     } catch (e) {

@@ -28,7 +28,6 @@ export default function AgregarPost() {
   const router = useRouter();
   const scrollRef = useRef(null);
 
-  //  Verifica token
   useEffect(() => {
     const checkAuth = async () => {
       const token = await AsyncStorage.getItem("token");
@@ -37,7 +36,6 @@ export default function AgregarPost() {
     checkAuth();
   }, []);
 
-  //  Limpia al volver a la pantalla
   useFocusEffect(
     useCallback(() => {
       setIsError(false);
@@ -47,7 +45,6 @@ export default function AgregarPost() {
     }, [])
   );
 
-  //  Auto-scroll cuando aparece un error
   useEffect(() => {
     if (isError && scrollRef.current) {
       setTimeout(() => {
@@ -58,7 +55,6 @@ export default function AgregarPost() {
 
   const isValidUrl = (string) => /^https?:\/\/.+/i.test(string);
 
-  // Crear post nuevo
   const handleSubmit = async () => {
     if (!url.trim()) {
       setIsError(true);
@@ -103,7 +99,6 @@ export default function AgregarPost() {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView ref={scrollRef} contentContainerStyle={styles.container}>
-        {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()}>
             <MaterialIcons name="arrow-back-ios" size={20} color="#333" />
@@ -111,7 +106,6 @@ export default function AgregarPost() {
           <Text style={styles.headerTitle}>Crear publicación</Text>
         </View>
 
-        {/* Input URL imagen */}
         <TextInput
           style={[
             styles.input,
@@ -129,7 +123,6 @@ export default function AgregarPost() {
           placeholderTextColor="#999"
         />
 
-        {/* Preview */}
         <View style={styles.imageBox}>
           {isValidUrl(url) ? (
             <Image source={{ uri: url }} style={styles.image} />
@@ -141,7 +134,6 @@ export default function AgregarPost() {
           )}
         </View>
 
-        {/* Descripción */}
         <TextInput
           style={[styles.input, styles.textarea]}
           placeholder="Agrega un comentario"
@@ -151,7 +143,6 @@ export default function AgregarPost() {
           placeholderTextColor="#999"
         />
 
-        {/* Botón publicar */}
         <Pressable
           onPress={handleSubmit}
           disabled={loading}
@@ -164,7 +155,6 @@ export default function AgregarPost() {
           <Text style={styles.buttonText}>Publicar</Text>
         </Pressable>
 
-        {/* Mensaje de error */}
         {isError && (
           <View style={styles.errorBox}>
             <Text style={styles.errorText}>

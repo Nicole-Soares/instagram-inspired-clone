@@ -86,13 +86,11 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 30,
   },
-
   leftBlock: {
     flexDirection: "row",
     alignItems: "center",
     flexShrink: 1,
   },
-
   avatar: {
     width: 75,
     height: 75,
@@ -101,11 +99,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(226, 222, 226, 0.93)",
   },
-
   infoColumn: {
     flexShrink: 1,
   },
-
   name: {
     fontSize: 24,
     fontWeight: "700",
@@ -114,42 +110,35 @@ const styles = StyleSheet.create({
   statsColumn: {
     marginTop: 10,
   },
-
   statLine: {
     color: "#6b7280",
     marginTop: 8,
   },
-
   statNumber: {
     fontWeight: "700",
     color: "#111827",
   },
-
   logoutButton: {
     paddingHorizontal: 20,
     paddingVertical: 6,
     borderRadius: 8,
     backgroundColor: "#1a57ff",
   },
-
   logoutButtonText: {
     color: "#fff",
     fontWeight: "500",
     fontSize: 13,
   },
-
   postTouchable: {
     width: "33.3333%", 
     aspectRatio: 0.6,
     borderWidth: 1.5, 
     borderColor: '#fff',
   },
-
   postImage: { 
     width: '100%',
     height: '100%'
   },
-
   noPosts: {
     textAlign: "center",
     color: "#888",

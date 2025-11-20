@@ -103,12 +103,10 @@ export default function CommentsModal() {
         />
       </Pressable>
       <Animated.View style={[styles.sheet, animatedSheet]}>
-        {/* Handle */}
         <GestureDetector gesture={pan}>
           <View style={styles.handle} />
         </GestureDetector>
 
-        {/* Header */}
         <Pressable
           style={styles.headerContainer}
           onPress={() => navigateToUser(post.user.id)}
@@ -125,9 +123,7 @@ export default function CommentsModal() {
 
         <View style={styles.separator} />
 
-        {/* SCROLL + INPUT */}
         <View style={{ flex: 1, justifyContent: "space-between" }}>
-          {/* SCROLL */}
           <ScrollView
             ref={scrollRef}
             showsVerticalScrollIndicator={false}
@@ -155,7 +151,6 @@ export default function CommentsModal() {
             ))}
           </ScrollView>
 
-          {/* INPUT + BOTÓN */}
           <View
             style={[
               styles.inputContainer,

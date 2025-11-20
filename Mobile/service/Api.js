@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-// Cliente axios
 const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL || 'http://localhost:7070',
 });
@@ -18,11 +17,9 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
-// ===== AUTH =====
 export const login = async (email, password) => {
   const response = await api.post('/login', { email, password });
 
-  // el backend manda el token en header "authorization"
   const token =
     response.data?.token ??
     response.headers['authorization'];
@@ -49,7 +46,7 @@ export const register = async (name, email, password, image) => {
 
 
 // ===== USER AND USERS =====
-export const getUser = () => api.get('/user');                 // perfil/timeline del logueado
+export const getUser = () => api.get('/user');                 
 export const getUserById = (userId) => api.get(`/user/${userId}`);
 export const toggleFollow = (userId) => api.put(`/users/${userId}/follow`);
 
