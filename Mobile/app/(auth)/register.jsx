@@ -148,12 +148,21 @@ export default function Register() {
         </Pressable>
 
         <Text style={styles.text}>
+            Al registrarte, aceptas nuestras{' '}
+            <Link href="" style={styles.link}>Condiciones</Link>, la{' '}
+            <Link href="" style={styles.link}>Política de privacidad</Link> y la{' '}
+            <Link href="" style={styles.link}>Política de cookies</Link>.
+        </Text>
+        </View>
+
+        <View style={styles.divider} />
+
+        <Text style={styles.text}>
           ¿Tienes una cuenta?{" "}
           <Link href="/login" style={styles.link}>
             Inicia sesión
           </Link>
         </Text>
-      </View>
     </View>
   );
 }
