@@ -1,12 +1,41 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { useEffect, useState } from 'react';
+import { router } from 'expo-router';
+import { View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { isTokenExpired } from '../../utils/isTokenExpired';
+import InstagramSpinner from '../../components/InstagramSpinner';
 import ProfileTabImage from "../../components/ProfileTabImage";
 import useProfileImage from "../../hooks/useProfileImage";
 
 export default function TabsLayout() {
   const userImage = useProfileImage();
   const insets = useSafeAreaInsets();
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      const token = await AsyncStorage.getItem('token');
+      
+      if (!token || isTokenExpired(token)) {
+        await AsyncStorage.removeItem('token');
+        router.replace('/login');
+        return;
+      }
+      
+      setChecking(false);
+    })();
+  }, []);
+
+  if (checking) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' }}>
+        <InstagramSpinner />
+      </View>
+    );
+  }
 
   return (
     <Tabs

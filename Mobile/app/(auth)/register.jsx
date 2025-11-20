@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import InstagramSpinner from '../../components/InstagramSpinner';
 import { login, register } from '../../service/Api';
-import { styles } from './styles';
+import styles  from './styles';
 
 export default function Register() {
 
