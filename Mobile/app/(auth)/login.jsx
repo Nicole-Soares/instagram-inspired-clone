@@ -5,7 +5,7 @@ import { ActivityIndicator, Alert, Image, Pressable, Text, TextInput, View } fro
 import { SafeAreaView } from "react-native-safe-area-context";
 import InstagramSpinner from '../../components/InstagramSpinner';
 import { login } from '../../service/Api';
-import { styles } from './styles';
+import styles from './styles';
 
 export default function Login() {
   const { returnTo } = useLocalSearchParams();

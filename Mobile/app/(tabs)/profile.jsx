@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Redirect } from "expo-router";
-import { useEffect, useState } from "react";
+import { Redirect, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import InstagramSpinner from "../../components/InstagramSpinner";
@@ -12,28 +12,41 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const savedToken = await AsyncStorage.getItem("token");
-        const userId = await AsyncStorage.getItem("userId");
+  useFocusEffect(
+    useCallback(() => {
+      let isCancelled = false;
 
-        if (!savedToken || !userId) {
-          setIsLoading(false);
-          return;
+      const fetchUser = async () => {
+        setIsLoading(true);
+        try {
+          const savedToken = await AsyncStorage.getItem("token");
+          const userId = await AsyncStorage.getItem("userId");
+
+          if(!savedToken || !userId) {
+            if(!isCancelled) setToken("");
+            return;
+          }
+
+          if (!isCancelled) setToken(savedToken);
+
+          const { data } = await getUserById(userId);
+          if (!isCancelled) setUser(data);
+
+        } catch (e) {
+          console.log("Error al obtener usuario:", e);
+          if (!isCancelled) setToken("");
+        } finally {
+          if (!isCancelled) setIsLoading(false);
         }
-        setToken(savedToken);
-        const { data } = await getUserById(userId);
-        setUser(data);
+      };
 
-      } catch (error) {
-        console.log("Error al obtener usuario:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchUser();
-  }, []);
+      fetchUser();
+
+      return () => {
+        isCancelled = true;
+      };
+    }, [])
+  );
   
   if (isLoading) {
     return (
@@ -43,12 +56,10 @@ export default function Profile() {
     );
   }
 
-  // Si no hay token va al login
   if (!token) {
     return <Redirect href="/login" />;
   }
 
-  // Render del perfil logueado
   return (
     <SafeAreaView style={styles.container}>
       <ViewProfile user={user} setToken={setToken} />

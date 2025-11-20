@@ -59,8 +59,11 @@ const ViewProfile = ({ user, setToken }) => {
         </View>
       }
       renderItem={({ item }) => (
-        <Pressable
-          style={styles.postTouchable}
+        <Pressable style={({ hovered, pressed }) => [
+              styles.postTouchable,
+              hovered && { opacity: 0.85 },
+              pressed && { opacity: 0.9 } 
+          ]}
           onPress={() => router.push(`/post/${item.id}`)}
         >
           <Image source={{ uri: item.image }} style={styles.postImage} />
@@ -135,17 +138,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
 
-  // 📌 FOTOS 100% AL ESTILO INSTAGRAM
   postTouchable: {
-    width: "33.333%",
-    aspectRatio: 1, // CUADRADO PERFECTO -> IG exacto
-    borderWidth: 1,
-    borderColor: "#fff",
+    width: "33.3333%", 
+    aspectRatio: 0.6,
+    borderWidth: 1.5, 
+    borderColor: '#fff',
   },
 
-  postImage: {
-    width: "100%",
-    height: "100%",
+  postImage: { 
+    width: '100%',
+    height: '100%'
   },
 
   noPosts: {

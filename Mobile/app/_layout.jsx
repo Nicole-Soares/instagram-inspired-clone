@@ -21,6 +21,7 @@ export default function RootLayout() {
               headerShadowVisible: false,
               headerStyle: { backgroundColor: "#fff" },
               headerTintColor: "#111827",
+              headerShown: false, 
             }}
           >
             <Stack.Screen name="splash" options={{ headerShown: false }} />

@@ -29,7 +29,7 @@ export const login = async (email, password) => {
 
   const userId = response.data.id;
 
-  if (!token) throw new Error('La API no devolvió token');
+  if (!token) throw new Error('Credenciales incorrectas. La API no devolvió token.');
   if (!userId) throw new Error("No se encontró el ID del usuario en la respuesta");
 
   await AsyncStorage.setItem('token', token);

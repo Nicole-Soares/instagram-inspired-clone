@@ -13,7 +13,6 @@ const User = ({ id, name, email, image }) => {
           <Text>Email: {email}</Text>
         </View>
       </View>
-      {/* You can use the image prop to display the user's image if needed */}
     </TouchableOpacity>
   );
 }

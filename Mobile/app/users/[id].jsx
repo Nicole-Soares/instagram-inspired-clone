@@ -91,21 +91,23 @@ export default function PublicUserPage() {
   };
 
   const handleToggleFollow = async () => {
+    const originalIsFollowing = isFollowingUI;
+
     await requireAuth(async () => {
-      // optimista local + disparo al contexto (global)
-      setIsFollowingUI(prev => {
-        const now = !prev;
-        setUser(prevUser => {
-          if (!prevUser) return prevUser;
-          const list = Array.isArray(prevUser.followers) ? prevUser.followers : [];
-          const nextFollowers = now
-            ? [...list, { id: me?.id ?? "me" }]
-            : list.slice(0, Math.max(0, list.length - 1));
-          return { ...prevUser, followers: nextFollowers };
-        });
-        return now;
-      });
-      toggleFollow(user.id);
+      setIsFollowingUI(prev => !prev);
+
+      try {
+        const apiRes = await toggleFollow(user.id);
+        const newMeData = apiRes?.data?.currentUser ?? apiRes?.data ?? apiRes;
+
+        if (newMeData) {
+          setMe(newMeData);
+        }
+        
+      } catch (e) {
+        console.error("Error al seguir/dejar de seguir:", e);
+        setIsFollowingUI(originalIsFollowing);
+      }
     });
   };
 
