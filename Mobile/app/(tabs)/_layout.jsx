@@ -1,14 +1,13 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
-import { useEffect, useState } from 'react';
-import { router } from 'expo-router';
-import { View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Tabs, router } from "expo-router";
+import { useEffect, useState } from 'react';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { isTokenExpired } from '../../utils/isTokenExpired';
 import InstagramSpinner from '../../components/InstagramSpinner';
 import ProfileTabImage from "../../components/ProfileTabImage";
 import useProfileImage from "../../hooks/useProfileImage";
+import { isTokenExpired } from '../../utils/isTokenExpired';
 
 export default function TabsLayout() {
   const userImage = useProfileImage();

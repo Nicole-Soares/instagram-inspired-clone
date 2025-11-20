@@ -22,8 +22,8 @@ export default function Profile() {
           const savedToken = await AsyncStorage.getItem("token");
           const userId = await AsyncStorage.getItem("userId");
 
-          if(!savedToken || !userId) {
-            if(!isCancelled) setToken("");
+          if (!savedToken || !userId) {
+            if (!isCancelled) setToken("");
             return;
           }
 
@@ -31,7 +31,6 @@ export default function Profile() {
 
           const { data } = await getUserById(userId);
           if (!isCancelled) setUser(data);
-
         } catch (e) {
           console.log("Error al obtener usuario:", e);
           if (!isCancelled) setToken("");
@@ -47,7 +46,7 @@ export default function Profile() {
       };
     }, [])
   );
-  
+
   if (isLoading) {
     return (
       <SafeAreaView style={styles.centered}>

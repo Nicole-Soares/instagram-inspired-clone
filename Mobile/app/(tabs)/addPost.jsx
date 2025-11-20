@@ -26,7 +26,7 @@ export default function AgregarPost() {
   const [isError, setIsError] = useState(false);
   const [errDesc, setErrDesc] = useState("");
   const router = useRouter();
-  const scrollRef = useRef(null); 
+  const scrollRef = useRef(null);
 
   //  Verifica token
   useEffect(() => {

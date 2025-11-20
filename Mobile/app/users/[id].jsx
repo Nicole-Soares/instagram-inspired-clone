@@ -1,20 +1,29 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useFollow } from "../../hooks/followContext.jsx";
 import useUserHeader from "../../hooks/useUserHeader.jsx";
 import * as Api from "../../service/Api.js";
 import styles from "./styles.jsx";
 
-const cleanId = (v) => String(v ?? "").replace(/^user_/, "")
+const cleanId = (v) => String(v ?? "").replace(/^user_/, "");
 
 export default function PublicUserPage() {
   const params = useLocalSearchParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
-  const followedParam = Array.isArray(params.followed) ? params.followed[0] : params.followed;
+  const followedParam = Array.isArray(params.followed)
+    ? params.followed[0]
+    : params.followed;
 
-  const navigation = useNavigation();
   const userId = id;
 
   const { isFollowing: isFollowingCtx, toggleFollow, pendingIds } = useFollow();
@@ -24,9 +33,9 @@ export default function PublicUserPage() {
     ["1", "true", "yes"].includes(String(followedParam).toLowerCase());
 
   const [loading, setLoading] = useState(true);
-  const [me, setMe] = useState(null);     //usuario logueado
-  const [user, setUser] = useState(null); //usuario visitado     
-  const [isFollowingUI, setIsFollowingUI] = useState(hint)
+  const [me, setMe] = useState(null); //usuario logueado
+  const [user, setUser] = useState(null); //usuario visitado
+  const [isFollowingUI, setIsFollowingUI] = useState(hint);
   const [error, setError] = useState("");
 
   useUserHeader(user?.name, { align: "left", backTitle: "Back" });
@@ -35,12 +44,12 @@ export default function PublicUserPage() {
   useEffect(() => {
     setIsFollowingUI(followingCtx);
   }, [followingCtx, userId]);
-  
+
   useEffect(() => {
     let cancelled = false;
 
     (async () => {
-      setError(""); 
+      setError("");
       setLoading(true);
       let meData = null;
 
@@ -60,7 +69,8 @@ export default function PublicUserPage() {
         const res = await Api.getUserById(userId);
         const visited = res?.data ?? res;
 
-        if (!visited || !visited.id) throw new Error("Respuesta de API vacía o inválida.");
+        if (!visited || !visited.id)
+          throw new Error("Respuesta de API vacía o inválida.");
         if (!cancelled) setUser(visited);
       } catch {
         if (!cancelled) setError("No se encontró el usuario");
@@ -69,7 +79,9 @@ export default function PublicUserPage() {
       }
     })();
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [userId]);
 
   if (!loading && me?.id && user?.id && Number(me.id) === Number(user.id)) {
@@ -79,12 +91,18 @@ export default function PublicUserPage() {
 
   if (loading) return <ActivityIndicator style={{ marginTop: 40 }} />;
   if (error) return <Text style={{ padding: 16 }}>{error}</Text>;
-  if (!user) return <Text style={{ padding: 16 }}>No se encontraron datos del usuario.</Text>;
+  if (!user)
+    return (
+      <Text style={{ padding: 16 }}>No se encontraron datos del usuario.</Text>
+    );
 
   const requireAuth = async (ok) => {
     const t = await AsyncStorage.getItem("token");
     if (!t) {
-      router.replace({ pathname: "/login", params: { returnTo: `/users/${userId}` } });
+      router.replace({
+        pathname: "/login",
+        params: { returnTo: `/users/${userId}` },
+      });
       return;
     }
     ok();
@@ -94,7 +112,7 @@ export default function PublicUserPage() {
     const originalIsFollowing = isFollowingUI;
 
     await requireAuth(async () => {
-      setIsFollowingUI(prev => !prev);
+      setIsFollowingUI((prev) => !prev);
 
       try {
         const apiRes = await toggleFollow(user.id);
@@ -103,7 +121,6 @@ export default function PublicUserPage() {
         if (newMeData) {
           setMe(newMeData);
         }
-        
       } catch (e) {
         console.error("Error al seguir/dejar de seguir:", e);
         setIsFollowingUI(originalIsFollowing);
@@ -112,7 +129,9 @@ export default function PublicUserPage() {
   };
 
   const posts = user.posts || [];
-  const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const sortedPosts = [...posts].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
   const pending = pendingIds?.has(cleanId(userId));
 
   return (
@@ -122,32 +141,38 @@ export default function PublicUserPage() {
           <Image source={{ uri: user.image }} style={styles.avatar} />
 
           <View style={styles.infoColumn}>
-            <Text style={styles.name} numberOfLines={1}>{user.name}</Text>
+            <Text style={styles.name} numberOfLines={1}>
+              {user.name}
+            </Text>
 
             <View style={styles.statsColumn}>
               <Text style={styles.statLine}>
-                <Text style={styles.statNumber}>{user.posts?.length || 0}</Text> Publicaciones
+                <Text style={styles.statNumber}>{user.posts?.length || 0}</Text>{" "}
+                Publicaciones
               </Text>
               <Text style={styles.statLine}>
-                <Text style={styles.statNumber}>{user.followers?.length || 0}</Text> Seguidos
+                <Text style={styles.statNumber}>
+                  {user.followers?.length || 0}
+                </Text>{" "}
+                Seguidos
               </Text>
             </View>
           </View>
         </View>
-        
+
         <TouchableOpacity
           disabled={pending}
           onPress={handleToggleFollow}
           style={[
             styles.followButton,
             isFollowingUI ? styles.followOutline : styles.followPrimary,
-            pending && { opacity: 0.2 }
+            pending && { opacity: 0.2 },
           ]}
         >
           <Text
             style={[
               styles.followButtonText,
-              isFollowingUI && styles.followButtonTextOutline
+              isFollowingUI && styles.followButtonTextOutline,
             ]}
           >
             {isFollowingUI ? "Dejar de seguir" : "Seguir"}
@@ -161,18 +186,17 @@ export default function PublicUserPage() {
         keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
-          <Pressable style={({ hovered, pressed }) => [
-                styles.postTouchable,
-                hovered && { opacity: 0.85 },
-                pressed && { opacity: 0.9 } 
+          <Pressable
+            style={({ hovered, pressed }) => [
+              styles.postTouchable,
+              hovered && { opacity: 0.85 },
+              pressed && { opacity: 0.9 },
             ]}
             onPress={() => {
-                router.push(`/post/${item.id}`); 
-            }} >
-            <Image
-                source={{ uri: item.image }}
-                style={styles.postImage}
-            />
+              router.push(`/post/${item.id}`);
+            }}
+          >
+            <Image source={{ uri: item.image }} style={styles.postImage} />
           </Pressable>
         )}
         ListEmptyComponent={
@@ -181,4 +205,4 @@ export default function PublicUserPage() {
       />
     </View>
   );
-};
+}

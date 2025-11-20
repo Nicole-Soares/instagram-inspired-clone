@@ -1,7 +1,14 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import ErrorScreen from "../../components/ErrorScreen";
 import InstagramSpinner from "../../components/InstagramSpinner";
 import NotFoundScreen from "../../components/NotFoundScreen";
@@ -29,14 +36,14 @@ function PostScreen() {
   const navigation = useNavigation();
   const [showDelete, setShowDelete] = useState(false);
 
-   // titulo del post
-   useEffect(() => {
+  // titulo del post
+  useEffect(() => {
     if (post) {
       navigation.setOptions({
         title: `Post - ${post.user?.name ?? ""}`,
       });
     }
-  }, [post])
+  }, [post]);
 
   //cuando la pantalla vuelve a estar en foco, lo vuelve a cargar, sirve para cuando el modal de los comentarios se cierra
   useFocusEffect(
@@ -45,13 +52,12 @@ function PostScreen() {
     }, [])
   );
 
-  //para que el home se entere del cambio
   useEffect(() => {
     if (post) {
       triggerRefresh();
     }
   }, [post]);
-  
+
   if (isError) return <ErrorScreen />;
   if (isNotFound) return <NotFoundScreen />;
 
@@ -67,9 +73,14 @@ function PostScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <HeaderPost />
-        {post.image && <Image source={{ uri: post.image }} style={styles.image} />}
+        {post.image && (
+          <Image source={{ uri: post.image }} style={styles.image} />
+        )}
         <Info />
-        <DeletePostModal visible={showDelete} onClose={() => setShowDelete(false)} />
+        <DeletePostModal
+          visible={showDelete}
+          onClose={() => setShowDelete(false)}
+        />
       </ScrollView>
     </SafeAreaView>
   );
