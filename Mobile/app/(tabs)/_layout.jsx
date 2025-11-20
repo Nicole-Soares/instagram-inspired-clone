@@ -1,10 +1,12 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ProfileTabImage from "../../components/ProfileTabImage";
 import useProfileImage from "../../hooks/useProfileImage";
 
 export default function TabsLayout() {
   const userImage = useProfileImage();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
@@ -17,7 +19,8 @@ export default function TabsLayout() {
           backgroundColor: "#fff",
           borderTopWidth: 0.3,
           borderTopColor: "#dcdcdc",
-          height: 58
+          height: 58 + insets.bottom,
+          paddingBottom: insets.bottom,
         },
       }}
     >
