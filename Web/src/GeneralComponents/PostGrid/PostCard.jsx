@@ -1,4 +1,4 @@
-import "../../style/PostCard.css";
+import "../../style/postCard.css";
 import { Link } from "react-router-dom";
 
 function PostCard({ id, src }) {
