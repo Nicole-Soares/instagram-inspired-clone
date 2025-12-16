@@ -11,7 +11,7 @@ import {
   addCommentToPost,
   deletePost,
 } from "../../service/post/postService";
-import "../../style/post/Post.css";
+import "../../style/Post/Post.css";
 import Storage from "../../service/storage";
 import UnauthorizedModal from "../../GeneralComponents/modals/UnauthorizedModal";
 import NotFoundModal from "../../GeneralComponents/modals/NotFoundModal";
