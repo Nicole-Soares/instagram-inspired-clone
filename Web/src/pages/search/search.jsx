@@ -4,7 +4,7 @@ import PostGrid from "../../GeneralComponents/PostGrid/PostGrid.jsx";
 import UserCard from "./components/userCard.jsx";
 import UsersContainer from "./components/usersContainer.jsx";
 import { searchContent } from "../../service/search/searchService.js";
-import "../../style/search/search.css";
+import "../../style/Search/Search.css";
 import { Link, useSearchParams } from "react-router";
 import SideBar from '../../generalComponents/SideBar';
 import Storage from "../../service/storage.js";
