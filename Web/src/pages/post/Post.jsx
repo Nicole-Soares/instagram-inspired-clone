@@ -15,7 +15,7 @@ import "../../style/Post/Post.css";
 import Storage from "../../service/storage";
 import UnauthorizedModal from "../../GeneralComponents/modals/UnauthorizedModal";
 import NotFoundModal from "../../GeneralComponents/modals/NotFoundModal";
-import DeleteConfirmationModal from "../../generalComponents/modals/DeleteConfirmationModal"
+import DeleteConfirmationModal from "../../GeneralComponents/modals/DeleteConfirmationModal"
 import SideBar from "../../GeneralComponents/SideBar";
 
 const Post = () => {
