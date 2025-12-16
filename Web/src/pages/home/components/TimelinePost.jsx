@@ -2,7 +2,7 @@ import HeaderPost from '../../../GeneralComponents/HeaderPost';
 import Info from '../../../GeneralComponents/Info';
 import { useNavigate } from 'react-router-dom';
 import Storage from '../../../service/storage';
-import '../../../style/home/TimelinePost.css';
+import '../../../style/Home/TimelinePost.css';
 
 export default function TimelinePost({ post, onUpdatePost }) {
     const navigate = useNavigate();

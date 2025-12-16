@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import Storage from "../service/storage";
 import { likePost } from "../service/post/postService";
-import "../style/generalComponents/Info.css";
+import "../style/GeneralComponents/Info.css";
 import { useEffect, useState } from "react";
 
 const Info = ({ post, postId, onUpdatePost, handleRedirect}) => {

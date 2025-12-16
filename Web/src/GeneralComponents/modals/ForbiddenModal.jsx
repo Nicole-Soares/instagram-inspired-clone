@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import '../../style/generalComponents/UnauthorizedModal.css'; 
+import '../../style/GeneralComponents/UnauthorizedModal.css'; 
 
 const ForbiddenModal = () => {
   const navigate = useNavigate(); 

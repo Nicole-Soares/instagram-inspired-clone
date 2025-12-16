@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import '../../style/generalComponents/UnauthorizedModal.css';
+import '../../style/GeneralComponents/UnauthorizedModal.css';
 
 const UnauthorizedModal = () => {
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
-import '../../style/home/Home.css';
+import '../../style/Home/Home.css';
 import Storage from '../../service/storage';
 import apiFetch from '../../service/apiFetch';
 import UnauthorizedModal from '../../GeneralComponents/modals/UnauthorizedModal';

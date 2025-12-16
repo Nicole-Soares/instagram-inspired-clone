@@ -1,4 +1,4 @@
-import '../../style/generalComponents/DeleteConfirmationModal.css';
+import '../../style/GeneralComponents/DeleteConfirmationModal.css';
 
 function DeleteConfirmationModal({ onClose, onConfirm }) {
     return (
