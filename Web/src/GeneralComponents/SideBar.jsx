@@ -6,7 +6,7 @@ import searchIcon from '../assets/search-logo.png';
 import homeLogo from '../assets/instagram-home-icon.png';
 import createPostLogo from '../assets/instagram-create-post-icon.png';
 import logoutLogo from '../assets/instagram-salir-logo.png';
-import '../style/generalComponents/SideBar.css'
+import '../style/GeneralComponents/SideBar.css'
 
 const SideBar = () => {
     const navigate = useNavigate();
