@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
-import "../../style/post/PostEdit.css";
+import "../../style/Post/PostEdit.css";
 import Storage from "../../service/storage";
 import UnauthorizedModal from "../../GeneralComponents/modals/UnauthorizedModal";
 import ForbiddenModal from "../../GeneralComponents/modals/ForbiddenModal";
