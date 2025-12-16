@@ -7,7 +7,7 @@ import { crearPost } from "../../service/agregarPost/agregarPostService";
 import { toast } from "react-toastify";
 import UnauthorizedModal from "../../GeneralComponents/modals/UnauthorizedModal";
 import Storage from "../../service/storage";
-import SideBar from "../../generalComponents/SideBar";
+import SideBar from "../../GeneralComponents/SideBar.jsx";
 
 const AgregarPost = () => {
   const [url, setUrl] = useState("");

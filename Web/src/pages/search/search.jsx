@@ -6,7 +6,7 @@ import UsersContainer from "./components/usersContainer.jsx";
 import { searchContent } from "../../service/search/searchService.js";
 import "../../style/Search/Search.css";
 import { Link, useSearchParams } from "react-router";
-import SideBar from '../../generalComponents/SideBar';
+import SideBar from '../../GeneralComponents/SideBar';
 import Storage from "../../service/storage.js";
 import UnauthorizedModal from "../../GeneralComponents/modals/UnauthorizedModal.jsx";
 

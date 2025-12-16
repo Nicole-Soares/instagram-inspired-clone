@@ -16,7 +16,7 @@ import Storage from "../../service/storage";
 import UnauthorizedModal from "../../GeneralComponents/modals/UnauthorizedModal";
 import NotFoundModal from "../../GeneralComponents/modals/NotFoundModal";
 import DeleteConfirmationModal from "../../generalComponents/modals/DeleteConfirmationModal"
-import SideBar from "../../generalComponents/SideBar";
+import SideBar from "../../GeneralComponents/SideBar";
 
 const Post = () => {
   const { id } = useParams();

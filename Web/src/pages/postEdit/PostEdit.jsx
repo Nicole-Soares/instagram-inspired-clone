@@ -6,7 +6,7 @@ import UnauthorizedModal from "../../GeneralComponents/modals/UnauthorizedModal"
 import ForbiddenModal from "../../GeneralComponents/modals/ForbiddenModal";
 import NotFoundModal from "../../GeneralComponents/modals/NotFoundModal";
 import apiFetch from "../../service/apiFetch";
-import SideBar from "../../generalComponents/SideBar";
+import SideBar from "../../GeneralComponents/SideBar";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 

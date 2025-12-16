@@ -5,7 +5,7 @@ import Storage from "../../service/storage";
 import ProfileHeader from "./components/ProfileHeader/ProfileHeader";
 import PostGrid from "../../GeneralComponents/PostGrid/PostGrid";
 import PostCard from "../../GeneralComponents/PostGrid/PostCard";
-import SideBar from "../../generalComponents/SideBar";
+import SideBar from "../../GeneralComponents/SideBar";
 import UnauthorizedModal from "../../GeneralComponents/modals/UnauthorizedModal";
 import NotFoundModal from "../../GeneralComponents/modals/NotFoundModal";
 import { computeProfileFlags } from "../../utils/profileHelpers"

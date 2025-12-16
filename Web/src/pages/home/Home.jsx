@@ -6,7 +6,7 @@ import Storage from '../../service/storage';
 import apiFetch from '../../service/apiFetch';
 import UnauthorizedModal from '../../GeneralComponents/modals/UnauthorizedModal';
 import TimelinePost from './components/TimelinePost';
-import SideBar from '../../generalComponents/SideBar';
+import SideBar from '../../GeneralComponents/SideBar';
 
 
 const Home = () => {
