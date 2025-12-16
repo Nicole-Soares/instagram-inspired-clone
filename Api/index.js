@@ -1,33 +1,39 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import getInstagramSystem from "@unq-ui/instagram-model-js";
 import express from "express";
-import cors from 'cors';
+import cors from "cors";
+
 import createUserRouter from "./routes/userRouter.js";
 import createUsersRouter from "./routes/usersRouter.js";
 import createAuthRouter from "./routes/authRouter.js";
 import createSearchRouter from "./routes/searchRouter.js";
+import createPostsRouter from "./routes/postsRouter.js";
+
 import UserController from "./controllers/userController.js";
 import TokenController from "./controllers/tokenController.js";
 import PostController from "./controllers/postController.js";
-import createPostsRouter from "./routes/postsRouter.js";
 import SearchController from "./controllers/searchController.js";
 
 const system = getInstagramSystem();
 const app = express();
-const port = 7070;
+const port = process.env.PORT || 7070;
 
-app.use(cors({
-  origin:[ 'http://localhost:5173',
-            'http://localhost:8081',
-            '192.168.176.1:7070',
-            '192.168.1.40:7070',
-            '192.168.68.102:7070',
-            '192.168.0.225:7070',
-            '192.168.0.118:7070'
-         ], 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true,
-  exposedHeaders: ['Authorization'] 
-}));
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:8081",
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+    exposedHeaders: ["Authorization"]
+  })
+);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -43,6 +49,6 @@ app.use("/user", createUserRouter(userController, tokenController));
 app.use("/search", createSearchRouter(searchController));
 app.use("/users", createUsersRouter(userController, tokenController));
 
-app.listen(port, '0.0.0.0', () => {
-    console.log(`Server is running on http://localhost:${port}`); 
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server is running on port ${port}`);
 });
