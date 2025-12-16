@@ -1,4 +1,4 @@
-import "../../style/PostGrid.css";
+import "../../style/postGrid.css";
 
 function PostGrid({ children }) {
   return <div className="post-grid">{children}</div>;
