@@ -1,6 +1,6 @@
 import InputField from "./InputField";
 import SubmitButton from "./SubmitButton";
-import "../../../style/login/LoginForm.css";
+import "../../../style/Login/LoginForm.css";
 
 export default function LoginForm({
   email,
