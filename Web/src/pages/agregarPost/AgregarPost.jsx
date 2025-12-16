@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import "../../style/agregarPost/AgregarPost.css";
+import "../../style/AgregarPost/AgregarPost.css";
 import ImagenPreview from "./components/ImagenPreview";
 import FormularioPost from "./components/FormularioPost";
 import { crearPost } from "../../service/agregarPost/agregarPostService";
