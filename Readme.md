@@ -75,6 +75,8 @@ En el caso de mobile usar:
 ```bash
 npm expo start
 ```
+## Para poder probarlo correctamente se necesita levantar el apartado de Api (back).
+
 Para probarlo crearse una cuenta o usar la siguiente información:
 mail: jania@gmail.com
 password: jania
